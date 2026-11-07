@@ -1,0 +1,3808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YY漫画阅读器 · Windows 桌面版</title>
+  <style>
+    :root {
+      --bg-dark: #121318;
+      --bg-surface: #1A1D26;
+      --bg-card: #1A1D26;
+      --bg-card-hover: #222634;
+      --bg-container: #222634;
+      --primary: #6366f1;
+      --primary-hover: #818cf8;
+      --primary-pressed: #4f46e5;
+      --primary-light: rgba(99, 102, 241, 0.16);
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border: #2A2F42;
+      --radius: 12px;
+      --reader-width: 900px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* 自定义深色滚动条 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121318;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2A2F42;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3d445e;
+    }
+
+    /* 顶部导航 (Google Material 3 风格) */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(18, 19, 24, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .brand svg {
+      color: var(--primary);
+    }
+
+    .brand-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+      background: var(--primary-light);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box input {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 8px 32px 8px 36px;
+      color: var(--text);
+      font-size: 0.88rem;
+      outline: none;
+      width: 220px;
+      transition: all 0.2s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      background: var(--bg-container);
+      width: 280px;
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .search-clear:hover {
+      background: rgba(255, 255, 255, 0.24);
+      color: var(--text);
+    }
+
+    .highlight {
+      background: rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .search-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 64px 24px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+    }
+
+    .search-empty h3 {
+      color: var(--text);
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    /* 按钮交互状态 (Hover + Pressed) */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.28), 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.38);
+    }
+
+    .btn-primary:active {
+      background: var(--primary-pressed);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-container);
+      border-color: #3d445e;
+    }
+
+    .btn-secondary:active {
+      background: #282d3e;
+    }
+
+    /* 主界面布局容器 */
+    .view-container {
+      max-width: 1560px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* 状态与提示条 */
+    .info-banner {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.28);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.86rem;
+      color: #c7d2fe;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    }
+
+    /* 后台导入任务实时进度条 */
+    .import-progress-card {
+      background: var(--bg-surface);
+      border: 1px solid rgba(99, 102, 241, 0.38);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(99, 102, 241, 0.12);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .import-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .import-progress-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #e0e7ff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spinner-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #6366f1;
+      animation: pulse-ring 1.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+      70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
+      100% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+
+    .import-progress-percent {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #818cf8;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+      background-size: 200% 100%;
+      border-radius: 8px;
+      transition: width 0.2s ease-out;
+      animation: gradient-shift 2.5s linear infinite;
+    }
+
+    @keyframes gradient-shift {
+      0% { background-position: 100% 0; }
+      100% { background-position: 0 0; }
+    }
+
+    .import-progress-detail {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 空状态 / 导入提示 */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-top: 16px;
+      background: var(--bg-surface);
+      cursor: pointer;
+      transition: all 0.22s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    }
+
+    .empty-state:hover {
+      border-color: var(--primary);
+      background: var(--bg-container);
+      transform: translateY(-2px);
+    }
+
+    /* 全屏拖拽导入悬浮提示遮罩 */
+    .drop-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(18, 19, 24, 0.88);
+      backdrop-filter: blur(12px);
+      border: 2px dashed var(--primary);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      color: #fff;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .drop-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drop-overlay * {
+      pointer-events: none;
+    }
+
+    .drop-overlay-icon {
+      width: 76px;
+      height: 76px;
+      border-radius: 16px;
+      background: rgba(99, 102, 241, 0.22);
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.35);
+    }
+
+    .drop-overlay-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .drop-overlay-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h2 {
+      font-size: 1.35rem;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      color: var(--text-muted);
+      font-size: 0.94rem;
+      max-width: 520px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .empty-tip {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      background: #121318;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    /* 书架视图 */
+    .shelf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .shelf-stats {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .shelf-stats b {
+      color: var(--text);
+    }
+
+    .comics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 24px;
+    }
+
+    .comic-card {
+      background: var(--bg-surface);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22), 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+    .comic-card:hover {
+      background: var(--bg-container);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38), 0 4px 10px rgba(0, 0, 0, 0.22);
+      border-color: #3d445e;
+    }
+
+    .comic-card:active {
+      transform: translateY(-1px);
+    }
+
+    .cover-wrap {
+      width: 100%;
+      aspect-ratio: 5 / 7;
+      background: #121318;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+
+    .comic-card:hover .cover-img {
+      transform: scale(1.04);
+    }
+
+    .page-count-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(18, 19, 24, 0.82);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .progress-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    }
+
+    .btn-remove-comic, .btn-cover-comic, .btn-rename-comic {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(18, 19, 24, 0.85);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.18s ease;
+      z-index: 5;
+    }
+
+    .btn-cover-comic {
+      right: 42px;
+    }
+
+    .btn-rename-comic {
+      right: 76px;
+    }
+
+    .comic-card:hover .btn-remove-comic,
+    .comic-card:hover .btn-cover-comic,
+    .comic-card:hover .btn-rename-comic {
+      opacity: 1;
+    }
+
+    .btn-remove-comic:hover {
+      background: #ef4444;
+      border-color: #ef4444;
+      color: #fff;
+      transform: scale(1.08);
+    }
+
+    .btn-cover-comic:hover,
+    .btn-rename-comic:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      transform: scale(1.08);
+    }
+
+    .btn-remove-comic:active,
+    .btn-cover-comic:active,
+    .btn-rename-comic:active {
+      transform: scale(0.95);
+    }
+
+    .read-count-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(245, 158, 11, 0.92);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .shelf-sort-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sort-selector {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sort-selector:focus, .sort-selector:hover {
+      background: var(--bg-container);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-light);
+    }
+
+    .comic-info {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .comic-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: #f1f2f6;
+    }
+
+    /* 书架底部分页栏 */
+    .shelf-pagination {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 45;
+      background: rgba(18, 19, 24, 0.94);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.55);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .shelf-pagination-inner {
+      max-width: 1560px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    #shelf-content {
+      padding-bottom: 88px;
+    }
+
+    .pagination-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .pagination-info b {
+      color: var(--text);
+    }
+
+    .page-size-selector {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .page-size-selector:focus, .page-size-selector:hover {
+      background: var(--bg-container);
+      border-color: var(--primary);
+    }
+
+    .pagination-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      min-width: 36px;
+      height: 36px;
+      padding: 0 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      user-select: none;
+    }
+
+    .page-btn:hover:not(:disabled):not(.active) {
+      background: var(--bg-container);
+      border-color: #3d445e;
+      transform: translateY(-1px);
+    }
+
+    .page-btn:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    .page-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(99, 102, 241, 0.38);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .page-ellipsis {
+      color: var(--text-muted);
+      padding: 0 4px;
+      font-weight: 700;
+    }
+
+    .page-jump-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    .jump-page-input {
+      width: 52px;
+      height: 36px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      text-align: center;
+      font-size: 0.84rem;
+      outline: none;
+    }
+
+    .jump-page-input:focus {
+      border-color: var(--primary);
+      background: var(--bg-container);
+    }
+
+    .btn-jump {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      height: 36px;
+    }
+
+    /* 批量管理多选样式 */
+    .btn-batch-toggle {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+    }
+
+    .btn-batch-toggle:hover {
+      background: var(--bg-container);
+      border-color: var(--primary);
+      color: #a5b4fc;
+    }
+
+    .btn-batch-toggle:active {
+      transform: scale(0.97);
+    }
+
+    .btn-batch-toggle.active {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+      color: #a5b4fc;
+    }
+
+    .batch-action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-container);
+      border: 1px solid rgba(99, 102, 241, 0.38);
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .batch-bar-left, .batch-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .batch-checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      user-select: none;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    .batch-checkbox-label input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+      border: 1px solid transparent;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #dc2626;
+    }
+
+    .btn-danger:active:not(:disabled) {
+      background: #b91c1c;
+      transform: scale(0.97);
+    }
+
+    .btn-danger:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .comic-card.batch-mode {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .comic-card.batch-mode .btn-remove-comic,
+    .comic-card.batch-mode .btn-cover-comic {
+      display: none !important;
+    }
+
+    .comic-card.batch-mode.selected {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
+      box-shadow: 0 0 18px rgba(99, 102, 241, 0.35);
+    }
+
+    .card-select-indicator {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      background: rgba(18, 19, 24, 0.88);
+      border: 1px solid #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 6;
+      pointer-events: none;
+      color: #fff;
+    }
+
+    .comic-card.selected .card-select-indicator {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .comic-card:not(.selected) .card-select-indicator svg {
+      display: none;
+    }
+
+    /* 设置与丢失书籍弹窗 (Google Material 3 风格) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 11, 15, 0.76);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-container {
+      background: #1A1D26;
+      border: 1px solid #2A2F42;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 540px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65), 0 4px 16px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid #2A2F42;
+    }
+
+    .modal-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #F8FAFC;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      font-size: 1.15rem;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.18s;
+    }
+
+    .modal-close-btn:hover {
+      background: #222634;
+      color: #fff;
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .settings-card {
+      background: #222634;
+      border: 1px solid #2A2F42;
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.2s;
+    }
+
+    .settings-card:hover {
+      border-color: rgba(99, 102, 241, 0.45);
+    }
+
+    .settings-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .settings-card-title {
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+
+    .settings-badge {
+      background: rgba(245, 158, 11, 0.18);
+      color: #FBBF24;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+
+    .settings-card-desc {
+      font-size: 0.8rem;
+      color: #94A3B8;
+      line-height: 1.5;
+      word-break: break-all;
+    }
+
+    .missing-list-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .missing-item-card {
+      background: #222634;
+      border: 1px solid #2A2F42;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .missing-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .missing-item-title {
+      font-weight: 700;
+      color: #F1F5F9;
+      font-size: 0.92rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .missing-item-tags {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge-read {
+      background: rgba(99, 102, 241, 0.24);
+      color: #A5B4FC;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    .badge-missing {
+      background: rgba(239, 68, 68, 0.2);
+      color: #FCA5A5;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    .missing-item-path {
+      font-size: 0.75rem;
+      color: #94A3B8;
+      word-break: break-all;
+    }
+
+    .missing-empty-tip {
+      padding: 28px;
+      text-align: center;
+      color: #10B981;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .missing-footer-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px solid #2A2F42;
+    }
+
+    /* 阅读器界面 */
+    #reader-view {
+      display: none;
+      min-height: 100vh;
+      background: #0d0e12;
+    }
+
+    .reader-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: linear-gradient(180deg, rgba(18,19,24,0.96) 0%, rgba(18,19,24,0.68) 75%, transparent 100%);
+      padding: 16px 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .reader-header.hidden {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .reader-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 55%;
+    }
+
+    .reader-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .reader-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reader-footer {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: rgba(26, 29, 38, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid #2A2F42;
+      padding: 10px 20px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .reader-footer.hidden {
+      transform: translate(-50%, 100px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .fab-scroll-top {
+      position: fixed;
+      right: 28px;
+      bottom: 84px;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(26, 29, 38, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid #2A2F42;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+      cursor: pointer;
+      z-index: 95;
+      transition: all 0.22s ease;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(14px);
+    }
+
+    .fab-scroll-top.visible {
+      opacity: 0.95;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .fab-scroll-top:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .page-indicator {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      width: 240px;
+    }
+
+    .slider-wrap input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .stream-container {
+      width: 100%;
+      max-width: var(--reader-width);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #08090c;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+      user-select: none;
+    }
+
+    .stream-page {
+      width: 100%;
+      display: block;
+      position: relative;
+      background: #121318;
+      min-height: 180px;
+    }
+
+    .stream-page img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .width-selector {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      outline: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航栏 -->
+  <header id="main-header">
+    <div class="brand" onclick="goShelf()">
+      <img src="https://comic.local/app-icon.png" alt="YY漫画" style="width: 30px; height: 30px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.35); flex-shrink: 0;">
+      <span>YY漫画阅读器</span>
+      <span class="brand-tag">Windows 桌面原生版</span>
+    </div>
+
+    <div class="header-actions">
+      <div class="search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="search-input" placeholder="模糊搜索漫画名字..." oninput="handleSearch(this.value)">
+        <button id="search-clear-btn" class="search-clear" onclick="clearSearch()" style="display: none;" title="清空搜索">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <button class="btn btn-secondary" onclick="refreshLastFolder()" title="一键重新扫描上次导入的漫画总目录">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+        刷新目录
+      </button>
+
+      <button id="btn-header-lan-transfer" class="btn btn-secondary" onclick="openLanTransferModal()" title="Wi-Fi 局域网与安卓/电脑互传漫画资源" style="border-color: rgba(99, 102, 241, 0.45); color: #c7d2fe;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+          <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+          <line x1="12" y1="20" x2="12.01" y2="20"/>
+        </svg>
+        <span id="header-lan-btn-text">局域网互传</span>
+      </button>
+
+      <button class="btn btn-secondary" onclick="openSettingsModal()" title="设置与偏好">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        设置
+      </button>
+
+      <button class="btn btn-secondary" onclick="pickImageSlices()" title="直接多选单部漫画的图片切片">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        多选切片导入
+      </button>
+
+      <button class="btn btn-primary" onclick="importComicsFolder()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          <line x1="12" y1="11" x2="12" y2="17"/>
+          <line x1="9" y1="14" x2="15" y2="14"/>
+        </svg>
+        导入漫画文件夹
+      </button>
+    </div>
+  </header>
+
+  <!-- 主书架视图 -->
+  <div class="view-container" id="shelf-view">
+
+    <!-- 后台异步导入实时进度条 -->
+    <div class="import-progress-card" id="import-progress-card" style="display: none;">
+      <div class="import-progress-header">
+        <div class="import-progress-title">
+          <div class="spinner-dot"></div>
+          <span id="import-progress-status">正在扫描导入漫画...</span>
+        </div>
+        <span class="import-progress-percent" id="import-progress-percent">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="import-progress-fill" style="width: 0%;"></div>
+      </div>
+      <div class="import-progress-detail" id="import-progress-detail">正在准备扫描文件...</div>
+    </div>
+
+    <!-- 本地提示横幅 -->
+    <div class="info-banner" id="storage-banner" style="display: none;">
+      <span id="storage-banner-text">数据已永久保存在本地磁盘 AppData/shelf_data.json，零浏览器空间占用。</span>
+    </div>
+
+    <!-- 启动瞬时加载占位状态 -->
+    <div id="startup-loading-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; background: #1A1D26; border: 1px solid #2A2F42; border-radius: 16px; margin-top: 24px;">
+      <div class="spinner-dot" style="width: 14px; height: 14px; margin-bottom: 14px;"></div>
+      <div style="font-size: 1.05rem; font-weight: 700; color: #F8FAFC; margin-bottom: 6px;">YY 漫阅 · 正在极速打开书架</div>
+      <div style="font-size: 0.85rem; color: #94A3B8;">正在并行读取本地藏书索引与封面队列...</div>
+    </div>
+
+    <!-- 空状态引导 -->
+    <div class="empty-state" id="empty-state" style="display: none;" onclick="importComicsFolder()">
+      <div class="empty-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          <line x1="12" y1="11" x2="12" y2="17"/>
+          <line x1="9" y1="14" x2="15" y2="14"/>
+        </svg>
+      </div>
+      <h2>选择或直接拖拽漫画文件夹</h2>
+      <p>Windows 桌面原生版直接从硬盘读取图片切片，无需任何浏览器授权弹窗，所有阅读记录与进度独立存储在应用专属目录中。</p>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <button class="btn btn-primary" onclick="event.stopPropagation(); importComicsFolder()">浏览并导入文件夹</button>
+        <button class="btn btn-secondary" onclick="event.stopPropagation(); pickImageSlices()">多选切片图片导入</button>
+      </div>
+      <div class="empty-tip" style="margin-top: 16px;">💡 提示：支持从 Windows 资源管理器直接将一个或多个漫画文件夹拖拽到本窗口任意位置。</div>
+    </div>
+
+    <!-- 漫画卡片网格 -->
+    <div id="shelf-content" style="display: none;">
+      <div class="shelf-header">
+        <div class="shelf-stats" id="shelf-stats-text">共收录 <b id="total-comics-count">0</b> 部漫画 · 独立保存在本地磁盘</div>
+        <div class="shelf-sort-wrap">
+          <label for="sort-select" style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; cursor: pointer;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M6 12h12M10 18h4"/>
+            </svg>
+            排序:
+          </label>
+          <select id="sort-select" class="sort-selector" onchange="changeSortMode(this.value)">
+            <option value="title_asc">漫画名称 (A-Z)</option>
+            <option value="import_time_desc">🕒 导入时间 (最新在前)</option>
+            <option value="views_desc">🔥 阅读次数最多</option>
+            <option value="recent_read">⏱️ 最近阅读</option>
+            <option value="pages_desc">📄 切片页数最多</option>
+          </select>
+          <button id="btn-batch-toggle" class="btn-batch-toggle" onclick="toggleBatchMode()" title="批量选择并移除漫画">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <polyline points="9 11 12 14 22 4"/>
+            </svg>
+            <span id="batch-toggle-text">批量管理</span>
+          </button>
+          <button id="btn-open-settings" class="btn-batch-toggle" onclick="openSettingsModal()" title="设置与偏好">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span>设置</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 批量操作控制栏 -->
+      <div id="batch-action-bar" class="batch-action-bar" style="display: none;">
+        <div class="batch-bar-left">
+          <label class="batch-checkbox-label">
+            <input type="checkbox" id="batch-select-all-page" onchange="toggleSelectAllPage(this.checked)">
+            <span>全选本页</span>
+          </label>
+          <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleSelectAllComics()">
+            <span id="batch-select-all-text">全选全部</span>
+          </button>
+          <span style="font-size: 0.88rem; color: var(--text-muted);">
+            已选择 <b id="batch-selected-count" style="color: #a5b4fc; font-size: 1rem;">0</b> 部漫画
+          </span>
+        </div>
+        <div class="batch-bar-right">
+          <button id="btn-batch-delete" class="btn-danger" disabled onclick="batchDeleteSelected()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+            批量移除所选 (<span id="batch-delete-count">0</span>)
+          </button>
+          <button class="btn btn-secondary" onclick="exitBatchMode()" style="padding: 6px 12px; font-size: 0.82rem;">
+            完成 / 退出
+          </button>
+        </div>
+      </div>
+
+      <div class="comics-grid" id="comics-grid"></div>
+      <div class="shelf-pagination" id="shelf-pagination" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- 阅读器视图 -->
+  <div id="reader-view">
+    <div class="reader-header" id="reader-header">
+      <div class="reader-title-wrap">
+        <button class="btn btn-secondary" onclick="goShelf()" style="padding: 7px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          返回书架
+        </button>
+        <span class="reader-title" id="reader-title">漫画标题</span>
+      </div>
+
+      <div class="reader-tools">
+        <button class="btn btn-secondary" onclick="setCurrentReaderPageAsCover()" title="将当前正在阅读的这一页设为该漫画的封面" style="padding: 7px 12px;">
+          🖼️ 设当前页为封面
+        </button>
+        <button class="btn btn-secondary" onclick="openCurrentComicFolder()" title="在资源管理器中打开该漫画文件夹" style="padding: 7px 12px;">
+          📂 所在目录
+        </button>
+        <select id="reader-width-select" class="width-selector" onchange="changeReaderWidth(this.value)">
+          <option value="760px">适中 (760px)</option>
+          <option value="900px" selected>标准 (900px)</option>
+          <option value="1100px">宽屏 (1100px)</option>
+          <option value="100%">100% 满屏填满</option>
+        </select>
+        <button class="btn btn-secondary" onclick="scrollToTop()" title="一键回到顶部">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"/>
+          </svg>
+          回到顶部
+        </button>
+        <button class="btn btn-secondary" onclick="prevComic()" id="btn-prev-comic">上一部</button>
+        <button class="btn btn-secondary" onclick="nextComic()" id="btn-next-comic">下一部</button>
+      </div>
+    </div>
+
+    <div class="stream-container" id="stream-container"></div>
+
+    <!-- 悬浮一键回到顶部按钮 -->
+    <div class="fab-scroll-top" id="fab-scroll-top" onclick="scrollToTop()" title="一键回到顶部">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"/>
+        <polyline points="5 12 12 5 19 12"/>
+      </svg>
+    </div>
+
+    <div class="reader-footer" id="reader-footer">
+      <div class="page-indicator">
+        <span id="curr-page">1</span> / <span id="total-pages">1</span>
+      </div>
+      <div class="slider-wrap">
+        <input type="range" id="page-slider" min="1" max="1" value="1">
+      </div>
+      <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="scrollToTop()">回到顶部</button>
+    </div>
+  </div>
+
+  <!-- 全屏拖拽导入悬浮提示遮罩 -->
+  <div class="drop-overlay" id="drop-overlay">
+    <div class="drop-overlay-icon">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        <line x1="12" y1="11" x2="12" y2="17"/>
+        <line x1="9" y1="14" x2="15" y2="14"/>
+      </svg>
+    </div>
+    <div class="drop-overlay-title">松开鼠标即可导入漫画文件夹</div>
+    <div class="drop-overlay-desc">支持包含多部漫画的总目录、单本漫画文件夹或多选文件夹直接拖入</div>
+  </div>
+
+  <!-- 设置弹窗 -->
+  <div class="modal-overlay" id="settings-modal" style="display: none;" onclick="if(event.target===this) closeSettingsModal()">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          设置与偏好 (Windows 桌面版)
+        </h3>
+        <button class="modal-close-btn" onclick="closeSettingsModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- 丢失书籍管理卡片 -->
+        <div class="settings-card" onclick="openMissingComicsModal()" style="cursor: pointer;">
+          <div class="settings-card-header">
+            <span class="settings-card-title">📁 丢失与未显示书籍</span>
+            <span class="settings-badge" id="settings-missing-badge">0 部</span>
+          </div>
+          <div class="settings-card-desc">检测到本地漫画文件夹被移动或删除时自动在书架隐藏，保留历史阅读数据不丢失。点击可查看明细或彻底清理。</div>
+          <button class="btn btn-secondary" style="margin-top: 10px; font-size: 0.8rem; padding: 6px 12px;" onclick="event.stopPropagation(); openMissingComicsModal()">查看详情与管理 →</button>
+        </div>
+
+        <!-- 排序方式卡片 -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-title">⇅ 书架排序模式</span>
+          </div>
+          <div class="settings-card-desc" id="settings-current-sort-desc">当前: 漫画名称 (A-Z)</div>
+          <select id="settings-sort-select" class="sort-selector" style="margin-top: 10px; width: 100%;" onchange="changeSortMode(this.value); updateSettingsUI()">
+            <option value="title_asc">漫画名称 (A-Z)</option>
+            <option value="import_time_desc">🕒 导入时间 (最新在前)</option>
+            <option value="views_desc">🔥 阅读次数最多</option>
+            <option value="recent_read">⏱️ 最近阅读</option>
+            <option value="pages_desc">📄 切片页数最多</option>
+          </select>
+        </div>
+
+        <!-- 局域网互传存储目录卡片 -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-title">📡 Wi-Fi 局域网互传与存储目录</span>
+            <span class="settings-badge" style="background: rgba(99, 102, 241, 0.22); color: #a5b4fc;">Windows ⇄ Android</span>
+          </div>
+          <div class="settings-card-desc">接收到的局域网互传漫画将自动保存在以下目录并加入书架（支持自定义任意磁盘文件夹）：</div>
+          <div class="settings-card-desc" id="settings-transfer-path" style="margin-top: 4px; color: #a5b4fc; font-family: Consolas, monospace;">TransferredComics</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+            <button class="btn btn-primary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="closeSettingsModal(); openLanTransferModal()">📡 打开局域网互传面板</button>
+            <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="changeTransferSaveFolder()">📂 更改存储目录</button>
+            <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="callNative('openTransferFolder')">📂 打开该目录</button>
+            <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="resetTransferSaveFolder()">↺ 恢复默认目录</button>
+          </div>
+        </div>
+
+        <!-- 本地独立存储路径卡片 -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-title">💾 独立本地磁盘存储</span>
+          </div>
+          <div class="settings-card-desc">所有书架记录与阅读统计均保存在桌面端专属 JSON 文件，完全不占用浏览器缓存：</div>
+          <div class="settings-card-desc" id="settings-data-path" style="margin-top: 4px; color: #a5b4fc; font-family: Consolas, monospace;">AppData\shelf_data.json</div>
+          <button class="btn btn-secondary" style="margin-top: 10px; font-size: 0.8rem; padding: 6px 12px;" onclick="callNative('openDataFolder')">📂 打开本地数据文件夹</button>
+        </div>
+
+        <!-- 清空书架卡片 -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-title">🧹 书架数据管理</span>
+          </div>
+          <div class="settings-card-desc">清空当前书架所有导入索引与历史阅读记录（电脑硬盘上的本地漫画文件不受任何影响）。</div>
+          <button class="btn btn-danger" style="margin-top: 10px; font-size: 0.8rem; padding: 6px 14px;" onclick="closeSettingsModal(); clearShelfData()">清空书架记录</button>
+        </div>
+
+        <div style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 4px;">
+          YY漫画 · Windows 桌面原生版 · 零浏览器占用 · 快捷键 F11 全屏
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 丢失漫画详情管理弹窗 -->
+  <div class="modal-overlay" id="missing-comics-modal" style="display: none;" onclick="if(event.target===this) closeMissingComicsModal()">
+    <div class="modal-container" style="max-width: 640px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="missing-dialog-title">丢失/未在书架显示的漫画</h3>
+        <button class="modal-close-btn" onclick="closeMissingComicsModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px;">
+          以下漫画由于源文件夹被移动、重命名或拔出移动硬盘，已在书架中自动隐藏。漫画历史阅读记录均已安全保留，移回原路径后将自动恢复。
+        </div>
+
+        <div id="missing-comics-list" class="missing-list-wrap"></div>
+        <div id="missing-empty-tip" class="missing-empty-tip" style="display: none;">
+          ✅ 暂无任何丢失书籍，所有漫画均正常展示
+        </div>
+
+        <div class="missing-footer-actions">
+          <button id="btn-clear-all-missing" class="btn btn-danger" onclick="clearAllMissingComics()">彻底清理全部丢失记录</button>
+          <button class="btn btn-secondary" onclick="rescanMissingComics()">重新检测磁盘</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wi-Fi 局域网漫画互传弹窗 -->
+  <div class="modal-overlay" id="lan-transfer-modal" style="display: none;" onclick="if(event.target===this) closeLanTransferModal()">
+    <div class="modal-container" style="max-width: 780px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+            <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+            <line x1="12" y1="20" x2="12.01" y2="20"/>
+          </svg>
+          Wi-Fi 局域网漫画互传 (Windows ⇄ Android)
+          <span id="lan-modal-conn-pill" style="display: none; background: rgba(16, 185, 129, 0.16); border: 1px solid rgba(16, 185, 129, 0.45); color: #6ee7b7; font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; margin-left: 8px;">🟢 已连接</span>
+        </h3>
+        <button class="modal-close-btn" onclick="closeLanTransferModal()">✕</button>
+      </div>
+      <div class="modal-body" style="gap: 14px;">
+        <!-- 本机状态与接收目录设置 -->
+        <div class="settings-card" style="padding: 14px 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <div style="font-size: 0.9rem; font-weight: 700; color: #f8fafc;">
+                💻 本机局域网地址：<span id="lan-self-ip" style="color: #818cf8; font-family: Consolas, monospace;">正在获取...</span>
+              </div>
+              <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 4px;">
+                📁 接收漫画存储目录：<span id="lan-save-dir-text" style="color: #cbd5e1; font-family: Consolas, monospace;">TransferredComics</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn btn-secondary" style="font-size: 0.78rem; padding: 6px 10px;" onclick="changeTransferSaveFolder()">📂 更改接收目录</button>
+              <button class="btn btn-secondary" style="font-size: 0.78rem; padding: 6px 10px;" onclick="callNative('openTransferFolder')">📂 打开目录</button>
+              <button class="btn btn-secondary" style="font-size: 0.78rem; padding: 6px 10px;" onclick="resetTransferSaveFolder()" title="恢复默认接收目录">↺ 默认</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 局域网设备扫描与手动连接 -->
+        <div class="settings-card" style="padding: 14px 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+            <span style="font-size: 0.9rem; font-weight: 700; color: #f8fafc;">🔍 同一 Wi-Fi 下的设备</span>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <input type="text" id="lan-manual-ip" placeholder="手动输入对方IP (如 192.168.1.5)" style="background: #121318; border: 1px solid #2A2F42; border-radius: 8px; padding: 6px 10px; color: #f1f5f9; font-size: 0.8rem; width: 205px; outline: none;">
+              <button class="btn btn-secondary" style="font-size: 0.78rem; padding: 6px 12px;" onclick="connectManualLanPeer()">连接 IP</button>
+              <button class="btn btn-primary" id="btn-lan-scan" style="font-size: 0.78rem; padding: 6px 12px;" onclick="discoverLanPeers()">🔄 扫描局域网设备</button>
+            </div>
+          </div>
+
+          <div id="lan-peers-list" style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <div style="font-size: 0.82rem; color: #94a3b8; padding: 6px 0;">正在扫描同一 Wi-Fi 下的安卓手机或电脑设备...</div>
+          </div>
+        </div>
+
+        <!-- 实时传输进度条 (传输中显示) -->
+        <div id="lan-modal-progress-wrap" style="display: none; background: #121318; border: 1px solid rgba(99,102,241,0.45); border-radius: 12px; padding: 12px 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span id="lan-modal-progress-status" style="font-size: 0.85rem; font-weight: 600; color: #e0e7ff;">正在传输...</span>
+            <span id="lan-modal-progress-pct" style="font-size: 0.85rem; font-weight: 700; color: #818cf8;">0%</span>
+          </div>
+          <div class="progress-track" style="margin-bottom: 6px;">
+            <div class="progress-fill" id="lan-modal-progress-fill" style="width: 0%;"></div>
+          </div>
+          <div id="lan-modal-progress-detail" style="font-size: 0.76rem; color: #94a3b8;">准备中...</div>
+        </div>
+
+        <!-- 双向互传选项卡：从对方下载 vs 发送给对方 + 一键过滤本机没有 + 模糊搜索 -->
+        <div style="display: flex; gap: 8px; border-bottom: 1px solid #2A2F42; padding-bottom: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button id="tab-lan-pull" class="btn btn-primary" style="font-size: 0.82rem; padding: 7px 14px;" onclick="switchLanTab('pull')">
+              📥 从对方设备下载 (<span id="lan-remote-count">0</span>)
+            </button>
+            <button id="tab-lan-push" class="btn btn-secondary" style="font-size: 0.82rem; padding: 7px 14px;" onclick="switchLanTab('push')">
+              📤 发送本机漫画 (<span id="lan-local-count">0</span>)
+            </button>
+            <button id="btn-lan-only-missing" class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="toggleLanOnlyMissingFilter()" title="一键过滤掉已有漫画，只显示未拥有的漫画">
+              ✨ 仅看本机没有的 (<span id="lan-diff-count">0</span>)
+            </button>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <div style="position: relative; display: flex; align-items: center;">
+              <input type="text" id="lan-comic-filter" placeholder="🔍 搜索漫画名..." oninput="renderLanComicList()" style="background: #121318; border: 1px solid #2A2F42; border-radius: 8px; padding: 6px 26px 6px 10px; color: #f1f5f9; font-size: 0.8rem; width: 175px; outline: none;">
+              <button id="lan-filter-clear-btn" onclick="clearLanComicFilter()" style="display: none; position: absolute; right: 6px; background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 0.8rem; padding: 2px;">✕</button>
+            </div>
+            <button class="btn btn-secondary" style="font-size: 0.78rem; padding: 6px 10px;" onclick="toggleSelectAllLanComics()">全选当前</button>
+          </div>
+        </div>
+
+        <!-- 漫画选择列表 -->
+        <div id="lan-comics-list" class="missing-list-wrap" style="max-height: 260px; min-height: 150px;"></div>
+
+        <!-- 底部执行操作栏 -->
+        <div class="missing-footer-actions" style="justify-content: space-between; align-items: center; margin-top: 2px;">
+          <span id="lan-selected-summary" style="font-size: 0.82rem; color: #94a3b8;">未连接设备，请先在上方点击连接一台设备</span>
+          <div style="display: flex; gap: 10px;">
+            <button id="btn-lan-action" class="btn btn-primary" disabled onclick="executeLanTransferAction()">
+              📥 下载所选漫画到本机
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自定义漫画封面弹窗 -->
+  <div class="modal-overlay" id="custom-cover-modal" style="display: none;" onclick="if(event.target===this) closeCustomCoverModal()">
+    <div class="modal-container" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          🖼️ 自定义漫画封面
+        </h3>
+        <button class="modal-close-btn" onclick="closeCustomCoverModal()">✕</button>
+      </div>
+      <div class="modal-body" style="gap: 16px;">
+        <div style="display: flex; gap: 16px; align-items: center; background: #222634; border: 1px solid #2A2F42; border-radius: 12px; padding: 14px;">
+          <div style="width: 90px; aspect-ratio: 5 / 7; border-radius: 8px; overflow: hidden; background: #121318; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);">
+            <img id="cover-modal-preview-img" src="" alt="当前封面" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div style="min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 6px;">
+            <div id="cover-modal-comic-title" style="font-size: 0.98rem; font-weight: 700; color: #f8fafc; word-break: break-all;">漫画标题</div>
+            <div id="cover-modal-status-badge" style="font-size: 0.78rem; color: #a5b4fc;">当前使用：默认第 1 页封面</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+              <button class="btn btn-primary" style="font-size: 0.8rem; padding: 7px 14px;" onclick="pickExternalCustomCover()">
+                📁 从电脑选择图片文件
+              </button>
+              <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 7px 12px;" onclick="resetToDefaultCover()">
+                ↺ 恢复默认封面 (第1页)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card" style="padding: 14px 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+            <span style="font-size: 0.9rem; font-weight: 700; color: #f8fafc;">📖 或直接点击下方漫画内页缩略图设为封面</span>
+          </div>
+          <div id="cover-modal-pages-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; max-height: 310px; overflow-y: auto; padding-right: 4px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 修改漫画文件名弹窗 -->
+  <div class="modal-overlay" id="rename-comic-modal" style="display: none;" onclick="if(event.target===this) closeRenameComicModal()">
+    <div class="modal-container" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          修改漫画文件名
+        </h3>
+        <button class="modal-close-btn" onclick="closeRenameComicModal()">✕</button>
+      </div>
+      <div class="modal-body" style="gap: 14px;">
+        <div style="font-size: 0.82rem; color: #94a3b8; line-height: 1.5;">
+          修改后将同时更新书架展示名称与本地磁盘上的漫画文件夹名称，阅读进度、阅读次数与自定义封面均会自动保留。
+        </div>
+        <div>
+          <label for="rename-comic-input" style="display: block; font-size: 0.8rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px;">新漫画名称</label>
+          <input type="text" id="rename-comic-input" placeholder="请输入新的漫画名称..."
+            style="width: 100%; background: #121318; border: 1px solid #2A2F42; border-radius: 10px; padding: 11px 14px; color: #f8fafc; font-size: 0.92rem; outline: none; transition: border-color 0.2s;"
+            onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#2A2F42'"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();submitRenameComic();}else if(event.key==='Escape'){closeRenameComicModal();}">
+          <div id="rename-comic-error" style="display: none; color: #f87171; font-size: 0.78rem; margin-top: 6px;"></div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px;">
+          <button class="btn btn-secondary" onclick="closeRenameComicModal()">取消</button>
+          <button class="btn btn-primary" id="btn-submit-rename" onclick="submitRenameComic()">保存修改</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ========================= C# 桌面原生通信桥 =========================
+  let _reqSeq = 0;
+  const _pendingReqs = new Map();
+
+  if (window.chrome && window.chrome.webview) {
+    window.chrome.webview.addEventListener('message', (event) => {
+      const msg = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+      if (!msg) return;
+
+      if (msg.type === 'response' && _pendingReqs.has(msg.reqId)) {
+        const { resolve, reject } = _pendingReqs.get(msg.reqId);
+        _pendingReqs.delete(msg.reqId);
+        if (msg.error) reject(new Error(msg.error));
+        else resolve(msg.data);
+      } else if (msg.type === 'event') {
+        handleNativeEvent(msg.event, msg.data);
+      }
+    });
+  }
+
+  function callNative(action, payload = {}) {
+    return new Promise((resolve, reject) => {
+      if (!window.chrome || !window.chrome.webview) {
+        reject(new Error('当前不在桌面宿主环境中'));
+        return;
+      }
+      const reqId = ++_reqSeq;
+      _pendingReqs.set(reqId, { resolve, reject });
+      window.chrome.webview.postMessage(JSON.stringify({ reqId, action, payload }));
+    });
+  }
+
+  function getDiskImageUrl(filePath) {
+    if (!filePath) return '';
+    return `https://comic.local/img?path=${encodeURIComponent(filePath)}`;
+  }
+
+  // ========================= 分批队列图片加载器 (防止高并发阻塞 WebView2 主线程) =========================
+  const _imgQueue = [];
+  let _activeImgLoads = 0;
+  const MAX_CONCURRENT_IMG_LOADS = 4;
+
+  function clearImageLoadQueue() {
+    _imgQueue.length = 0;
+  }
+
+  function enqueueImageLoad(imgEl, url, highPriority = false) {
+    if (!imgEl || !url) return;
+    if (imgEl.dataset.loadedUrl === url) return;
+    imgEl.dataset.pendingUrl = url;
+
+    const task = { imgEl, url };
+    if (highPriority) {
+      _imgQueue.unshift(task);
+    } else {
+      _imgQueue.push(task);
+    }
+    pumpImageLoadQueue();
+  }
+
+  function pumpImageLoadQueue() {
+    while (_activeImgLoads < MAX_CONCURRENT_IMG_LOADS && _imgQueue.length > 0) {
+      const task = _imgQueue.shift();
+      if (!task || !task.imgEl || !task.imgEl.isConnected) continue;
+      if (task.imgEl.dataset.pendingUrl !== task.url || task.imgEl.dataset.loadedUrl === task.url) continue;
+
+      _activeImgLoads++;
+      const img = task.imgEl;
+      const targetUrl = task.url;
+
+      const onDone = () => {
+        img.removeEventListener('load', onDone);
+        img.removeEventListener('error', onDone);
+        img.dataset.loadedUrl = targetUrl;
+        if (img.parentElement && img.parentElement.classList.contains('stream-page')) {
+          img.parentElement.style.minHeight = '0px';
+        }
+        _activeImgLoads = Math.max(0, _activeImgLoads - 1);
+        pumpImageLoadQueue();
+      };
+
+      img.addEventListener('load', onDone);
+      img.addEventListener('error', onDone);
+      img.src = targetUrl;
+    }
+  }
+
+  // ========================= 全局状态 =========================
+  let comicsList = [];
+  let currentComicIndex = -1;
+  let currentSortMode = 'title_asc';
+  let shelfPageSize = 20;
+  let shelfCurrentPage = 1;
+  let currentShelfFilteredList = [];
+  let currentSearchQuery = '';
+  let dataFilePath = '';
+  let pageObserver = null;
+  let progressHideTimer = null;
+
+  const naturalCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+
+  const emptyState = document.getElementById('empty-state');
+  const shelfContent = document.getElementById('shelf-content');
+  const comicsGrid = document.getElementById('comics-grid');
+  const shelfPagination = document.getElementById('shelf-pagination');
+  const shelfView = document.getElementById('shelf-view');
+  const readerView = document.getElementById('reader-view');
+  const mainHeader = document.getElementById('main-header');
+  const streamContainer = document.getElementById('stream-container');
+  const storageBanner = document.getElementById('storage-banner');
+  const bannerText = document.getElementById('storage-banner-text');
+
+  // ========================= 初始化与原生事件处理 =========================
+  window.addEventListener('DOMContentLoaded', async () => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    initGlobalDragAndDrop();
+    initReaderEvents();
+
+    try {
+      const initData = await callNative('init');
+      applyNativeState(initData);
+    } catch (err) {
+      console.error('初始化失败:', err);
+    }
+  });
+
+  function applyNativeState(state) {
+    if (!state) return;
+    comicsList = state.comics || [];
+    if (state.sortMode) currentSortMode = state.sortMode;
+    if (state.pageSize && [10, 20, 50, 100].includes(state.pageSize)) shelfPageSize = state.pageSize;
+    if (state.readerWidth) {
+      document.documentElement.style.setProperty('--reader-width', state.readerWidth);
+      const widthSel = document.getElementById('reader-width-select');
+      if (widthSel) widthSel.value = state.readerWidth;
+    }
+    if (state.dataFilePath) {
+      dataFilePath = state.dataFilePath;
+      const pathEl = document.getElementById('settings-data-path');
+      if (pathEl) pathEl.innerText = dataFilePath;
+    }
+    if (state.transferSavePath) {
+      const tPathEl = document.getElementById('settings-transfer-path');
+      if (tPathEl) tPathEl.innerText = state.transferSavePath;
+      const lanDirEl = document.getElementById('lan-save-dir-text');
+      if (lanDirEl) lanDirEl.innerText = state.transferSavePath;
+    }
+
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) sortSelect.value = currentSortMode;
+
+    if (currentSearchQuery) {
+      handleSearch(currentSearchQuery);
+    } else {
+      renderShelf();
+    }
+  }
+
+  function handleNativeEvent(eventName, data) {
+    if (eventName === 'scanProgress') {
+      updateImportProgress(data.status, data.percent, data.detail);
+    } else if (eventName === 'shelfUpdated') {
+      applyNativeState(data);
+    } else if (eventName === 'scanComplete') {
+      applyNativeState(data.state);
+      const msg = data.newlyCount > 0
+        ? `已成功导入 ${data.newlyCount} 部新漫画（共扫描 ${data.totalScanned} 部）`
+        : `扫描完成（共核验 ${data.totalScanned} 部漫画）`;
+      updateImportProgress('导入完成', 100, msg);
+      hideImportProgress(1500);
+      showToast(msg);
+    } else if (eventName === 'scanError') {
+      hideImportProgress(500);
+      showToast('扫描出错: ' + (data.message || '未知错误'));
+    } else if (eventName === 'mouseBackButton') {
+      handleGlobalBackAction();
+    } else if (eventName === 'lanTransferProgress') {
+      updateLanModalProgress(data.status, data.percent, data.detail);
+      updateImportProgress(data.status, data.percent, data.detail);
+      if (data.status && data.status.startsWith('⏩')) {
+        hideImportProgress(2200);
+        if (data.status.startsWith('⏩ 已拒绝接收') && data.detail) {
+          showToast('⏩ ' + data.detail);
+        }
+      }
+    } else if (eventName === 'lanComicReceived') {
+      // 单部漫画接收完成：静默更新书架与列表，不在每部漫画完成时弹窗打扰，统一在整批任务完成时提醒一次
+      if (data.state) applyNativeState(data.state);
+      const lanModal = document.getElementById('lan-transfer-modal');
+      if (lanModal && lanModal.style.display === 'flex') {
+        renderLanComicList();
+      }
+    } else if (eventName === 'lanBatchComplete') {
+      if (data.state) applyNativeState(data.state);
+      const peerName = data.peerName || '对方设备';
+      const count = typeof data.transferredCount === 'number' ? data.transferredCount : 0;
+      const skipped = typeof data.skippedCount === 'number' ? data.skippedCount : 0;
+      let summary = '';
+      if (data.mode === 'pull') {
+        summary = skipped > 0
+          ? `已向 ${peerName} 传送完成：共发送 ${count} 部漫画（跳过 ${skipped} 部对方已有漫画）`
+          : `已向 ${peerName} 传送完成：共发送 ${count} 部漫画`;
+        updateLanModalProgress('✅ 发送任务完成', 100, summary);
+        updateImportProgress('✅ 发送任务完成', 100, summary);
+        showToast('📤 ' + summary);
+      } else {
+        summary = skipped > 0
+          ? `从 ${peerName} 接收完成：共收到 ${count} 部新漫画（已跳过 ${skipped} 部本机已有漫画）`
+          : `从 ${peerName} 接收完成：共收到 ${count} 部漫画并加入书架`;
+        updateLanModalProgress('✅ 接收任务完成', 100, summary);
+        updateImportProgress('✅ 接收任务完成', 100, summary);
+        showToast('📥 ' + summary);
+      }
+      hideImportProgress(2400);
+      if (lanProgressHideTimer) clearTimeout(lanProgressHideTimer);
+      lanProgressHideTimer = setTimeout(() => {
+        const wrap = document.getElementById('lan-modal-progress-wrap');
+        if (wrap) wrap.style.display = 'none';
+      }, 3000);
+      const lanModal = document.getElementById('lan-transfer-modal');
+      if (lanModal && lanModal.style.display === 'flex') {
+        renderLanComicList();
+      }
+    } else if (eventName === 'lanPeerConnected') {
+      handleIncomingPeerConnected(data);
+    }
+  }
+
+  function updateImportProgress(statusText, percent, detailText) {
+    const card = document.getElementById('import-progress-card');
+    const statusEl = document.getElementById('import-progress-status');
+    const percentEl = document.getElementById('import-progress-percent');
+    const fillEl = document.getElementById('import-progress-fill');
+    const detailEl = document.getElementById('import-progress-detail');
+
+    if (progressHideTimer) {
+      clearTimeout(progressHideTimer);
+      progressHideTimer = null;
+    }
+    if (card) card.style.display = 'block';
+    if (statusEl && statusText) statusEl.innerText = statusText;
+    if (percentEl && typeof percent === 'number') {
+      const p = Math.min(100, Math.max(0, Math.round(percent)));
+      percentEl.innerText = p + '%';
+      if (fillEl) fillEl.style.width = p + '%';
+    }
+    if (detailEl && detailText !== undefined) detailEl.innerText = detailText;
+  }
+
+  function hideImportProgress(delay = 1400) {
+    const card = document.getElementById('import-progress-card');
+    if (!card) return;
+    if (progressHideTimer) clearTimeout(progressHideTimer);
+    progressHideTimer = setTimeout(() => {
+      card.style.display = 'none';
+    }, delay);
+  }
+
+  function showToast(msg) {
+    if (storageBanner && bannerText) {
+      bannerText.innerText = msg;
+      storageBanner.style.display = 'flex';
+      setTimeout(() => {
+        storageBanner.style.display = 'none';
+      }, 3600);
+    }
+  }
+
+  // ========================= 文件夹导入与拖拽 =========================
+  async function importComicsFolder() {
+    await callNative('pickFolder');
+  }
+
+  async function refreshLastFolder() {
+    await callNative('refreshLastFolder');
+  }
+
+  async function pickImageSlices() {
+    const state = await callNative('pickImages');
+    if (state) {
+      applyNativeState(state);
+      showToast('已成功导入多选图片切片');
+    }
+  }
+
+  function initGlobalDragAndDrop() {
+    const overlay = document.getElementById('drop-overlay');
+    let dragCounter = 0;
+
+    window.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter++;
+      if (e.dataTransfer && e.dataTransfer.types && Array.from(e.dataTransfer.types).includes('Files')) {
+        if (overlay) overlay.classList.add('active');
+      }
+    });
+
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+    });
+
+    window.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter--;
+      if (dragCounter <= 0) {
+        dragCounter = 0;
+        if (overlay) overlay.classList.remove('active');
+      }
+    });
+
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter = 0;
+      if (overlay) overlay.classList.remove('active');
+
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        if (window.chrome && window.chrome.webview && window.chrome.webview.postMessageWithAdditionalObjects) {
+          const reqId = ++_reqSeq;
+          window.chrome.webview.postMessageWithAdditionalObjects(
+            JSON.stringify({ reqId, action: 'dropFiles' }),
+            Array.from(e.dataTransfer.files)
+          );
+        }
+      }
+    });
+  }
+
+  // ========================= 排序、搜索与分页渲染 =========================
+  function sortComicsList(list, mode) {
+    const arr = [...list];
+    switch (mode) {
+      case 'import_time_desc':
+        return arr.sort((a, b) => {
+          const diff = (b.importTime || 0) - (a.importTime || 0);
+          return diff !== 0 ? diff : naturalCollator.compare(a.title, b.title);
+        });
+      case 'views_desc':
+        return arr.sort((a, b) => {
+          const diff = (b.readCount || 0) - (a.readCount || 0);
+          return diff !== 0 ? diff : naturalCollator.compare(a.title, b.title);
+        });
+      case 'recent_read':
+        return arr.sort((a, b) => {
+          const diff = (b.lastReadTime || 0) - (a.lastReadTime || 0);
+          return diff !== 0 ? diff : naturalCollator.compare(a.title, b.title);
+        });
+      case 'pages_desc':
+        return arr.sort((a, b) => {
+          const diff = (b.totalPages || 0) - (a.totalPages || 0);
+          return diff !== 0 ? diff : naturalCollator.compare(a.title, b.title);
+        });
+      case 'title_asc':
+      default:
+        return arr.sort((a, b) => naturalCollator.compare(a.title, b.title));
+    }
+  }
+
+  async function changeSortMode(newMode) {
+    currentSortMode = newMode;
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) sortSelect.value = newMode;
+    const settingsSelect = document.getElementById('settings-sort-select');
+    if (settingsSelect) settingsSelect.value = newMode;
+    updateSettingsUI();
+
+    await callNative('saveSettings', { sortMode: newMode });
+    if (currentSearchQuery) {
+      handleSearch(currentSearchQuery);
+    } else {
+      renderShelf();
+    }
+  }
+
+  function renderShelf(list, searchKeyword = '') {
+    const startupLoading = document.getElementById('startup-loading-state');
+    if (startupLoading) startupLoading.style.display = 'none';
+
+    const activeComics = comicsList.filter(c => !c.isMissing);
+    const missingComics = comicsList.filter(c => c.isMissing);
+
+    if (!list) {
+      list = activeComics;
+    }
+    currentSearchQuery = searchKeyword;
+
+    const clearBtn = document.getElementById('search-clear-btn');
+    if (clearBtn) {
+      clearBtn.style.display = searchKeyword ? 'flex' : 'none';
+    }
+
+    if (activeComics.length === 0) {
+      emptyState.style.display = 'flex';
+      shelfContent.style.display = 'none';
+      if (shelfPagination) shelfPagination.style.display = 'none';
+      return;
+    }
+
+    emptyState.style.display = 'none';
+    shelfContent.style.display = 'block';
+
+    const statsEl = document.getElementById('shelf-stats-text');
+    if (statsEl) {
+      const missingTag = missingComics.length > 0
+        ? ` <span style="color:#f59e0b;font-size:0.85rem;cursor:pointer;" onclick="openMissingComicsModal()" title="点击查看未显示的丢失漫画">(${missingComics.length}部未显示)</span>`
+        : '';
+      if (searchKeyword) {
+        statsEl.innerHTML = `共搜索到 <b id="total-comics-count">${list.length}</b> 部匹配漫画${missingTag}（书架共 ${activeComics.length} 部）`;
+      } else {
+        statsEl.innerHTML = `共收录 <b id="total-comics-count">${activeComics.length}</b> 部漫画${missingTag} · 独立保存在本地磁盘`;
+      }
+    }
+
+    currentShelfFilteredList = sortComicsList(list, currentSortMode);
+
+    const totalPages = Math.max(1, Math.ceil(currentShelfFilteredList.length / shelfPageSize));
+    if (shelfCurrentPage > totalPages) shelfCurrentPage = totalPages;
+    if (shelfCurrentPage < 1) shelfCurrentPage = 1;
+
+    renderShelfCards();
+    renderShelfPagination();
+  }
+
+  function renderShelfCards() {
+    clearImageLoadQueue();
+    comicsGrid.innerHTML = '';
+
+    if (currentShelfFilteredList.length === 0 && currentSearchQuery) {
+      comicsGrid.innerHTML = `
+        <div class="search-empty">
+          <h3>未找到与 “${escapeHtml(currentSearchQuery)}” 匹配的漫画</h3>
+          <p>支持拼音/字母缩写、跳字模糊搜索，或点击下方按钮重置搜索</p>
+          <button class="btn btn-secondary" style="margin-top: 14px;" onclick="clearSearch()">显示全部漫画</button>
+        </div>
+      `;
+      return;
+    }
+
+    const startIdx = (shelfCurrentPage - 1) * shelfPageSize;
+    const endIdx = Math.min(startIdx + shelfPageSize, currentShelfFilteredList.length);
+    const pageItems = currentShelfFilteredList.slice(startIdx, endIdx);
+
+    pageItems.forEach((comic) => {
+      const card = document.createElement('div');
+      const isSelected = selectedComicIds.has(comic.id);
+      card.className = 'comic-card' + (isBatchMode ? ' batch-mode' : '') + (isSelected ? ' selected' : '');
+      card.dataset.comicId = comic.id;
+      card.onclick = () => {
+        if (isBatchMode) {
+          toggleComicSelection(comic.id);
+        } else {
+          openComicById(comic.id);
+        }
+      };
+
+      const savedPage = comic.lastReadPage || 1;
+      const readCount = comic.readCount || 0;
+      const progressHtml = (savedPage > 1)
+        ? `<div class="progress-badge" style="${isBatchMode ? 'left: 38px;' : ''}">读至第 ${savedPage} 页</div>`
+        : '';
+      const readCountHtml = `<div class="read-count-badge">🔥 读过 ${readCount} 次</div>`;
+      const displayTitle = currentSearchQuery ? highlightText(comic.title, currentSearchQuery) : escapeHtml(comic.title);
+      const coverSrc = getDiskImageUrl(comic.coverPath);
+
+      card.innerHTML = `
+        <div class="cover-wrap">
+          ${isBatchMode ? `
+            <div class="card-select-indicator">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          ` : ''}
+          ${progressHtml}
+          <button class="btn-rename-comic" title="修改漫画文件名" onclick="event.stopPropagation(); openRenameComicModal('${comic.id}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          <button class="btn-cover-comic" title="自定义/更换此漫画封面" onclick="event.stopPropagation(); openCustomCoverModal('${comic.id}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </button>
+          <button class="btn-remove-comic" title="从书架移除并删除本地物理文件" onclick="event.stopPropagation(); removeComic('${comic.id}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+          <img class="cover-img" alt="${escapeHtml(comic.title)}">
+          ${readCountHtml}
+          <div class="page-count-badge">${comic.totalPages} P</div>
+        </div>
+        <div class="comic-info">
+          <div class="comic-title" title="${escapeHtml(comic.title)}">${displayTitle}</div>
+        </div>
+      `;
+
+      comicsGrid.appendChild(card);
+      const imgEl = card.querySelector('.cover-img');
+      enqueueImageLoad(imgEl, coverSrc, false);
+    });
+
+    if (isBatchMode) {
+      updateBatchBar();
+    }
+  }
+
+  function renderShelfPagination() {
+    if (!shelfPagination) return;
+    const totalItems = currentShelfFilteredList.length;
+    if (totalItems === 0) {
+      shelfPagination.style.display = 'none';
+      return;
+    }
+
+    shelfPagination.style.display = 'flex';
+    const totalPages = Math.max(1, Math.ceil(totalItems / shelfPageSize));
+    const startItem = (shelfCurrentPage - 1) * shelfPageSize + 1;
+    const endItem = Math.min(shelfCurrentPage * shelfPageSize, totalItems);
+
+    const pageNumbers = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+    } else {
+      pageNumbers.push(1);
+      if (shelfCurrentPage > 4) pageNumbers.push('...');
+      const start = Math.max(2, shelfCurrentPage - 2);
+      const end = Math.min(totalPages - 1, shelfCurrentPage + 2);
+      for (let i = start; i <= end; i++) pageNumbers.push(i);
+      if (shelfCurrentPage < totalPages - 3) pageNumbers.push('...');
+      pageNumbers.push(totalPages);
+    }
+
+    const pageButtonsHtml = pageNumbers.map(p => {
+      if (p === '...') return `<span class="page-ellipsis">...</span>`;
+      const activeClass = p === shelfCurrentPage ? 'active' : '';
+      return `<button class="page-btn ${activeClass}" onclick="goToShelfPage(${p})">${p}</button>`;
+    }).join('');
+
+    shelfPagination.innerHTML = `
+      <div class="shelf-pagination-inner">
+        <div class="pagination-info">
+          <span>显示第 <b>${startItem}-${endItem}</b> 部 / 共 <b>${totalItems}</b> 部</span>
+          <label style="display: inline-flex; align-items: center; gap: 6px;">
+            <span>每页条数:</span>
+            <select class="page-size-selector" onchange="changeShelfPageSize(this.value)">
+              <option value="10" ${shelfPageSize === 10 ? 'selected' : ''}>10 条/页</option>
+              <option value="20" ${shelfPageSize === 20 ? 'selected' : ''}>20 条/页</option>
+              <option value="50" ${shelfPageSize === 50 ? 'selected' : ''}>50 条/页</option>
+              <option value="100" ${shelfPageSize === 100 ? 'selected' : ''}>100 条/页</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="pagination-nav">
+          <button class="page-btn" onclick="goToShelfPage(1)" ${shelfCurrentPage === 1 ? 'disabled' : ''} title="首页">首页</button>
+          <button class="page-btn" onclick="goToShelfPage(${shelfCurrentPage - 1})" ${shelfCurrentPage === 1 ? 'disabled' : ''}>上一页</button>
+          ${pageButtonsHtml}
+          <button class="page-btn" onclick="goToShelfPage(${shelfCurrentPage + 1})" ${shelfCurrentPage === totalPages ? 'disabled' : ''}>下一页</button>
+          <button class="page-btn" onclick="goToShelfPage(${totalPages})" ${shelfCurrentPage === totalPages ? 'disabled' : ''} title="末页">末页</button>
+
+          ${totalPages > 1 ? `
+            <div class="page-jump-wrap">
+              <span>跳至</span>
+              <input type="number" id="jump-page-input" class="jump-page-input" min="1" max="${totalPages}" value="${shelfCurrentPage}" onkeydown="if(event.key==='Enter') handleJumpPage()">
+              <span>页</span>
+              <button class="btn btn-secondary btn-jump" onclick="handleJumpPage()">跳转</button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  function goToShelfPage(page) {
+    const totalPages = Math.max(1, Math.ceil(currentShelfFilteredList.length / shelfPageSize));
+    const target = Math.max(1, Math.min(totalPages, parseInt(page, 10) || 1));
+    if (target === shelfCurrentPage) return;
+
+    shelfCurrentPage = target;
+    renderShelfCards();
+    renderShelfPagination();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  async function changeShelfPageSize(newSize) {
+    const size = parseInt(newSize, 10);
+    if (![10, 20, 50, 100].includes(size)) return;
+    shelfPageSize = size;
+    shelfCurrentPage = 1;
+    await callNative('saveSettings', { pageSize: size });
+    renderShelfCards();
+    renderShelfPagination();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  function handleJumpPage() {
+    const input = document.getElementById('jump-page-input');
+    if (input) goToShelfPage(input.value);
+  }
+
+  // ========================= 模糊搜索 =========================
+  function fuzzyMatch(text, pattern) {
+    if (!pattern) return true;
+    if (!text) return false;
+
+    const cleanText = text.toLowerCase();
+    const cleanPattern = pattern.trim().toLowerCase();
+    const keywords = cleanPattern.split(/\s+/).filter(Boolean);
+    if (keywords.length > 1) {
+      return keywords.every(kw => fuzzyMatch(text, kw));
+    }
+
+    const kw = keywords[0];
+    if (!kw) return true;
+    if (cleanText.includes(kw)) return true;
+
+    const strippedText = cleanText.replace(/[\s\-_()\[\]【】（）.,!?]/g, '');
+    const strippedKw = kw.replace(/[\s\-_()\[\]【】（）.,!?]/g, '');
+    if (strippedKw && strippedText.includes(strippedKw)) return true;
+
+    let tIdx = 0;
+    for (let i = 0; i < kw.length; i++) {
+      tIdx = cleanText.indexOf(kw[i], tIdx);
+      if (tIdx === -1) return false;
+      tIdx++;
+    }
+    return true;
+  }
+
+  function escapeHtml(str) {
+    return String(str || '').replace(/[&<>"']/g, s => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[s]));
+  }
+
+  function highlightText(text, keyword) {
+    if (!keyword || !keyword.trim()) return escapeHtml(text);
+    const tokens = keyword.trim().split(/\s+/).filter(Boolean)
+      .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    if (tokens.length === 0) return escapeHtml(text);
+    const regex = new RegExp(`(${tokens.join('|')})`, 'gi');
+    return escapeHtml(text).replace(regex, '<mark class="highlight">$1</mark>');
+  }
+
+  function handleSearch(keyword) {
+    const kw = (keyword || '').trim();
+    shelfCurrentPage = 1;
+    const activeComics = comicsList.filter(c => !c.isMissing);
+    if (!kw) {
+      renderShelf(activeComics, '');
+      return;
+    }
+    const filtered = activeComics.filter(c => fuzzyMatch(c.title, kw));
+    renderShelf(filtered, kw);
+  }
+
+  function clearSearch() {
+    const input = document.getElementById('search-input');
+    if (input) input.value = '';
+    shelfCurrentPage = 1;
+    renderShelf(comicsList.filter(c => !c.isMissing), '');
+  }
+
+  // ========================= 批量多选与删除 =========================
+  let isBatchMode = false;
+  let selectedComicIds = new Set();
+
+  function toggleBatchMode() {
+    isBatchMode = !isBatchMode;
+    if (!isBatchMode) selectedComicIds.clear();
+    updateBatchModeUI();
+    renderShelfCards();
+  }
+
+  function exitBatchMode() {
+    if (!isBatchMode) return;
+    isBatchMode = false;
+    selectedComicIds.clear();
+    updateBatchModeUI();
+    renderShelfCards();
+  }
+
+  function updateBatchModeUI() {
+    const bar = document.getElementById('batch-action-bar');
+    const toggleBtn = document.getElementById('btn-batch-toggle');
+    const toggleText = document.getElementById('batch-toggle-text');
+    if (bar) bar.style.display = isBatchMode ? 'flex' : 'none';
+    if (toggleBtn) toggleBtn.classList.toggle('active', isBatchMode);
+    if (toggleText) toggleText.innerText = isBatchMode ? '退出批量' : '批量管理';
+    updateBatchBar();
+  }
+
+  function toggleComicSelection(comicId) {
+    if (selectedComicIds.has(comicId)) selectedComicIds.delete(comicId);
+    else selectedComicIds.add(comicId);
+
+    const card = comicsGrid.querySelector(`.comic-card[data-comic-id="${CSS.escape(comicId)}"]`);
+    if (card) card.classList.toggle('selected', selectedComicIds.has(comicId));
+    updateBatchBar();
+  }
+
+  function toggleSelectAllPage(checked) {
+    const startIdx = (shelfCurrentPage - 1) * shelfPageSize;
+    const endIdx = Math.min(startIdx + shelfPageSize, currentShelfFilteredList.length);
+    const pageItems = currentShelfFilteredList.slice(startIdx, endIdx);
+    pageItems.forEach(c => {
+      if (checked) selectedComicIds.add(c.id);
+      else selectedComicIds.delete(c.id);
+    });
+    renderShelfCards();
+  }
+
+  function toggleSelectAllComics() {
+    const targetList = currentShelfFilteredList;
+    const allSelected = targetList.length > 0 && targetList.every(c => selectedComicIds.has(c.id));
+    targetList.forEach(c => {
+      if (allSelected) selectedComicIds.delete(c.id);
+      else selectedComicIds.add(c.id);
+    });
+    renderShelfCards();
+  }
+
+  function updateBatchBar() {
+    const selectedCountEl = document.getElementById('batch-selected-count');
+    const deleteCountEl = document.getElementById('batch-delete-count');
+    const btnDelete = document.getElementById('btn-batch-delete');
+    const selectAllPageCheckbox = document.getElementById('batch-select-all-page');
+    const selectAllBtnText = document.getElementById('batch-select-all-text');
+
+    const count = selectedComicIds.size;
+    if (selectedCountEl) selectedCountEl.innerText = count;
+    if (deleteCountEl) deleteCountEl.innerText = count;
+    if (btnDelete) btnDelete.disabled = count === 0;
+
+    const startIdx = (shelfCurrentPage - 1) * shelfPageSize;
+    const endIdx = Math.min(startIdx + shelfPageSize, currentShelfFilteredList.length);
+    const pageItems = currentShelfFilteredList.slice(startIdx, endIdx);
+    const isPageAllSelected = pageItems.length > 0 && pageItems.every(c => selectedComicIds.has(c.id));
+    if (selectAllPageCheckbox) selectAllPageCheckbox.checked = isPageAllSelected;
+
+    const isAllFilteredSelected = currentShelfFilteredList.length > 0 && currentShelfFilteredList.every(c => selectedComicIds.has(c.id));
+    if (selectAllBtnText) {
+      selectAllBtnText.innerText = isAllFilteredSelected ? '取消全选全部' : `全选全部 (${currentShelfFilteredList.length})`;
+    }
+  }
+
+  async function removeComic(comicId) {
+    const comic = comicsList.find(c => c.id === comicId);
+    if (!comic) return;
+    if (!confirm(`确定要彻底删除《${comic.title}》吗？\n\n⚠️ 警告：此操作将同时：\n1. 从书架移除该漫画\n2. 清除已读进度与阅读次数记录\n3. 永久删除电脑硬盘上的漫画物理文件夹及图片！`)) {
+      return;
+    }
+    const state = await callNative('removeComics', { ids: [comicId] });
+    applyNativeState(state);
+    showToast(`🗑️ 已彻底删除《${comic.title}》及本地物理文件`);
+  }
+
+  async function batchDeleteSelected() {
+    const count = selectedComicIds.size;
+    if (count === 0) return;
+    if (!confirm(`确定要批量彻底删除选中的 ${count} 部漫画吗？\n\n⚠️ 警告：此操作将从书架移除所选漫画、清除阅读数据，并永久删除电脑硬盘上的漫画物理文件夹及图片！`)) {
+      return;
+    }
+    const ids = Array.from(selectedComicIds);
+    selectedComicIds.clear();
+    const state = await callNative('removeComics', { ids });
+    if ((state.comics || []).filter(c => !c.isMissing).length === 0) {
+      isBatchMode = false;
+      updateBatchModeUI();
+    }
+    applyNativeState(state);
+    showToast(`🗑️ 已批量彻底删除 ${count} 部漫画及本地物理文件`);
+  }
+
+  async function clearShelfData() {
+    if (!confirm('确定要清空已保存的书架数据吗？此操作将清空所有已导入漫画及阅读记录（不会删除电脑本地图片文件）。')) {
+      return;
+    }
+    const state = await callNative('clearShelf');
+    applyNativeState(state);
+    showToast('书架已清空');
+  }
+
+  // ========================= 沉浸式阅读器 =========================
+  async function openComicById(comicId) {
+    const updatedComic = await callNative('openComic', { id: comicId });
+    if (!updatedComic) return;
+
+    const idx = comicsList.findIndex(c => c.id === comicId);
+    if (idx !== -1) {
+      comicsList[idx] = updatedComic;
+    }
+    currentComicIndex = currentShelfFilteredList.findIndex(c => c.id === comicId);
+    if (currentComicIndex === -1) {
+      currentComicIndex = idx;
+    }
+
+    renderReader(updatedComic);
+  }
+
+  let lastShelfScrollY = 0;
+  let lastBackTriggerTime = 0;
+  let readerImageObserver = null;
+  let saveProgressDebounceTimer = null;
+
+  function renderReader(comic) {
+    clearImageLoadQueue();
+    if (shelfView.style.display !== 'none') {
+      lastShelfScrollY = window.scrollY || 0;
+    }
+    shelfView.style.display = 'none';
+    mainHeader.style.display = 'none';
+    readerView.style.display = 'block';
+
+    document.getElementById('reader-header').classList.remove('hidden');
+    document.getElementById('reader-footer').classList.remove('hidden');
+
+    document.getElementById('reader-title').innerText = comic.title;
+    const pages = comic.pagePaths || [];
+    const total = pages.length || 1;
+    document.getElementById('total-pages').innerText = total;
+
+    const slider = document.getElementById('page-slider');
+    slider.max = total;
+    slider.value = 1;
+
+    const activeList = currentShelfFilteredList.length > 0 ? currentShelfFilteredList : comicsList.filter(c => !c.isMissing);
+    const posInActive = activeList.findIndex(c => c.id === comic.id);
+    document.getElementById('btn-prev-comic').disabled = posInActive <= 0;
+    document.getElementById('btn-next-comic').disabled = posInActive === -1 || posInActive >= activeList.length - 1;
+
+    streamContainer.innerHTML = '';
+    if (pageObserver) pageObserver.disconnect();
+    if (readerImageObserver) readerImageObserver.disconnect();
+
+    // 页码进度追踪观察器（带 280ms 防抖保存，避免高频滚动阻塞 IPC）
+    pageObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const pageIndex = parseInt(entry.target.dataset.index, 10);
+        if (entry.isIntersecting) {
+          const currPageNum = pageIndex + 1;
+          document.getElementById('curr-page').innerText = currPageNum;
+          document.getElementById('page-slider').value = currPageNum;
+          if (saveProgressDebounceTimer) clearTimeout(saveProgressDebounceTimer);
+          saveProgressDebounceTimer = setTimeout(() => {
+            callNative('saveProgress', { id: comic.id, page: currPageNum });
+          }, 280);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '100px 0px 100px 0px',
+      threshold: 0.1
+    });
+
+    // 视口按需分批图片加载观察器（提前 1800px 预加载即将看到的页面，绝不一次性请求几百张大图）
+    readerImageObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target.querySelector('img');
+          if (img && img.dataset.src) {
+            enqueueImageLoad(img, img.dataset.src, false);
+          }
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '1800px 0px 1800px 0px',
+      threshold: 0.01
+    });
+
+    const savedPage = Math.max(1, Math.min(total, comic.lastReadPage || 1));
+    const startIdx = savedPage - 1;
+
+    pages.forEach((filePath, idx) => {
+      const pageDiv = document.createElement('div');
+      pageDiv.className = 'stream-page';
+      pageDiv.dataset.index = idx;
+      pageDiv.id = `comic-page-${idx + 1}`;
+      // 赋予未加载占位高度，防止数百页初始高度为 0 导致瞬间同时触发全部图片请求
+      pageDiv.style.minHeight = '760px';
+
+      const img = document.createElement('img');
+      const imgUrl = getDiskImageUrl(filePath);
+      img.dataset.src = imgUrl;
+      img.alt = `${comic.title} - 第 ${idx + 1} 页`;
+
+      pageDiv.appendChild(img);
+      streamContainer.appendChild(pageDiv);
+      pageObserver.observe(pageDiv);
+      readerImageObserver.observe(pageDiv);
+
+      // 优先入队当前阅读页前后的 4 页
+      if (Math.abs(idx - startIdx) <= 2) {
+        enqueueImageLoad(img, imgUrl, true);
+      }
+    });
+
+    if (savedPage > 1 && savedPage <= total) {
+      setTimeout(() => {
+        scrollToPage(savedPage);
+      }, 60);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }
+
+  function scrollToPage(pageNum) {
+    const target = document.getElementById(`comic-page-${pageNum}`);
+    if (target) {
+      // 跳转时优先加载目标页附近的图片
+      for (let p = Math.max(1, pageNum - 1); p <= pageNum + 2; p++) {
+        const el = document.getElementById(`comic-page-${p}`);
+        const img = el ? el.querySelector('img') : null;
+        if (img && img.dataset.src) {
+          enqueueImageLoad(img, img.dataset.src, true);
+        }
+      }
+      target.scrollIntoView({ behavior: 'instant', block: 'start' });
+      document.getElementById('curr-page').innerText = pageNum;
+    }
+  }
+
+  function scrollToTop() {
+    scrollToPage(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goShelf() {
+    clearImageLoadQueue();
+    if (saveProgressDebounceTimer) {
+      clearTimeout(saveProgressDebounceTimer);
+      saveProgressDebounceTimer = null;
+    }
+    const wasReading = readerView.style.display === 'block';
+    readerView.style.display = 'none';
+    mainHeader.style.display = 'flex';
+    shelfView.style.display = 'block';
+    const fab = document.getElementById('fab-scroll-top');
+    if (fab) fab.classList.remove('visible');
+    if (pageObserver) pageObserver.disconnect();
+    if (readerImageObserver) readerImageObserver.disconnect();
+    streamContainer.innerHTML = '';
+
+    const activeComics = comicsList.filter(c => !c.isMissing);
+    if (currentSearchQuery) {
+      const filtered = activeComics.filter(c => fuzzyMatch(c.title, currentSearchQuery));
+      renderShelf(filtered, currentSearchQuery);
+    } else {
+      renderShelf(activeComics, '');
+    }
+    window.scrollTo({ top: wasReading ? (lastShelfScrollY || 0) : 0, behavior: 'instant' });
+  }
+
+  // 全局返回上一级逻辑（支持鼠标侧键返回 XButton1 / Escape / BrowserBack）
+  function handleGlobalBackAction() {
+    const now = Date.now();
+    if (now - lastBackTriggerTime < 220) return;
+    lastBackTriggerTime = now;
+
+    const coverModal = document.getElementById('custom-cover-modal');
+    if (coverModal && coverModal.style.display === 'flex') {
+      closeCustomCoverModal();
+      return;
+    }
+
+    const lanModal = document.getElementById('lan-transfer-modal');
+    if (lanModal && lanModal.style.display === 'flex') {
+      closeLanTransferModal();
+      return;
+    }
+
+    const missingModal = document.getElementById('missing-comics-modal');
+    if (missingModal && missingModal.style.display === 'flex') {
+      closeMissingComicsModal();
+      openSettingsModal();
+      return;
+    }
+
+    const settingsModal = document.getElementById('settings-modal');
+    if (settingsModal && settingsModal.style.display === 'flex') {
+      closeSettingsModal();
+      return;
+    }
+
+    if (readerView && readerView.style.display === 'block') {
+      goShelf();
+      return;
+    }
+
+    if (isBatchMode) {
+      exitBatchMode();
+      return;
+    }
+  }
+
+  function prevComic() {
+    const activeList = currentShelfFilteredList.length > 0 ? currentShelfFilteredList : comicsList.filter(c => !c.isMissing);
+    if (currentComicIndex > 0 && currentComicIndex < activeList.length) {
+      openComicById(activeList[currentComicIndex - 1].id);
+    }
+  }
+
+  function nextComic() {
+    const activeList = currentShelfFilteredList.length > 0 ? currentShelfFilteredList : comicsList.filter(c => !c.isMissing);
+    if (currentComicIndex >= 0 && currentComicIndex < activeList.length - 1) {
+      openComicById(activeList[currentComicIndex + 1].id);
+    }
+  }
+
+  async function changeReaderWidth(val) {
+    document.documentElement.style.setProperty('--reader-width', val);
+    await callNative('saveSettings', { readerWidth: val });
+  }
+
+  async function openCurrentComicFolder() {
+    const activeList = currentShelfFilteredList.length > 0 ? currentShelfFilteredList : comicsList.filter(c => !c.isMissing);
+    const comic = activeList[currentComicIndex];
+    if (comic) {
+      await callNative('openComicFolder', { id: comic.id });
+    }
+  }
+
+  // ========================= 自定义漫画封面功能 =========================
+  let currentCoverModalComicId = '';
+
+  async function openCustomCoverModal(comicId) {
+    const comic = comicsList.find(c => c.id === comicId);
+    if (!comic) return;
+    currentCoverModalComicId = comicId;
+
+    const modal = document.getElementById('custom-cover-modal');
+    const titleEl = document.getElementById('cover-modal-comic-title');
+    const previewImg = document.getElementById('cover-modal-preview-img');
+    const badgeEl = document.getElementById('cover-modal-status-badge');
+    const gridEl = document.getElementById('cover-modal-pages-grid');
+
+    if (titleEl) titleEl.innerText = comic.title;
+    if (previewImg) previewImg.src = getDiskImageUrl(comic.coverPath);
+    if (modal) modal.style.display = 'flex';
+
+    // 按需拉取该漫画的内页列表
+    if (!comic.pagePaths || comic.pagePaths.length === 0) {
+      if (gridEl) gridEl.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #94a3b8; padding: 24px;">正在加载内页缩略图...</div>';
+      try {
+        const res = await callNative('getComicPages', { id: comicId });
+        if (res && Array.isArray(res.pagePaths)) {
+          comic.pagePaths = res.pagePaths;
+        }
+      } catch (_) {}
+    }
+
+    const pages = comic.pagePaths || [];
+    const isCustom = comic.customCoverPath && comic.customCoverPath.length > 0;
+    if (badgeEl) {
+      if (isCustom) {
+        const idxInPages = pages.findIndex(p => p === comic.customCoverPath);
+        badgeEl.innerText = idxInPages >= 0
+          ? `✨ 当前使用：自定义内页封面 (第 ${idxInPages + 1} 页)`
+          : '✨ 当前使用：自定义外部图片封面';
+        badgeEl.style.color = '#6ee7b7';
+      } else {
+        badgeEl.innerText = '当前使用：默认第 1 页封面';
+        badgeEl.style.color = '#a5b4fc';
+      }
+    }
+
+    if (gridEl) {
+      gridEl.innerHTML = '';
+      pages.forEach((p, idx) => {
+        const isCurrentCover = comic.coverPath === p;
+        const thumbCard = document.createElement('div');
+        thumbCard.title = `点击将第 ${idx + 1} 页画面设为封面`;
+        thumbCard.style.cssText = `cursor: pointer; border-radius: 8px; overflow: hidden; background: #121318; position: relative; aspect-ratio: 5 / 7; ${isCurrentCover ? 'border: 2px solid #6366f1; box-shadow: 0 0 10px rgba(99,102,241,0.45);' : 'border: 1px solid #2A2F42;'} transition: transform 0.15s;`;
+        thumbCard.onclick = () => setCoverFromModalPage(idx);
+
+        const img = document.createElement('img');
+        img.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
+        thumbCard.appendChild(img);
+
+        const badge = document.createElement('div');
+        badge.style.cssText = 'position: absolute; bottom: 4px; right: 4px; background: rgba(18,19,24,0.85); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 6px;';
+        badge.innerText = `第 ${idx + 1} 页`;
+        thumbCard.appendChild(badge);
+
+        gridEl.appendChild(thumbCard);
+        enqueueImageLoad(img, getDiskImageUrl(p), false);
+      });
+    }
+  }
+
+  function closeCustomCoverModal() {
+    const modal = document.getElementById('custom-cover-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  async function pickExternalCustomCover() {
+    if (!currentCoverModalComicId) return;
+    const res = await callNative('pickCustomCover', { id: currentCoverModalComicId });
+    if (res && res.changed && res.state) {
+      applyNativeState(res.state);
+      openCustomCoverModal(currentCoverModalComicId);
+      showToast('🖼️ 已成功设置自定义图片封面');
+    }
+  }
+
+  async function setCoverFromModalPage(pageIndex) {
+    if (!currentCoverModalComicId) return;
+    const res = await callNative('setComicCoverFromPage', { id: currentCoverModalComicId, pageIndex });
+    if (res && res.changed && res.state) {
+      applyNativeState(res.state);
+      openCustomCoverModal(currentCoverModalComicId);
+      showToast(`🖼️ 已将第 ${pageIndex + 1} 页设为漫画封面`);
+    }
+  }
+
+  async function setCoverByPageInput() {
+    if (!currentCoverModalComicId) return;
+    const comic = comicsList.find(c => c.id === currentCoverModalComicId);
+    if (!comic) return;
+    const pageInput = document.getElementById('cover-modal-page-input');
+    const pageNum = parseInt(pageInput ? pageInput.value : '1', 10) || 1;
+    const total = (comic.pagePaths || []).length || 1;
+    const clamped = Math.max(1, Math.min(total, pageNum));
+    await setCoverFromModalPage(clamped - 1);
+  }
+
+  async function resetToDefaultCover() {
+    if (!currentCoverModalComicId) return;
+    const res = await callNative('resetComicCover', { id: currentCoverModalComicId });
+    if (res && res.changed && res.state) {
+      applyNativeState(res.state);
+      openCustomCoverModal(currentCoverModalComicId);
+      showToast('↺ 已恢复默认第 1 页封面');
+    }
+  }
+
+  async function setCurrentReaderPageAsCover() {
+    const activeList = currentShelfFilteredList.length > 0 ? currentShelfFilteredList : comicsList.filter(c => !c.isMissing);
+    const comic = activeList[currentComicIndex];
+    if (!comic) return;
+    const currPageEl = document.getElementById('curr-page');
+    const currPageNum = parseInt(currPageEl ? currPageEl.innerText : '1', 10) || 1;
+    const res = await callNative('setComicCoverFromPage', { id: comic.id, pageIndex: Math.max(0, currPageNum - 1) });
+    if (res && res.changed && res.state) {
+      applyNativeState(res.state);
+      showToast(`🖼️ 已将当前第 ${currPageNum} 页设为《${comic.title}》的封面`);
+    }
+  }
+
+  // ========================= 修改漫画文件名功能 =========================
+  let currentRenameComicId = '';
+
+  function openRenameComicModal(comicId) {
+    const comic = comicsList.find(c => c.id === comicId);
+    if (!comic) return;
+    currentRenameComicId = comicId;
+
+    const modal = document.getElementById('rename-comic-modal');
+    const input = document.getElementById('rename-comic-input');
+    const errEl = document.getElementById('rename-comic-error');
+    if (errEl) {
+      errEl.style.display = 'none';
+      errEl.innerText = '';
+    }
+    if (input) {
+      input.value = comic.title || '';
+    }
+    if (modal) {
+      modal.style.display = 'flex';
+    }
+    setTimeout(() => {
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    }, 30);
+  }
+
+  function closeRenameComicModal() {
+    const modal = document.getElementById('rename-comic-modal');
+    if (modal) modal.style.display = 'none';
+    currentRenameComicId = '';
+  }
+
+  async function submitRenameComic() {
+    if (!currentRenameComicId) return;
+    const input = document.getElementById('rename-comic-input');
+    const errEl = document.getElementById('rename-comic-error');
+    const btn = document.getElementById('btn-submit-rename');
+    const newTitle = (input ? input.value : '').trim();
+
+    if (!newTitle) {
+      if (errEl) {
+        errEl.innerText = '⚠️ 请输入有效的漫画名称';
+        errEl.style.display = 'block';
+      }
+      return;
+    }
+
+    if (btn) btn.disabled = true;
+    try {
+      const res = await callNative('renameComic', {
+        id: currentRenameComicId,
+        newTitle
+      });
+      if (res && res.ok) {
+        if (res.state) {
+          applyNativeState(res.state);
+        }
+        closeRenameComicModal();
+        showToast(`✏️ 已将漫画重命名为《${newTitle}》`);
+      } else {
+        const msg = (res && res.message) ? res.message : '重命名失败，请检查名称是否包含非法字符';
+        if (errEl) {
+          errEl.innerText = '⚠️ ' + msg;
+          errEl.style.display = 'block';
+        }
+      }
+    } catch (e) {
+      if (errEl) {
+        errEl.innerText = '⚠️ 重命名异常：' + (e.message || e);
+        errEl.style.display = 'block';
+      }
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function initReaderEvents() {
+    document.getElementById('page-slider').addEventListener('input', (e) => {
+      const p = parseInt(e.target.value, 10);
+      scrollToPage(p);
+    });
+
+    streamContainer.addEventListener('click', () => {
+      document.getElementById('reader-header').classList.toggle('hidden');
+      document.getElementById('reader-footer').classList.toggle('hidden');
+    });
+
+    let lastScrollY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      if (readerView.style.display !== 'block') return;
+      const currentY = window.scrollY;
+      if (currentY > lastScrollY + 40 && currentY > 150) {
+        document.getElementById('reader-header').classList.add('hidden');
+        document.getElementById('reader-footer').classList.add('hidden');
+      } else if (currentY < lastScrollY - 30) {
+        document.getElementById('reader-header').classList.remove('hidden');
+        document.getElementById('reader-footer').classList.remove('hidden');
+      }
+      const fab = document.getElementById('fab-scroll-top');
+      if (fab) {
+        fab.classList.toggle('visible', currentY > 300);
+      }
+      lastScrollY = currentY;
+    }, { passive: true });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'F11') {
+        e.preventDefault();
+        callNative('toggleFullscreen');
+        return;
+      }
+      if (e.key === 'BrowserBack' || (e.altKey && e.key === 'ArrowLeft') || e.key === 'Escape') {
+        e.preventDefault();
+        handleGlobalBackAction();
+        return;
+      }
+      if (e.key === 'BrowserForward' || (e.altKey && e.key === 'ArrowRight')) {
+        e.preventDefault();
+        return;
+      }
+      if (readerView.style.display === 'block') {
+        if (e.key === 'Home') scrollToTop();
+        else if (e.key === '[') prevComic();
+        else if (e.key === ']') nextComic();
+      }
+    });
+
+    // 鼠标侧键支持：button === 3 为鼠标侧键后退 (XButton1)，button === 4 为鼠标侧键前进 (XButton2)
+    window.addEventListener('mousedown', (e) => {
+      if (e.button === 3 || e.button === 4) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    window.addEventListener('mouseup', (e) => {
+      if (e.button === 3) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleGlobalBackAction();
+      } else if (e.button === 4) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    window.addEventListener('auxclick', (e) => {
+      if (e.button === 3 || e.button === 4) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    try {
+      history.pushState({ page: 'root' }, '');
+      window.addEventListener('popstate', () => {
+        try { history.pushState({ page: 'root' }, ''); } catch (_) {}
+        handleGlobalBackAction();
+      });
+    } catch (_) {}
+  }
+
+  // ========================= 设置与丢失书籍管理 =========================
+  function openSettingsModal() {
+    updateSettingsUI();
+    const modal = document.getElementById('settings-modal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function updateSettingsUI() {
+    const missingBadge = document.getElementById('settings-missing-badge');
+    const missingCount = comicsList.filter(c => c.isMissing).length;
+    if (missingBadge) missingBadge.innerText = missingCount + ' 部';
+
+    const sortSelect = document.getElementById('settings-sort-select');
+    if (sortSelect) sortSelect.value = currentSortMode;
+
+    const descEl = document.getElementById('settings-current-sort-desc');
+    if (descEl) {
+      const modeNames = {
+        'title_asc': '漫画名称 (A-Z)',
+        'import_time_desc': '🕒 导入时间 (最新在前)',
+        'views_desc': '🔥 阅读次数最多',
+        'recent_read': '⏱️ 最近阅读',
+        'pages_desc': '📄 切片页数最多'
+      };
+      descEl.innerText = '当前: ' + (modeNames[currentSortMode] || currentSortMode);
+    }
+  }
+
+  function openMissingComicsModal() {
+    closeSettingsModal();
+    renderMissingComicsList();
+    const modal = document.getElementById('missing-comics-modal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeMissingComicsModal() {
+    const modal = document.getElementById('missing-comics-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function renderMissingComicsList() {
+    const listWrap = document.getElementById('missing-comics-list');
+    const emptyTip = document.getElementById('missing-empty-tip');
+    const titleEl = document.getElementById('missing-dialog-title');
+    const clearAllBtn = document.getElementById('btn-clear-all-missing');
+
+    const missingComics = comicsList.filter(c => c.isMissing);
+
+    if (titleEl) {
+      titleEl.innerText = `丢失/未在书架显示的漫画 (${missingComics.length} 部)`;
+    }
+    if (!listWrap) return;
+
+    if (missingComics.length === 0) {
+      listWrap.innerHTML = '';
+      if (emptyTip) emptyTip.style.display = 'block';
+      if (clearAllBtn) clearAllBtn.disabled = true;
+      return;
+    }
+
+    if (emptyTip) emptyTip.style.display = 'none';
+    if (clearAllBtn) clearAllBtn.disabled = false;
+
+    listWrap.innerHTML = missingComics.map(comic => `
+      <div class="missing-item-card">
+        <div class="missing-item-top">
+          <span class="missing-item-title">${escapeHtml(comic.title)}</span>
+          <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="removeSingleMissingComic('${comic.id}')">彻底移除</button>
+        </div>
+        <div class="missing-item-tags">
+          <span class="badge-read">读过 ${comic.readCount || 0} 次</span>
+          ${comic.lastReadPage > 1 ? `<span class="badge-read">上次读至第 ${comic.lastReadPage} 页</span>` : ''}
+          <span class="badge-missing">⚠️ 源目录已移动或不存在</span>
+        </div>
+        <div class="missing-item-path">原路径: ${escapeHtml(comic.folderPath || comic.coverPath || comic.title)}</div>
+      </div>
+    `).join('');
+  }
+
+  async function removeSingleMissingComic(comicId) {
+    const comic = comicsList.find(c => c.id === comicId);
+    if (!comic) return;
+    if (!confirm(`确定要彻底清理《${comic.title}》的历史记录吗？\n（将清除其阅读次数与进度，此操作不可撤销）`)) {
+      return;
+    }
+    const state = await callNative('removeComics', { ids: [comicId] });
+    applyNativeState(state);
+    renderMissingComicsList();
+    showToast(`已彻底清理《${comic.title}》`);
+  }
+
+  async function clearAllMissingComics() {
+    const missingComics = comicsList.filter(c => c.isMissing);
+    if (missingComics.length === 0) return;
+    if (!confirm(`确定要彻底清理这 ${missingComics.length} 部丢失漫画的全部历史数据与阅读统计吗？\n（清理后不可撤销）`)) {
+      return;
+    }
+    const ids = missingComics.map(c => c.id);
+    const state = await callNative('removeComics', { ids });
+    applyNativeState(state);
+    renderMissingComicsList();
+    showToast(`已清理 ${ids.length} 部丢失漫画记录`);
+  }
+
+  async function rescanMissingComics() {
+    const res = await callNative('rescanMissing');
+    if (res && res.state) {
+      applyNativeState(res.state);
+      renderMissingComicsList();
+      showToast(res.recoveredCount > 0 ? `检测完成，已自动恢复 ${res.recoveredCount} 部漫画到书架` : '重新检测完成，丢失数量未变');
+    }
+  }
+
+  // ========================= Wi-Fi 局域网漫画互传 =========================
+  let lanPeers = [];
+  let selectedLanPeer = null;
+  let lanRemoteComics = [];
+  let currentLanTab = 'pull'; // 'pull' (从对方下载) | 'push' (发送给对方)
+  let lanOnlyMissingFilter = false; // 一键过滤：仅显示本机没有/对方没有的漫画
+  let selectedLanPullIds = new Set();
+  let selectedLanPushIds = new Set();
+  let isLanTransferring = false;
+  let lanProgressHideTimer = null;
+  let lastAnnouncedPeerKey = '';
+  let lastAnnouncedPeerTime = 0;
+
+  function updateLanConnectionBadges(peer) {
+    const pill = document.getElementById('lan-modal-conn-pill');
+    const headerBtn = document.getElementById('btn-header-lan-transfer');
+    const headerText = document.getElementById('header-lan-btn-text');
+    if (peer && peer.deviceName) {
+      if (pill) {
+        pill.style.display = 'inline-block';
+        pill.innerText = `🟢 已连接: ${peer.deviceName} (${peer.ip})`;
+      }
+      if (headerBtn) {
+        headerBtn.style.borderColor = 'rgba(16, 185, 129, 0.55)';
+        headerBtn.style.color = '#6ee7b7';
+      }
+      if (headerText) {
+        headerText.innerText = `互传 · 已连 ${peer.deviceName}`;
+      }
+    } else {
+      if (pill) pill.style.display = 'none';
+      if (headerBtn) {
+        headerBtn.style.borderColor = 'rgba(99, 102, 241, 0.45)';
+        headerBtn.style.color = '#c7d2fe';
+      }
+      if (headerText) {
+        headerText.innerText = '局域网互传';
+      }
+    }
+  }
+
+  async function handleIncomingPeerConnected(peer) {
+    if (!peer || !peer.ip) return;
+    const idx = lanPeers.findIndex(p => p.ip === peer.ip);
+    if (idx >= 0) lanPeers[idx] = peer;
+    else lanPeers.unshift(peer);
+
+    const peerKey = `${peer.ip}:${peer.port}`;
+    const now = Date.now();
+    if (peerKey !== lastAnnouncedPeerKey || (now - lastAnnouncedPeerTime) > 15000) {
+      lastAnnouncedPeerKey = peerKey;
+      lastAnnouncedPeerTime = now;
+      showToast(`🔗 已与 ${peer.deviceName || peer.ip} 建立局域网连接`);
+    }
+
+    updateLanConnectionBadges(peer);
+    renderLanPeers();
+
+    if (!isLanTransferring && (!selectedLanPeer || selectedLanPeer.ip === peer.ip)) {
+      await selectLanPeer(peer, false);
+    }
+  }
+
+  function normalizeComicTitleKey(title) {
+    return String(title || '').trim().toLowerCase();
+  }
+
+  function toggleLanOnlyMissingFilter() {
+    lanOnlyMissingFilter = !lanOnlyMissingFilter;
+    renderLanComicList();
+  }
+
+  function clearLanComicFilter() {
+    const filterInput = document.getElementById('lan-comic-filter');
+    if (filterInput) filterInput.value = '';
+    renderLanComicList();
+  }
+
+  async function openLanTransferModal() {
+    const modal = document.getElementById('lan-transfer-modal');
+    if (modal) modal.style.display = 'flex';
+
+    try {
+      const info = await callNative('lanGetInfo');
+      if (info) {
+        const ipList = (info.ips && info.ips.length > 0) ? info.ips.join(' / ') : '未检测到局域网IP';
+        const ipEl = document.getElementById('lan-self-ip');
+        if (ipEl) ipEl.innerText = `${ipList} (端口 ${info.port || 39528})`;
+        const dirEl = document.getElementById('lan-save-dir-text');
+        if (dirEl && info.transferSavePath) dirEl.innerText = info.transferSavePath;
+      }
+    } catch (_) {}
+
+    renderLanComicList();
+    await discoverLanPeers();
+  }
+
+  function closeLanTransferModal() {
+    const modal = document.getElementById('lan-transfer-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  async function changeTransferSaveFolder() {
+    const res = await callNative('pickTransferFolder');
+    if (res && res.changed && res.transferSavePath) {
+      if (res.state) applyNativeState(res.state);
+      showToast('已更新互传漫画接收目录: ' + res.transferSavePath);
+    }
+  }
+
+  async function resetTransferSaveFolder() {
+    const res = await callNative('resetTransferFolder');
+    if (res && res.transferSavePath) {
+      if (res.state) applyNativeState(res.state);
+      showToast('已恢复默认接收目录: ' + res.transferSavePath);
+    }
+  }
+
+  async function discoverLanPeers() {
+    const listEl = document.getElementById('lan-peers-list');
+    const scanBtn = document.getElementById('btn-lan-scan');
+    if (scanBtn) {
+      scanBtn.disabled = true;
+      scanBtn.innerText = '⏳ 正在扫描...';
+    }
+    if (listEl) {
+      listEl.innerHTML = '<div style="font-size: 0.82rem; color: #94a3b8; padding: 4px 0;">正在扫描同一 Wi-Fi 下的安卓与电脑阅读器...</div>';
+    }
+
+    try {
+      const res = await callNative('lanDiscover');
+      if (res && res.self) {
+        const ipList = (res.self.ips && res.self.ips.length > 0) ? res.self.ips.join(' / ') : '127.0.0.1';
+        const ipEl = document.getElementById('lan-self-ip');
+        if (ipEl) ipEl.innerText = `${ipList} (端口 ${res.self.port || 39528})`;
+      }
+      lanPeers = (res && res.peers) || [];
+      renderLanPeers();
+      if (lanPeers.length > 0 && !selectedLanPeer) {
+        await selectLanPeer(lanPeers[0]);
+      }
+    } catch (e) {
+      if (listEl) {
+        listEl.innerHTML = `<div style="font-size: 0.82rem; color: #fca5a5;">扫描失败: ${escapeHtml(e.message)}</div>`;
+      }
+    } finally {
+      if (scanBtn) {
+        scanBtn.disabled = false;
+        scanBtn.innerText = '🔄 扫描局域网设备';
+      }
+    }
+  }
+
+  async function connectManualLanPeer() {
+    const input = document.getElementById('lan-manual-ip');
+    const host = input ? input.value.trim() : '';
+    if (!host) {
+      alert('请输入对方手机或电脑的局域网 IP 地址（例如 192.168.1.5）');
+      return;
+    }
+
+    try {
+      const res = await callNative('lanConnectManual', { host, port: 39528 });
+      if (res && res.peer) {
+        const exists = lanPeers.findIndex(p => p.ip === res.peer.ip && p.port === res.peer.port);
+        if (exists >= 0) lanPeers[exists] = res.peer;
+        else lanPeers.unshift(res.peer);
+        renderLanPeers();
+        await selectLanPeer(res.peer);
+        showToast(`已成功连接到 ${res.peer.deviceName} (${res.peer.ip})`);
+      } else {
+        alert(`无法连接到 ${host}，请确认对方设备已打开 YY漫画阅读器 且处于同一 Wi-Fi 局域网。`);
+      }
+    } catch (e) {
+      alert('连接失败: ' + e.message);
+    }
+  }
+
+  function renderLanPeers() {
+    const listEl = document.getElementById('lan-peers-list');
+    if (!listEl) return;
+
+    if (lanPeers.length === 0) {
+      listEl.innerHTML = `
+        <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.5;">
+          暂未自动发现设备。请确认手机与电脑连接在<b>同一个 Wi-Fi</b> 且已打开阅读器，或在上方直接输入对方局域网 IP 连接。
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = lanPeers.map((p, idx) => {
+      const isSelected = selectedLanPeer && selectedLanPeer.ip === p.ip && selectedLanPeer.port === p.port;
+      const icon = (p.platform || '').toLowerCase().includes('android') ? '📱' : '💻';
+      const borderStyle = isSelected
+        ? 'border: 1px solid #6366f1; background: rgba(99, 102, 241, 0.22); color: #fff;'
+        : 'border: 1px solid #2A2F42; background: #121318; color: #cbd5e1;';
+      return `
+        <button class="btn" style="${borderStyle} padding: 8px 14px; border-radius: 10px; font-size: 0.82rem;" onclick="selectLanPeerByIndex(${idx})">
+          <span>${icon} <b>${escapeHtml(p.deviceName || p.ip)}</b></span>
+          <span style="font-size: 0.75rem; opacity: 0.85;">(${escapeHtml(p.ip)} · ${p.comicCount || 0}部)</span>
+          ${isSelected ? '<span style="color:#a5b4fc; font-weight:700;">✓ 已连接</span>' : ''}
+        </button>
+      `;
+    }).join('');
+  }
+
+  async function selectLanPeerByIndex(idx) {
+    if (idx >= 0 && idx < lanPeers.length) {
+      await selectLanPeer(lanPeers[idx]);
+    }
+  }
+
+  async function selectLanPeer(peer, notifyConnect = true) {
+    const isNewPeer = !selectedLanPeer || selectedLanPeer.ip !== peer.ip;
+    selectedLanPeer = peer;
+    if (isNewPeer) {
+      selectedLanPullIds.clear();
+    }
+    updateLanConnectionBadges(peer);
+    renderLanPeers();
+
+    try {
+      const remote = await callNative('lanFetchPeerComics', {
+        ip: peer.ip,
+        port: peer.port,
+        notifyConnect
+      });
+      lanRemoteComics = (remote && remote.comics) ? remote.comics : [];
+      if (notifyConnect && isNewPeer) {
+        const peerKey = `${peer.ip}:${peer.port}`;
+        lastAnnouncedPeerKey = peerKey;
+        lastAnnouncedPeerTime = Date.now();
+        showToast(`🔗 已与 ${peer.deviceName || peer.ip} 建立局域网连接`);
+      }
+    } catch (e) {
+      lanRemoteComics = [];
+    }
+    renderLanComicList();
+  }
+
+  function switchLanTab(tab) {
+    currentLanTab = tab;
+    const pullBtn = document.getElementById('tab-lan-pull');
+    const pushBtn = document.getElementById('tab-lan-push');
+    if (pullBtn) pullBtn.className = tab === 'pull' ? 'btn btn-primary' : 'btn btn-secondary';
+    if (pushBtn) pushBtn.className = tab === 'push' ? 'btn btn-primary' : 'btn btn-secondary';
+    renderLanComicList();
+  }
+
+  function getLanCurrentFilteredContext() {
+    const localActive = comicsList.filter(c => !c.isMissing);
+    const localTitleSet = new Set(localActive.map(c => normalizeComicTitleKey(c.title)));
+    const remoteTitleSet = new Set(lanRemoteComics.map(c => normalizeComicTitleKey(c.title)));
+
+    const rawList = currentLanTab === 'pull'
+      ? lanRemoteComics.map(c => ({
+          id: c.id,
+          title: c.title,
+          pageCount: c.pageCount || 0,
+          alreadyOwned: localTitleSet.has(normalizeComicTitleKey(c.title))
+        }))
+      : localActive.map(c => ({
+          id: c.id,
+          title: c.title,
+          pageCount: (c.pagePaths ? c.pagePaths.length : c.totalPages) || 0,
+          alreadyOwned: remoteTitleSet.has(normalizeComicTitleKey(c.title))
+        }));
+
+    const diffCount = rawList.filter(c => !c.alreadyOwned).length;
+    const afterMissingFilter = lanOnlyMissingFilter ? rawList.filter(c => !c.alreadyOwned) : rawList;
+
+    const filterInput = document.getElementById('lan-comic-filter');
+    const kw = filterInput ? filterInput.value.trim() : '';
+    const filtered = kw ? afterMissingFilter.filter(c => fuzzyMatch(c.title, kw)) : afterMissingFilter;
+
+    return {
+      localActive,
+      rawList,
+      diffCount,
+      kw,
+      filtered
+    };
+  }
+
+  function renderLanComicList() {
+    const listWrap = document.getElementById('lan-comics-list');
+    const remoteCountEl = document.getElementById('lan-remote-count');
+    const localCountEl = document.getElementById('lan-local-count');
+    const onlyMissingBtn = document.getElementById('btn-lan-only-missing');
+    const clearBtn = document.getElementById('lan-filter-clear-btn');
+
+    const ctx = getLanCurrentFilteredContext();
+    if (remoteCountEl) remoteCountEl.innerText = lanRemoteComics.length;
+    if (localCountEl) localCountEl.innerText = ctx.localActive.length;
+    if (clearBtn) clearBtn.style.display = ctx.kw ? 'block' : 'none';
+
+    if (onlyMissingBtn) {
+      const labelPrefix = currentLanTab === 'pull' ? '✨ 仅看本机没有的' : '✨ 仅看对方没有的';
+      onlyMissingBtn.innerHTML = `${labelPrefix} (<span id="lan-diff-count">${ctx.diffCount}</span>)`;
+      if (lanOnlyMissingFilter) {
+        onlyMissingBtn.style.background = 'rgba(99, 102, 241, 0.24)';
+        onlyMissingBtn.style.borderColor = '#6366f1';
+        onlyMissingBtn.style.color = '#fff';
+      } else {
+        onlyMissingBtn.style.background = '';
+        onlyMissingBtn.style.borderColor = '';
+        onlyMissingBtn.style.color = '';
+      }
+    }
+
+    if (!listWrap) return;
+
+    if (!selectedLanPeer) {
+      listWrap.innerHTML = `
+        <div style="padding: 36px 20px; text-align: center; color: #94a3b8; font-size: 0.86rem;">
+          📡 请先在上方点击连接一台同一 Wi-Fi 下的安卓手机或电脑设备
+        </div>
+      `;
+      updateLanFooterSummary();
+      return;
+    }
+
+    const filtered = ctx.filtered;
+    const selectedSet = currentLanTab === 'pull' ? selectedLanPullIds : selectedLanPushIds;
+
+    if (filtered.length === 0) {
+      let emptyMsg = currentLanTab === 'pull' ? '对方设备书架暂无可下载的漫画' : '本机书架暂无可发送的漫画';
+      if (ctx.kw) {
+        emptyMsg = `未找到与 “${escapeHtml(ctx.kw)}” 匹配的漫画`;
+      } else if (lanOnlyMissingFilter) {
+        emptyMsg = currentLanTab === 'pull'
+          ? '🎉 对方设备上的所有漫画本机均已拥有！'
+          : '🎉 本机书架上的所有漫画对方设备均已拥有！';
+      }
+      listWrap.innerHTML = `
+        <div style="padding: 36px 20px; text-align: center; color: #94a3b8; font-size: 0.86rem;">
+          ${emptyMsg}
+        </div>
+      `;
+      updateLanFooterSummary();
+      return;
+    }
+
+    listWrap.innerHTML = filtered.map(c => {
+      const checked = selectedSet.has(c.id);
+      const titleHtml = ctx.kw ? highlightText(c.title, ctx.kw) : escapeHtml(c.title);
+      const ownedBadge = c.alreadyOwned
+        ? `<span style="background: rgba(16, 185, 129, 0.18); color: #6ee7b7; font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 8px; flex-shrink: 0;">${currentLanTab === 'pull' ? '✓ 本机已拥有' : '✓ 对方已拥有'}</span>`
+        : '';
+      return `
+        <div class="missing-item-card" style="flex-direction: row; align-items: center; justify-content: space-between; padding: 10px 14px; cursor: pointer; ${checked ? 'border-color: #6366f1; background: rgba(99,102,241,0.12);' : ''}" onclick="toggleLanComicItem('${escapeHtml(c.id)}')">
+          <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+            <input type="checkbox" ${checked ? 'checked' : ''} style="width: 16px; height: 16px; accent-color: #6366f1; pointer-events: none;">
+            <span class="missing-item-title" style="font-size: 0.88rem;">${titleHtml}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+            ${ownedBadge}
+            <span class="badge-read" style="flex-shrink: 0;">${c.pageCount || 0} 页</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    updateLanFooterSummary();
+  }
+
+  function toggleLanComicItem(id) {
+    const selectedSet = currentLanTab === 'pull' ? selectedLanPullIds : selectedLanPushIds;
+    if (selectedSet.has(id)) selectedSet.delete(id);
+    else selectedSet.add(id);
+    renderLanComicList();
+  }
+
+  function toggleSelectAllLanComics() {
+    if (!selectedLanPeer) return;
+    const ctx = getLanCurrentFilteredContext();
+    const filtered = ctx.filtered;
+    const selectedSet = currentLanTab === 'pull' ? selectedLanPullIds : selectedLanPushIds;
+
+    const allChecked = filtered.length > 0 && filtered.every(c => selectedSet.has(c.id));
+    filtered.forEach(c => {
+      if (allChecked) selectedSet.delete(c.id);
+      else selectedSet.add(c.id);
+    });
+    renderLanComicList();
+  }
+
+  function updateLanFooterSummary() {
+    const summaryEl = document.getElementById('lan-selected-summary');
+    const actionBtn = document.getElementById('btn-lan-action');
+    if (!summaryEl || !actionBtn) return;
+
+    if (!selectedLanPeer) {
+      summaryEl.innerText = '未连接设备，请先在上方扫描或输入 IP 连接设备';
+      actionBtn.disabled = true;
+      actionBtn.innerText = currentLanTab === 'pull' ? '📥 下载所选漫画到本机' : '📤 发送所选漫画给对方';
+      return;
+    }
+
+    const selectedSet = currentLanTab === 'pull' ? selectedLanPullIds : selectedLanPushIds;
+    const count = selectedSet.size;
+    summaryEl.innerText = `已连接: ${selectedLanPeer.deviceName} (${selectedLanPeer.ip}) · 已勾选 ${count} 部漫画`;
+    actionBtn.disabled = isLanTransferring || count === 0;
+    actionBtn.innerText = currentLanTab === 'pull'
+      ? `📥 下载所选漫画到本机 (${count})`
+      : `📤 发送所选漫画给对方 (${count})`;
+  }
+
+  function updateLanModalProgress(statusText, percent, detailText) {
+    const wrap = document.getElementById('lan-modal-progress-wrap');
+    const statusEl = document.getElementById('lan-modal-progress-status');
+    const pctEl = document.getElementById('lan-modal-progress-pct');
+    const fillEl = document.getElementById('lan-modal-progress-fill');
+    const detailEl = document.getElementById('lan-modal-progress-detail');
+
+    if (lanProgressHideTimer) {
+      clearTimeout(lanProgressHideTimer);
+      lanProgressHideTimer = null;
+    }
+    if (wrap) wrap.style.display = 'block';
+    if (statusEl && statusText) statusEl.innerText = statusText;
+    if (pctEl && typeof percent === 'number') {
+      const p = Math.min(100, Math.max(0, Math.round(percent)));
+      pctEl.innerText = p + '%';
+      if (fillEl) fillEl.style.width = p + '%';
+    }
+    if (detailEl && detailText) detailEl.innerText = detailText;
+  }
+
+  async function executeLanTransferAction() {
+    if (!selectedLanPeer || isLanTransferring) return;
+    const selectedSet = currentLanTab === 'pull' ? selectedLanPullIds : selectedLanPushIds;
+    const ids = Array.from(selectedSet);
+    if (ids.length === 0) return;
+
+    isLanTransferring = true;
+    updateLanFooterSummary();
+
+    try {
+      if (currentLanTab === 'pull') {
+        updateLanModalProgress('正在准备下载...', 0, `准备从 ${selectedLanPeer.deviceName} 下载 ${ids.length} 部漫画`);
+        const res = await callNative('lanPullComics', {
+          ip: selectedLanPeer.ip,
+          port: selectedLanPeer.port,
+          ids
+        });
+        if (res && res.state) applyNativeState(res.state);
+        selectedLanPullIds.clear();
+        renderLanComicList();
+
+        const dlCount = (res && typeof res.count === 'number') ? res.count : 0;
+        const skipCount = (res && typeof res.skippedCount === 'number') ? res.skippedCount : 0;
+        const skipNames = (res && Array.isArray(res.skippedTitles)) ? res.skippedTitles : [];
+
+        if (dlCount === 0 && skipCount > 0) {
+          const sample = skipNames.slice(0, 3).map(n => `《${n}》`).join('、') + (skipNames.length > 3 ? ` 等 ${skipCount} 部` : '');
+          const msg = `本机已拥有所选漫画 ${sample}，无需重复下载！`;
+          updateLanModalProgress('跳过重复下载', 100, msg);
+          showToast('⚠️ ' + msg);
+          alert(msg);
+        } else if (skipCount > 0) {
+          const msg = `已下载 ${dlCount} 部新漫画（已自动跳过本机已拥有的 ${skipCount} 部漫画）`;
+          updateLanModalProgress('下载完成', 100, msg);
+          showToast('📥 ' + msg);
+        } else {
+          updateLanModalProgress('下载完成', 100, `已成功下载 ${dlCount} 部漫画并加入书架`);
+          showToast(`📥 已成功从 ${selectedLanPeer.deviceName} 下载 ${dlCount} 部漫画`);
+        }
+      } else {
+        updateLanModalProgress('正在准备发送...', 0, `准备向 ${selectedLanPeer.deviceName} 发送 ${ids.length} 部漫画`);
+        const res = await callNative('lanPushComics', {
+          ip: selectedLanPeer.ip,
+          port: selectedLanPeer.port,
+          ids
+        });
+        selectedLanPushIds.clear();
+
+        const sentCount = (res && typeof res.count === 'number') ? res.count : 0;
+        const skipCount = (res && typeof res.skippedCount === 'number') ? res.skippedCount : 0;
+        const skipNames = (res && Array.isArray(res.skippedTitles)) ? res.skippedTitles : [];
+
+        if (sentCount === 0 && skipCount > 0) {
+          const sample = skipNames.slice(0, 3).map(n => `《${n}》`).join('、') + (skipNames.length > 3 ? ` 等 ${skipCount} 部` : '');
+          const msg = `对方设备 (${selectedLanPeer.deviceName}) 已拥有 ${sample}，无需重复传送！`;
+          updateLanModalProgress('对方已拥有', 100, msg);
+          showToast('⚠️ ' + msg);
+          alert(msg);
+        } else if (skipCount > 0) {
+          const msg = `已向 ${selectedLanPeer.deviceName} 发送 ${sentCount} 部新漫画（已自动跳过对方已拥有的 ${skipCount} 部漫画）`;
+          updateLanModalProgress('发送完成', 100, msg);
+          showToast('📤 ' + msg);
+        } else {
+          updateLanModalProgress('发送完成', 100, `已成功向 ${selectedLanPeer.deviceName} 发送 ${sentCount} 部漫画`);
+          showToast(`📤 已成功向 ${selectedLanPeer.deviceName} 发送 ${sentCount} 部漫画`);
+        }
+
+        // 刷新对方书架列表
+        await selectLanPeer(selectedLanPeer, false);
+      }
+    } catch (e) {
+      alert('局域网传输失败: ' + e.message);
+    } finally {
+      isLanTransferring = false;
+      updateLanFooterSummary();
+      hideImportProgress(1800);
+      lanProgressHideTimer = setTimeout(() => {
+        const wrap = document.getElementById('lan-modal-progress-wrap');
+        if (wrap) wrap.style.display = 'none';
+      }, 2800);
+    }
+  }
+</script>
+</body>
+</html>

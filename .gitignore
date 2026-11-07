@@ -1,0 +1,28 @@
+## Build and Output Folders
+bin/
+obj/
+publish/
+dist/
+
+## Local App Data & User Databases
+AppData/
+TransferredComics/
+
+## IDE and Editor Files
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Executables and Binaries
+*.exe
+*.exe.bak
+*.dll
+*.pdb
+
+## Logs and Caches
+*.log
+*.tmp
+*.cache
