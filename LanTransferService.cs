@@ -27,7 +27,7 @@ namespace ComicReaderDesktop
         private readonly Action<string, int, string> onTransferProgress;
         private readonly Action<LanPeerInfo>? onPeerConnected;
         private readonly Action<string, string, int, int>? onBatchTransferComplete;
-        private readonly Func<string, int, int?>? onRemoteComicRead;
+        private readonly Func<string, string?, int, bool, int?>? onRemoteComicRead;
 
         private TcpListener? tcpListener;
         private UdpClient? udpListener;
@@ -45,7 +45,7 @@ namespace ComicReaderDesktop
             Action<string, int, string> onTransferProgress,
             Action<LanPeerInfo>? onPeerConnected = null,
             Action<string, string, int, int>? onBatchTransferComplete = null,
-            Func<string, int, int?>? onRemoteComicRead = null)
+            Func<string, string?, int, bool, int?>? onRemoteComicRead = null)
         {
             this.getActiveComics = getActiveComics;
             this.getTransferSaveDir = getTransferSaveDir;
@@ -624,14 +624,16 @@ namespace ComicReaderDesktop
                         string json = JsonSerializer.Serialize(BuildSelfPeerInfo(bestIp));
                         await WriteJsonResponseAsync(stream, 200, json, token);
                     }
-                    else if ((method == "POST" || method == "GET") && path.Equals("/api/record-read", StringComparison.OrdinalIgnoreCase))
+                    else if ((method == "POST" || method == "GET") && (path.Equals("/api/record-read", StringComparison.OrdinalIgnoreCase) || path.TrimStart('/').Equals("api/record-read", StringComparison.OrdinalIgnoreCase)))
                     {
                         string? id = query["id"];
+                        string? title = query["title"];
                         int.TryParse(query["page"], out int page);
+                        bool inc = query["inc"] == "1" || query["inc"] == null || string.Equals(query["inc"], "true", StringComparison.OrdinalIgnoreCase);
                         int? updatedCount = null;
-                        if (!string.IsNullOrEmpty(id) && onRemoteComicRead != null)
+                        if ((!string.IsNullOrEmpty(id) || !string.IsNullOrEmpty(title)) && onRemoteComicRead != null)
                         {
-                            updatedCount = onRemoteComicRead(id, page);
+                            updatedCount = onRemoteComicRead(id ?? "", title, page, inc);
                         }
 
                         if (updatedCount.HasValue)

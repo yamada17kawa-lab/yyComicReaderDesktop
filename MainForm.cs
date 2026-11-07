@@ -106,18 +106,30 @@ namespace ComicReaderDesktop
                         state = BuildInitPayload()
                     });
                 },
-                onRemoteComicRead: (id, page) =>
+                onRemoteComicRead: (id, title, page, inc) =>
                 {
                     lock (dbLock)
                     {
-                        var target = db.Comics.FirstOrDefault(c => c.Id == id || c.Title == id);
+                        var target = db.Comics.FirstOrDefault(c =>
+                            (!string.IsNullOrEmpty(id) && string.Equals(c.Id, id, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrEmpty(id) && string.Equals(c.Title, id, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrEmpty(title) && string.Equals(c.Title, title, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrEmpty(id) && LanTransferService.NormalizeTitleKey(c.Title) == LanTransferService.NormalizeTitleKey(id)) ||
+                            (!string.IsNullOrEmpty(title) && LanTransferService.NormalizeTitleKey(c.Title) == LanTransferService.NormalizeTitleKey(title)));
+
                         if (target != null)
                         {
-                            target.ReadCount++;
-                            target.LastReadTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                            if (page > 1) target.LastReadPage = page;
+                            if (inc)
+                            {
+                                target.ReadCount++;
+                                target.LastReadTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                            }
+                            if (page > 1)
+                            {
+                                target.LastReadPage = page;
+                            }
                             SyncComicToHistory(target);
-                            SaveDatabase();
+                            Task.Run(() => SaveDatabase());
                             SendEventToUi("shelfUpdated", BuildInitPayload());
                             return target.ReadCount;
                         }
