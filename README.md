@@ -1,6 +1,10 @@
 # 📖 YY漫画阅读器 桌面版 (yyComicReader Desktop)
 
 <p align="center">
+  <img src="Assets/app-icon.png" alt="yyComicReader Desktop Logo" width="140" height="140" style="border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.35);" />
+</p>
+
+<p align="center">
   <b>极速、优雅、现代化的本地离线漫画阅读中枢 & 跨端流式共享服务器</b><br>
   <sub>基于 .NET 10 (C# 13) + Microsoft Edge WebView2 (Chromium) 混合架构构建，支持连续瀑布流长卷阅读、局域网双向极速互传、手机端免下载在线书架与双端阅读状态实时互通。</sub>
 </p>
