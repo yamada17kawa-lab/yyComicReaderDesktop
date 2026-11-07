@@ -61,10 +61,11 @@ flowchart LR
         AppRead["沉浸式阅读器"]
     end
 
-    UdpRadar <==>|"1. 局域网毫秒级自动握手"| Phone
-    DesktopStorage -->|"2. 封面与图片流式点播"| HttpServer --> OnlineShelf
-    AppRead -->|"3. 在线阅读计数实时回传 (/api/record-read)"| ReadSync
-    PC <==>|"4. 高速物理文件双向互传 (智能去重)"| TransferClient
+    UdpRadar <-->|"1. 局域网毫秒级自动握手"| AppUI
+    DesktopStorage --> HttpServer
+    HttpServer -->|"2. 封面与图片流式点播"| OnlineShelf
+    AppRead -->|"3. 在线阅读计数实时回传"| ReadSync
+    HttpServer <-->|"4. 高速物理文件双向互传"| TransferClient
 ```
 
 ---
