@@ -1235,6 +1235,11 @@
       transform: translateY(14px);
     }
 
+    #fab-shelf-scroll-top {
+      bottom: 28px;
+      z-index: 90;
+    }
+
     .fab-scroll-top.visible {
       opacity: 0.95;
       pointer-events: auto;
@@ -1490,6 +1495,14 @@
 
       <div class="comics-grid" id="comics-grid"></div>
       <div class="shelf-pagination" id="shelf-pagination" style="display: none;"></div>
+    </div>
+
+    <!-- 书架页面悬浮回到顶部按钮 -->
+    <div class="fab-scroll-top" id="fab-shelf-scroll-top" onclick="scrollShelfToTop()" title="回到顶部">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"/>
+        <polyline points="5 12 12 5 19 12"/>
+      </svg>
     </div>
   </div>
 
@@ -2786,6 +2799,10 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function scrollShelfToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function goShelf() {
     clearImageLoadQueue();
     if (saveProgressDebounceTimer) {
@@ -2798,6 +2815,8 @@
     shelfView.style.display = 'block';
     const fab = document.getElementById('fab-scroll-top');
     if (fab) fab.classList.remove('visible');
+    const shelfFab = document.getElementById('fab-shelf-scroll-top');
+    if (shelfFab) shelfFab.classList.toggle('visible', (wasReading ? (lastShelfScrollY || 0) : 0) > 280);
     if (pageObserver) pageObserver.disconnect();
     if (readerImageObserver) readerImageObserver.disconnect();
     streamContainer.innerHTML = '';
@@ -3100,18 +3119,26 @@
 
     let lastScrollY = window.scrollY;
     window.addEventListener('scroll', () => {
-      if (readerView.style.display !== 'block') return;
       const currentY = window.scrollY;
-      if (currentY > lastScrollY + 40 && currentY > 150) {
-        document.getElementById('reader-header').classList.add('hidden');
-        document.getElementById('reader-footer').classList.add('hidden');
-      } else if (currentY < lastScrollY - 30) {
-        document.getElementById('reader-header').classList.remove('hidden');
-        document.getElementById('reader-footer').classList.remove('hidden');
-      }
-      const fab = document.getElementById('fab-scroll-top');
-      if (fab) {
-        fab.classList.toggle('visible', currentY > 300);
+      const isReading = readerView.style.display === 'block';
+
+      if (isReading) {
+        if (currentY > lastScrollY + 40 && currentY > 150) {
+          document.getElementById('reader-header').classList.add('hidden');
+          document.getElementById('reader-footer').classList.add('hidden');
+        } else if (currentY < lastScrollY - 30) {
+          document.getElementById('reader-header').classList.remove('hidden');
+          document.getElementById('reader-footer').classList.remove('hidden');
+        }
+        const fab = document.getElementById('fab-scroll-top');
+        if (fab) {
+          fab.classList.toggle('visible', currentY > 300);
+        }
+      } else {
+        const shelfFab = document.getElementById('fab-shelf-scroll-top');
+        if (shelfFab) {
+          shelfFab.classList.toggle('visible', currentY > 280);
+        }
       }
       lastScrollY = currentY;
     }, { passive: true });
