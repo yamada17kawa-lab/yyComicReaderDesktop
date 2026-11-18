@@ -22,6 +22,302 @@
       --reader-width: 900px;
     }
 
+    /* Google Material Design 3 浅色主题 */
+    body.theme-light {
+      --bg-dark: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #F1F5F9;
+      --bg-container: #F1F5F9;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-pressed: #4338ca;
+      --primary-light: rgba(99, 102, 241, 0.1);
+      --text: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+    }
+    body.theme-light header,
+    body.theme-light #main-header,
+    body.theme-light .header {
+      background: #FFFFFF !important;
+      border-bottom: 1px solid #E2E8F0 !important;
+      box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06) !important;
+      backdrop-filter: none !important;
+    }
+    body.theme-light .brand {
+      color: #0F172A !important;
+    }
+    body.theme-light .brand-tag {
+      color: #4F46E5 !important;
+      background: rgba(99, 102, 241, 0.1) !important;
+      border-color: rgba(99, 102, 241, 0.25) !important;
+    }
+    body.theme-light .search-box input {
+      background: #FFFFFF !important;
+      border-color: #CBD5E1 !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .search-box input:focus {
+      border-color: var(--primary) !important;
+      background: #FFFFFF !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+    }
+    body.theme-light .search-box svg {
+      color: #64748B !important;
+    }
+    body.theme-light .search-clear {
+      background: rgba(0, 0, 0, 0.08) !important;
+      color: #64748B !important;
+    }
+    body.theme-light .search-clear:hover {
+      background: rgba(0, 0, 0, 0.16) !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .btn-secondary {
+      background: #FFFFFF !important;
+      border-color: #CBD5E1 !important;
+      color: #1E293B !important;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+    }
+    body.theme-light .btn-secondary:hover {
+      background: #F1F5F9 !important;
+      border-color: #94A3B8 !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .btn-secondary svg {
+      color: #475569 !important;
+    }
+    body.theme-light .btn-secondary:hover svg {
+      color: #0F172A !important;
+    }
+    body.theme-light .comic-card,
+    body.theme-light .card {
+      background: #FFFFFF !important;
+      border-color: #E2E8F0 !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    }
+    body.theme-light .comic-card:hover,
+    body.theme-light .card:hover {
+      background: #FFFFFF !important;
+      border-color: #CBD5E1 !important;
+      box-shadow: 0 12px 28px rgba(99, 102, 241, 0.14), 0 4px 10px rgba(0, 0, 0, 0.06) !important;
+    }
+    body.theme-light .comic-title,
+    body.theme-light .card-title {
+      color: #0F172A !important;
+    }
+    body.theme-light .card-meta {
+      color: #64748B !important;
+    }
+    body.theme-light .sort-selector,
+    body.theme-light .btn-batch-toggle {
+      background: #FFFFFF !important;
+      border-color: #CBD5E1 !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .sort-selector:hover,
+    body.theme-light .btn-batch-toggle:hover {
+      background: #F1F5F9 !important;
+      border-color: var(--primary) !important;
+    }
+    body.theme-light .shelf-stats {
+      color: #64748B !important;
+    }
+    body.theme-light .shelf-stats b {
+      color: #0F172A !important;
+    }
+    body.theme-light .shelf-pagination {
+      background: #FFFFFF !important;
+      border-top: 1px solid #E2E8F0 !important;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+      backdrop-filter: none !important;
+    }
+    body.theme-light .pagination-info {
+      color: #475569 !important;
+    }
+    body.theme-light .pagination-info b {
+      color: #0F172A !important;
+    }
+    body.theme-light .page-size-selector,
+    body.theme-light .page-btn,
+    body.theme-light .jump-page-input {
+      background: #FFFFFF !important;
+      border-color: #CBD5E1 !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .page-btn:hover:not(:disabled):not(.active) {
+      background: #F1F5F9 !important;
+      border-color: #94A3B8 !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .page-btn.active {
+      background: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: #FFFFFF !important;
+    }
+    body.theme-light .page-btn:disabled {
+      background: #F8FAFC !important;
+      border-color: #E2E8F0 !important;
+      color: #94A3B8 !important;
+      opacity: 0.6 !important;
+    }
+    body.theme-light .btn-jump {
+      background: #FFFFFF !important;
+      border-color: #CBD5E1 !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .btn-jump:hover {
+      background: #F1F5F9 !important;
+      border-color: var(--primary) !important;
+      color: var(--primary) !important;
+    }
+    body.theme-light .modal-container {
+      background: #FFFFFF !important;
+      border-color: #E2E8F0 !important;
+      color: #0F172A !important;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.12) !important;
+    }
+    body.theme-light .modal-header,
+    body.theme-light .modal-footer {
+      border-color: #E2E8F0 !important;
+      background: #F8FAFC !important;
+    }
+    body.theme-light .settings-card {
+      background: #F8FAFC !important;
+      border-color: #E2E8F0 !important;
+    }
+    body.theme-light .settings-card-desc {
+      color: #64748B !important;
+    }
+    body.theme-light .settings-card-title,
+    body.theme-light .modal-title {
+      color: #0F172A !important;
+    }
+    body.theme-light .settings-badge {
+      background: #EEF2FF !important;
+      border: 1px solid #C7D2FE !important;
+      color: #3730A3 !important;
+      font-weight: 600 !important;
+    }
+    body.theme-light #settings-transfer-path,
+    body.theme-light #settings-data-path,
+    body.theme-light #lan-self-ip,
+    body.theme-light #lan-save-dir-text,
+    body.theme-light #batch-selected-count,
+    body.theme-light #online-shelf-peer-name,
+    body.theme-light #cover-modal-status-badge,
+    body.theme-light #lan-apk-badge,
+    body.theme-light #lan-modal-progress-pct,
+    body.theme-light .brand-tag,
+    body.theme-light .badge-read {
+      color: #3730A3 !important;
+      font-weight: 600 !important;
+    }
+    body.theme-light [style*="color: #f8fafc"],
+    body.theme-light [style*="color: #F8FAFC"],
+    body.theme-light [style*="color:#f8fafc"],
+    body.theme-light [style*="color:#F8FAFC"],
+    body.theme-light [style*="color: #e0e7ff"],
+    body.theme-light [style*="color:#e0e7ff"],
+    body.theme-light [style*="color: #cbd5e1"],
+    body.theme-light [style*="color:#cbd5e1"] {
+      color: #0F172A !important;
+    }
+    body.theme-light [style*="color: #94a3b8"],
+    body.theme-light [style*="color:#94a3b8"] {
+      color: #475569 !important;
+    }
+    body.theme-light [style*="color: #a5b4fc"],
+    body.theme-light [style*="color:#a5b4fc"],
+    body.theme-light [style*="color: #c7d2fe"],
+    body.theme-light [style*="color:#c7d2fe"] {
+      color: #3730A3 !important;
+      font-weight: 500;
+    }
+    body.theme-light [style*="color: #818cf8"],
+    body.theme-light [style*="color:#818cf8"] {
+      color: #4338CA !important;
+    }
+    .lan-apk-path-text {
+      color: #c7d2fe;
+      font-family: Consolas, monospace;
+    }
+    body.theme-light .lan-apk-path-text {
+      color: #312E81 !important;
+      font-weight: 600;
+    }
+    body.theme-light .modal-close-btn {
+      color: #64748B !important;
+    }
+    body.theme-light .modal-close-btn:hover {
+      background: #F1F5F9 !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .lan-peer-card {
+      background: #FFFFFF !important;
+      border-color: #E2E8F0 !important;
+      color: #1E293B !important;
+    }
+    body.theme-light input[type="text"],
+    body.theme-light input[type="password"] {
+      background: #FFFFFF !important;
+      border-color: #CBD5E1 !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .reader-container {
+      background: #F8FAFC !important;
+    }
+    body.theme-light .bottom-bar {
+      background: rgba(255, 255, 255, 0.94) !important;
+      border-color: #E2E8F0 !important;
+      color: #0F172A !important;
+    }
+    body.theme-light ::-webkit-scrollbar-track {
+      background: #F1F5F9 !important;
+    }
+    body.theme-light ::-webkit-scrollbar-thumb {
+      background: #CBD5E1 !important;
+    }
+    body.theme-light ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8 !important;
+    }
+
+    /* 优雅轻量 2秒悬浮 Toast 提示，严格避免使用原生阻塞式 alert */
+    .app-floating-toast {
+      position: fixed;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-16px);
+      background: rgba(26, 29, 38, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 11px 22px;
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.18);
+      z-index: 9999999;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 80vw;
+      text-align: center;
+      white-space: pre-wrap;
+    }
+    .app-floating-toast.active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    body.theme-light .app-floating-toast {
+      background: rgba(255, 255, 255, 0.96) !important;
+      color: #0F172A !important;
+      border-color: rgba(0, 0, 0, 0.12) !important;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14), 0 4px 10px rgba(0, 0, 0, 0.08) !important;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -58,8 +354,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(18, 19, 24, 0.92);
-      backdrop-filter: blur(16px);
+      background: #181A22;
       border-bottom: 1px solid var(--border);
       padding: 12px 24px;
       display: flex;
@@ -660,8 +955,7 @@
       left: 0;
       right: 0;
       z-index: 45;
-      background: rgba(18, 19, 24, 0.94);
-      backdrop-filter: blur(16px);
+      background: #181A22;
       border-top: 1px solid var(--border);
       box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.55);
       padding: 12px 24px;
@@ -1252,6 +1546,80 @@
       transform: translateY(-2px);
     }
 
+    /* 任务雷达顺时针进度扫描组件 (置于一键回到顶部按钮正上方) */
+    .radar-progress-widget {
+      position: fixed;
+      right: 24px;
+      bottom: 84px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      z-index: 92;
+      cursor: pointer;
+      user-select: none;
+      animation: radar-fade-in 0.25s ease;
+    }
+    @keyframes radar-fade-in {
+      from { opacity: 0; transform: translateY(8px) scale(0.92); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .radar-circle-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #1A1D26;
+      border: 1px solid #2A2F42;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 16px rgba(16, 185, 129, 0.18);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .radar-svg {
+      width: 100%;
+      height: 100%;
+    }
+    .radar-progress-completed {
+      transition: stroke-dashoffset 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .radar-sweep-needle {
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, rgba(16, 185, 129, 0) 0deg, rgba(16, 185, 129, 0) 280deg, rgba(16, 185, 129, 0.35) 345deg, rgba(52, 211, 153, 0.9) 360deg);
+      animation: radar-sweep-rotate 1.6s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes radar-sweep-rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .radar-percent-text {
+      position: absolute;
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.85);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .radar-label-text {
+      background: rgba(26, 29, 38, 0.95);
+      border: 1px solid #2A2F42;
+      border-radius: 9999px;
+      padding: 2px 7px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      max-width: 105px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .page-indicator {
       font-size: 0.86rem;
       font-weight: 700;
@@ -1296,6 +1664,57 @@
       width: 100%;
       height: auto;
       display: block;
+      transition: opacity 0.25s ease;
+    }
+
+    .page-loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      z-index: 2;
+      background: #121318;
+      pointer-events: auto;
+    }
+
+    .page-spinner {
+      width: 44px;
+      height: 44px;
+      border: 3.5px solid rgba(255, 255, 255, 0.18);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: page-spin 0.85s cubic-bezier(0.4, 0.1, 0.2, 1) infinite;
+      box-shadow: 0 0 16px rgba(255, 255, 255, 0.15);
+    }
+
+    @keyframes page-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .page-loader-text {
+      font-size: 0.86rem;
+      color: rgba(255, 255, 255, 0.85);
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    .thumb-spinner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #121318;
+      pointer-events: none;
+      z-index: 2;
     }
 
     .width-selector {
@@ -1308,6 +1727,50 @@
       outline: none;
       cursor: pointer;
     }
+
+    /* Material 3 风格开关 Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+      vertical-align: middle;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #2A2F42;
+      transition: .25s ease;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: #cbd5e1;
+      transition: .25s ease;
+      border-radius: 50%;
+    }
+    .switch input:checked + .switch-slider {
+      background-color: #6366f1;
+    }
+    .switch input:checked + .switch-slider:before {
+      transform: translateX(18px);
+      background-color: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -1316,8 +1779,8 @@
   <header id="main-header">
     <div class="brand" onclick="goShelf()">
       <img src="https://comic.local/app-icon.png" alt="YY漫画" style="width: 30px; height: 30px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.35); flex-shrink: 0;">
-      <span>YY漫画阅读器</span>
-      <span class="brand-tag">Windows 桌面原生版</span>
+      <span id="app-main-title">YY漫画阅读器</span>
+      <span id="app-desktop-tag" class="brand-tag">Windows 桌面原生版</span>
     </div>
 
     <div class="header-actions">
@@ -1341,10 +1804,10 @@
           <polyline points="1 20 1 14 7 14"/>
           <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
         </svg>
-        刷新目录
+        <span id="btn-refresh-text">刷新目录</span>
       </button>
 
-      <button id="btn-header-lan-transfer" class="btn btn-secondary" onclick="openLanTransferModal()" title="Wi-Fi 局域网与安卓/电脑互传漫画资源" style="border-color: rgba(99, 102, 241, 0.45); color: #c7d2fe;">
+      <button id="btn-header-lan-transfer" class="btn btn-secondary" onclick="openLanTransferModal()" title="Wi-Fi 局域网与安卓/电脑互传漫画资源" style="display: none; border-color: rgba(99, 102, 241, 0.45); color: #c7d2fe;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
           <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
@@ -1359,7 +1822,7 @@
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
-        设置
+        <span id="btn-settings-text">设置</span>
       </button>
 
       <button class="btn btn-secondary" onclick="pickImageSlices()" title="直接多选单部漫画的图片切片">
@@ -1368,7 +1831,7 @@
           <circle cx="8.5" cy="8.5" r="1.5"/>
           <polyline points="21 15 16 10 5 21"/>
         </svg>
-        多选切片导入
+        <span id="btn-multi-slice-text">多选切片导入</span>
       </button>
 
       <button class="btn btn-primary" onclick="importComicsFolder()">
@@ -1377,7 +1840,7 @@
           <line x1="12" y1="11" x2="12" y2="17"/>
           <line x1="9" y1="14" x2="15" y2="14"/>
         </svg>
-        导入漫画文件夹
+        <span id="btn-import-folder-text">导入漫画文件夹</span>
       </button>
     </div>
   </header>
@@ -1406,6 +1869,59 @@
     </div>
 
     <!-- 启动瞬时加载占位状态 -->
+    <!-- 启动防卡死绝对保底 -->
+      <!-- 正在连接设备等待弹窗 (带 30s 倒计时与取消按钮) -->
+  <div class="modal-overlay" id="lan-connecting-modal" style="display: none; z-index: 1100;">
+    <div class="modal-container" style="max-width: 400px; border-radius: 16px; background: #1A1D26; border: 1px solid #2A2F42; text-align: center;">
+      <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid #2A2F42;">
+        <h3 class="modal-title" style="font-size: 1.05rem; font-weight: 700; color: #f8fafc; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          📡 正在连接设备
+        </h3>
+      </div>
+      <div class="modal-body" style="padding: 24px 20px; display: flex; flex-direction: column; align-items: center; gap: 14px;">
+        <div class="spinner-dot" style="width: 32px; height: 32px; border-width: 3px;"></div>
+        <div style="font-size: 1.05rem; font-weight: 700; color: #f8fafc;" id="lan-connecting-name">设备名称</div>
+        <div style="font-size: 0.85rem; color: #94a3b8;" id="lan-connecting-status">正在向对方发送配对请求，等待对方确认...</div>
+        <div style="font-size: 0.85rem; color: #facc15; font-weight: 600;" id="lan-connecting-timer">⏱️ 30s</div>
+      </div>
+      <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid #2A2F42; display: flex; justify-content: center; background: #161820;">
+        <button class="btn btn-secondary" onclick="cancelConnectingToPeer()">取消连接</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 黑名单设备管理弹窗 -->
+  <div class="modal-overlay" id="lan-blacklist-modal" style="display: none; z-index: 1100;">
+    <div class="modal-container" style="max-width: 500px; border-radius: 16px; background: #1A1D26; border: 1px solid #2A2F42;">
+      <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid #2A2F42;">
+        <h3 class="modal-title" style="font-size: 1.05rem; font-weight: 700; color: #f87171;">
+          🚫 阻止连接黑名单管理
+        </h3>
+        <button class="modal-close-btn" onclick="closeLanBlacklistModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 16px 20px; max-height: 360px; overflow-y: auto;">
+        <div style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 12px;">
+          黑名单中的设备发起连接时将被系统静默直接拒绝，不会向您弹出任何提示弹窗。
+        </div>
+        <div id="lan-blacklist-items" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+      <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #2A2F42; display: flex; justify-content: flex-end; background: #161820;">
+        <button class="btn btn-primary" onclick="closeLanBlacklistModal()">完成</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+      setTimeout(() => {
+        const s = document.getElementById("startup-loading-state");
+        if (s && s.style.display !== "none") {
+          s.style.display = "none";
+          if (typeof renderShelf === "function") {
+            try { renderShelf(); } catch (_) {}
+          }
+        }
+      }, 1500);
+    </script>
     <div id="startup-loading-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; background: #1A1D26; border: 1px solid #2A2F42; border-radius: 16px; margin-top: 24px;">
       <div class="spinner-dot" style="width: 14px; height: 14px; margin-bottom: 14px;"></div>
       <div style="font-size: 1.05rem; font-weight: 700; color: #F8FAFC; margin-bottom: 6px;">YY 漫阅 · 正在极速打开书架</div>
@@ -1493,8 +2009,48 @@
         </div>
       </div>
 
+      <!-- 局域网在线书架模式横幅 (免下载 · 零磁盘占用 · 与移动端完全一致) -->
+      <div id="online-shelf-banner" style="display: none; background: linear-gradient(90deg, rgba(99,102,241,0.18), rgba(16,185,129,0.18)); border: 1px solid #6366f1; border-radius: 12px; padding: 12px 18px; margin-bottom: 16px; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+        <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+          <span style="font-size: 1.35rem;">☁️</span>
+          <div>
+            <div style="font-size: 0.94rem; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px;">
+              正在浏览 <span id="online-shelf-peer-name" style="color: #a5b4fc;">对方设备</span> 的在线书架
+              <span style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #6ee7b7; font-size: 0.72rem; padding: 2px 8px; border-radius: 999px;">免下载 · 零磁盘占用</span>
+            </div>
+            <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 3px;">
+              共 <span id="online-shelf-comic-count" style="color: #fff; font-weight: 700;">0</span> 部漫画 · 点击卡片即可秒开在线翻页阅读 · 支持修改漫画名、自定义封面与删除
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-shrink: 0;">
+          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 7px 12px;" onclick="refreshOnlineShelf()">
+            🔄 刷新在线书架
+          </button>
+          <button class="btn btn-primary" style="font-size: 0.8rem; padding: 7px 14px;" onclick="exitOnlineShelfMode()">
+            ← 返回本地书架
+          </button>
+        </div>
+      </div>
+
       <div class="comics-grid" id="comics-grid"></div>
       <div class="shelf-pagination" id="shelf-pagination" style="display: none;"></div>
+    </div>
+
+    <!-- 异步任务/远端操作顺时针雷达扫描进度组件 (置于书架一键回到顶部按钮正上方) -->
+    <div class="radar-progress-widget" id="radar-progress-widget" style="display: none;" onclick="openLanTransferModal()" title="查看互传/任务状态">
+      <div class="radar-circle-wrap">
+        <svg class="radar-svg" viewBox="0 0 44 44">
+          <!-- 红色未完成部分底层完整圆环 -->
+          <circle class="radar-track-uncompleted" cx="22" cy="22" r="18" fill="none" stroke="#ef4444" stroke-width="3.5" />
+          <!-- 绿色已完成部分顺时针覆盖进度环 (从 12 点钟位置顺时针展开) -->
+          <circle id="radar-progress-arc" class="radar-progress-completed" cx="22" cy="22" r="18" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="113.1" stroke-dashoffset="113.1" transform="rotate(-90 22 22)" />
+        </svg>
+        <!-- 顺时针雷达扫描动态发光指针 -->
+        <div class="radar-sweep-needle"></div>
+        <div id="radar-percent-text" class="radar-percent-text">0%</div>
+      </div>
+      <div id="radar-label-text" class="radar-label-text">处理中</div>
     </div>
 
     <!-- 书架页面悬浮回到顶部按钮 -->
@@ -1592,6 +2148,44 @@
         <button class="modal-close-btn" onclick="closeSettingsModal()">✕</button>
       </div>
       <div class="modal-body">
+        <!-- 局域网互传核心入口卡片 (Item 6) -->
+        <div class="settings-card" style="border: 1px solid rgba(99, 102, 241, 0.45); background: rgba(99, 102, 241, 0.08);">
+          <div class="settings-card-header">
+            <span class="settings-card-title" id="settings-lan-card-title">📡 局域网互传与同步</span>
+            <span class="settings-badge">Windows ⇄ Android</span>
+          </div>
+          <div class="settings-card-desc" id="settings-lan-card-desc">在局域网内搜索并连接安卓手机或其他电脑，实时双向互传漫画、在线阅读、同步阅读进度。</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+            <button class="btn btn-primary" id="btn-open-lan-from-settings" style="font-size: 0.85rem; padding: 7px 16px;" onclick="closeSettingsModal(); openLanTransferModal()">📡 进入局域网互传功能页</button>
+          </div>
+        </div>
+
+        <!-- 界面主题外观切换卡片 (Item 8) -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-title" id="settings-theme-card-title">🎨 界面主题外观</span>
+          </div>
+          <div class="settings-card-desc" id="settings-theme-card-desc">选择应用程序的明暗外观色彩风格：</div>
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button id="btn-theme-system" class="btn btn-secondary active" style="flex: 1; padding: 8px 12px; font-size: 0.82rem;" onclick="setTheme('system')">🖥️ 跟随系统 (System)</button>
+            <button id="btn-theme-dark" class="btn btn-secondary" style="flex: 1; padding: 8px 12px; font-size: 0.82rem;" onclick="setTheme('dark')">🌙 暗色主题 (Dark)</button>
+            <button id="btn-theme-light" class="btn btn-secondary" style="flex: 1; padding: 8px 12px; font-size: 0.82rem;" onclick="setTheme('light')">☀️ 浅色主题 (Light)</button>
+          </div>
+        </div>
+
+        <!-- 多语言切换卡片 (Item 7) -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-title" id="settings-lang-card-title">🌐 界面语言 / Language</span>
+          </div>
+          <div class="settings-card-desc" id="settings-lang-card-desc">选择系统界面语言（支持简体中文、English、日本語）：</div>
+          <select id="settings-lang-select" class="sort-selector" style="margin-top: 10px; width: 100%;" onchange="setLanguage(this.value)">
+            <option value="zh">简体中文 (Chinese)</option>
+            <option value="en">English (英语)</option>
+            <option value="ja">日本語 (日语)</option>
+          </select>
+        </div>
+
         <!-- 丢失书籍管理卡片 -->
         <div class="settings-card" onclick="openMissingComicsModal()" style="cursor: pointer;">
           <div class="settings-card-header">
@@ -1621,7 +2215,7 @@
         <div class="settings-card">
           <div class="settings-card-header">
             <span class="settings-card-title">📡 Wi-Fi 局域网互传与存储目录</span>
-            <span class="settings-badge" style="background: rgba(99, 102, 241, 0.22); color: #a5b4fc;">Windows ⇄ Android</span>
+            <span class="settings-badge">Windows ⇄ Android</span>
           </div>
           <div class="settings-card-desc">接收到的局域网互传漫画将自动保存在以下目录并加入书架（支持自定义任意磁盘文件夹）：</div>
           <div class="settings-card-desc" id="settings-transfer-path" style="margin-top: 4px; color: #a5b4fc; font-family: Consolas, monospace;">TransferredComics</div>
@@ -1650,6 +2244,18 @@
           </div>
           <div class="settings-card-desc">清空当前书架所有导入索引与历史阅读记录（电脑硬盘上的本地漫画文件不受任何影响）。</div>
           <button class="btn btn-danger" style="margin-top: 10px; font-size: 0.8rem; padding: 6px 14px;" onclick="closeSettingsModal(); clearShelfData()">清空书架记录</button>
+        </div>
+
+        <!-- 关于与软件版本信息卡片 (Material Design 3) -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-title">ℹ️ 软件版本与信息</span>
+            <span class="settings-badge" id="settings-app-version-badge" style="background: rgba(99, 102, 241, 0.16); color: #818cf8; border-color: rgba(99, 102, 241, 0.3);">v1.0.9 (Build 10)</span>
+          </div>
+          <div class="settings-card-desc" style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+            <span>YY漫画阅读器 · Windows 桌面版 · 原生零浏览器占用</span>
+            <span style="font-family: Consolas, monospace; color: #818cf8; font-weight: 600;">v1.0.9</span>
+          </div>
         </div>
 
         <div style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 4px;">
@@ -1697,6 +2303,10 @@
           </svg>
           Wi-Fi 局域网漫画互传 (Windows ⇄ Android)
           <span id="lan-modal-conn-pill" style="display: none; background: rgba(16, 185, 129, 0.16); border: 1px solid rgba(16, 185, 129, 0.45); color: #6ee7b7; font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; margin-left: 8px;">🟢 已连接</span>
+          <button id="btn-lan-toggle-whitelist" class="btn btn-secondary" style="display: none; font-size: 0.72rem; padding: 3px 8px; margin-left: 6px; border-radius: 6px;" onclick="toggleCurrentPeerWhitelist()">⭐ 加入白名单</button>
+          <button id="btn-lan-enter-online-shelf" class="btn btn-primary" style="display: none; font-size: 0.72rem; padding: 3px 10px; margin-left: 6px; border-radius: 6px;" onclick="closeLanTransferModal(); enterOnlineShelfMode(selectedLanPeer);">☁️ 浏览在线书架 (免下载)</button>
+          <button id="btn-lan-disconnect" class="btn btn-danger" style="display: none; font-size: 0.72rem; padding: 3px 10px; margin-left: 6px; border-radius: 6px;" onclick="disconnectCurrentLanPeer()">🔌 断开连接</button>
+          <button id="btn-lan-blacklist-current" class="btn btn-secondary" style="display: none; font-size: 0.72rem; padding: 3px 8px; margin-left: 6px; border-radius: 6px; color: #f87171; border-color: rgba(239,68,68,0.4);" onclick="blacklistCurrentPeer()">🚫 加入黑名单</button>
         </h3>
         <button class="modal-close-btn" onclick="closeLanTransferModal()">✕</button>
       </div>
@@ -1717,6 +2327,46 @@
               <button class="btn btn-secondary" style="font-size: 0.78rem; padding: 6px 10px;" onclick="callNative('openTransferFolder')">📂 打开目录</button>
               <button class="btn btn-secondary" style="font-size: 0.78rem; padding: 6px 10px;" onclick="resetTransferSaveFolder()" title="恢复默认接收目录">↺ 默认</button>
             </div>
+          </div>
+        </div>
+
+        <!-- 连接安全权限：密码连接保护与信任白名单管理 -->
+        <div class="settings-card" style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.88rem; font-weight: 700; color: #f8fafc;">🔒 密码连接保护：</span>
+              <label class="switch">
+                <input type="checkbox" id="lan-require-pwd-toggle" onchange="toggleLanPasswordProtection(this.checked)">
+                <span class="switch-slider"></span>
+              </label>
+              <span id="lan-pwd-status-text" style="font-size: 0.8rem; color: #94a3b8;">未启用（对方连接需本机手动点击确认）</span>
+            </div>
+            <button class="btn btn-secondary" id="btn-lan-change-pwd" style="font-size: 0.76rem; padding: 4px 10px; display: none;" onclick="openLanPasswordSetupModal(true)">🔑 修改密码</button>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-secondary" style="font-size: 0.78rem; padding: 6px 12px;" onclick="openLanWhitelistModal()">
+              ⭐ 信任设备白名单 (<span id="lan-whitelist-count">0</span>)
+            </button>
+            <button class="btn btn-secondary" style="font-size: 0.78rem; padding: 6px 12px; color: #f87171; border-color: rgba(239,68,68,0.35);" onclick="openLanBlacklistModal()">
+              🚫 黑名单管理 (<span id="lan-blacklist-count">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- 安卓端在线升级服务 (Google Material Design 3 风格) -->
+        <div class="settings-card" style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(16,185,129,0.05)); border: 1px solid rgba(99,102,241,0.25);">
+          <div style="min-width: 240px; flex: 1;">
+            <div style="font-size: 0.88rem; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px;">
+              <span>📱 安卓端在线升级推送服务</span>
+              <span id="lan-apk-badge" style="background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.4); color: #818cf8; font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 999px;">检测中...</span>
+            </div>
+            <div id="lan-apk-subtext" style="font-size: 0.78rem; color: #94a3b8; margin-top: 4px; word-break: break-all;">
+              两端连接成功时，Windows 端将自动向已连接的安卓手机推送升级通知，支持手机端一键在线更新并重新安装。
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-secondary" style="font-size: 0.76rem; padding: 5px 12px;" onclick="selectCustomApkForPush()">📁 选择安装包</button>
+            <button class="btn btn-primary" id="btn-lan-manual-push-update" style="font-size: 0.76rem; padding: 5px 14px;" onclick="manualPushUpdateToConnectedPeer()">🚀 立即推送更新</button>
           </div>
         </div>
 
@@ -1797,8 +2447,12 @@
       </div>
       <div class="modal-body" style="gap: 16px;">
         <div style="display: flex; gap: 16px; align-items: center; background: #222634; border: 1px solid #2A2F42; border-radius: 12px; padding: 14px;">
-          <div style="width: 90px; aspect-ratio: 5 / 7; border-radius: 8px; overflow: hidden; background: #121318; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);">
-            <img id="cover-modal-preview-img" src="" alt="当前封面" style="width: 100%; height: 100%; object-fit: cover;">
+          <div style="width: 90px; aspect-ratio: 5 / 7; border-radius: 8px; overflow: hidden; background: #121318; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); position: relative; display: flex; align-items: center; justify-content: center;">
+            <div id="cover-modal-preview-placeholder" style="position: absolute; color: #64748b; font-size: 1.5rem; pointer-events: none;">🖼️</div>
+            <div id="cover-modal-preview-spinner" style="position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: #121318; z-index: 2;">
+              <div style="width: 24px; height: 24px; border: 2.5px solid rgba(255,255,255,0.2); border-top-color: #ffffff; border-radius: 50%; animation: page-spin 0.8s linear infinite;"></div>
+            </div>
+            <img id="cover-modal-preview-img" src="" alt="" style="width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 3; opacity: 0; transition: opacity 0.25s ease;">
           </div>
           <div style="min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 6px;">
             <div id="cover-modal-comic-title" style="font-size: 0.98rem; font-weight: 700; color: #f8fafc; word-break: break-all;">漫画标题</div>
@@ -1820,6 +2474,38 @@
           </div>
           <div id="cover-modal-pages-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; max-height: 310px; overflow-y: auto; padding-right: 4px;"></div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自定义封面设置确认弹窗 (Material Design 3) -->
+  <div class="modal-overlay" id="confirm-cover-modal" style="display: none; z-index: 1050;" onclick="if(event.target===this) closeConfirmCoverModal()">
+    <div class="modal-container" style="max-width: 440px; border-radius: 16px; background: #1A1D26; border: 1px solid #2A2F42; box-shadow: 0 16px 36px rgba(0,0,0,0.45); overflow: hidden;">
+      <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid #2A2F42;">
+        <h3 class="modal-title" style="font-size: 1.05rem; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px;">
+          🖼️ 自定义封面确认
+        </h3>
+        <button class="modal-close-btn" onclick="closeConfirmCoverModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; gap: 16px; align-items: center;">
+        <div style="width: 140px; aspect-ratio: 5 / 7; border-radius: 10px; overflow: hidden; background: #121318; border: 2px solid #6366f1; box-shadow: 0 8px 24px rgba(0,0,0,0.5); flex-shrink: 0; position: relative; display: flex; align-items: center; justify-content: center;">
+          <div id="confirm-cover-spinner" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #121318; z-index: 2;">
+            <div style="width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #ffffff; border-radius: 50%; animation: page-spin 0.8s linear infinite;"></div>
+          </div>
+          <img id="confirm-cover-preview-img" src="" alt="" style="width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 3; opacity: 0; transition: opacity 0.25s ease;">
+        </div>
+        <div style="text-align: center;">
+          <div id="confirm-cover-comic-title" style="font-size: 1rem; font-weight: 700; color: #f8fafc; margin-bottom: 6px; word-break: break-all;">漫画标题</div>
+          <div id="confirm-cover-page-text" style="font-size: 0.85rem; color: #94a3b8; line-height: 1.5;">确定将该页面设置为漫画的专属封面吗？</div>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #2A2F42; display: flex; justify-content: flex-end; gap: 10px; background: #161820;">
+        <button class="btn btn-secondary" style="padding: 8px 18px; border-radius: 8px; font-size: 0.85rem;" onclick="closeConfirmCoverModal()">
+          取消
+        </button>
+        <button class="btn btn-primary" id="btn-confirm-set-cover" style="padding: 8px 22px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;">
+          确认设为封面
+        </button>
       </div>
     </div>
   </div>
@@ -1857,42 +2543,172 @@
     </div>
   </div>
 
+  <!-- 局域网配对确认弹窗 (Material Design 3) -->
+  <div class="modal-overlay" id="lan-pair-modal" style="display: none; z-index: 1100;">
+    <div class="modal-container" style="max-width: 420px; border-radius: 16px; background: #1A1D26; border: 1px solid #2A2F42; box-shadow: 0 16px 36px rgba(0,0,0,0.5);">
+      <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid #2A2F42;">
+        <h3 class="modal-title" style="font-size: 1.05rem; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px;">
+          🔗 局域网设备连接请求
+        </h3>
+      </div>
+      <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; gap: 14px; text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 2px;" id="lan-pair-icon">📱</div>
+        <div style="font-size: 1.05rem; font-weight: 700; color: #f8fafc;" id="lan-pair-name">设备名称</div>
+        <div style="font-size: 0.85rem; color: #94a3b8; line-height: 1.5;" id="lan-pair-desc">
+          该设备请求与您建立漫画互传连接，是否允许？
+        </div>
+        <div style="font-size: 0.82rem; color: #facc15; font-weight: 600;" id="lan-pair-countdown">⏱️ 倒计时: 30 秒 (超时将自动拒绝并失效)</div>
+      </div>
+      <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #2A2F42; display: flex; justify-content: flex-end; gap: 10px; background: #161820;">
+        <button class="btn btn-secondary" style="padding: 8px 18px; border-radius: 8px; font-size: 0.85rem;" onclick="respondCurrentPairRequest(false)">
+          拒绝连接
+        </button>
+        <button class="btn btn-primary" style="padding: 8px 22px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;" onclick="respondCurrentPairRequest(true)">
+          允许连接
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 密码连接弹窗 (输入对方密码) -->
+  <div class="modal-overlay" id="lan-input-password-modal" style="display: none; z-index: 1100;">
+    <div class="modal-container" style="max-width: 420px; border-radius: 16px; background: #1A1D26; border: 1px solid #2A2F42;">
+      <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid #2A2F42;">
+        <h3 class="modal-title" style="font-size: 1.05rem; font-weight: 700; color: #f8fafc;">
+          🔒 输入设备连接密码
+        </h3>
+        <button class="modal-close-btn" onclick="closeLanInputPasswordModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 0.88rem; color: #cbd5e1;" id="lan-input-password-tip">
+          目标设备已开启密码连接保护，请输入该设备的连接密码：
+        </div>
+        <input type="password" id="lan-target-password-input" placeholder="输入连接密码" style="width: 100%; padding: 10px 14px; background: #121318; border: 1px solid #2A2F42; border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none;" onkeydown="if(event.key==='Enter')submitLanTargetPassword()">
+        <div id="lan-password-error-tip" style="color: #f87171; font-size: 0.8rem; display: none;"></div>
+      </div>
+      <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #2A2F42; display: flex; justify-content: flex-end; gap: 10px; background: #161820;">
+        <button class="btn btn-secondary" onclick="closeLanInputPasswordModal()">取消</button>
+        <button class="btn btn-primary" onclick="submitLanTargetPassword()">验证并连接</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 设置本机连接密码弹窗 -->
+  <div class="modal-overlay" id="lan-password-setup-modal" style="display: none; z-index: 1100;">
+    <div class="modal-container" style="max-width: 440px; border-radius: 16px; background: #1A1D26; border: 1px solid #2A2F42;">
+      <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid #2A2F42;">
+        <h3 class="modal-title" style="font-size: 1.05rem; font-weight: 700; color: #f8fafc;">
+          🔐 设置连接密码限制
+        </h3>
+        <button class="modal-close-btn" onclick="closeLanPasswordSetupModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 0.85rem; color: #94a3b8; line-height: 1.5;">
+          开启密码限制后，连接方必须输入此密码才能直接连接；未开启时，需您在屏幕上手动点击“允许”。<br>
+          <span style="color: #facc15; font-weight: 600;">⚠️ 密码规则：至少 8 位，且必须同时包含数字、字母和特殊符号。</span>
+        </div>
+        <input type="password" id="lan-self-password-input" placeholder="输入新密码 (至少8位，含数字/字母/符号)" style="width: 100%; padding: 10px 14px; background: #121318; border: 1px solid #2A2F42; border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none;">
+        <input type="password" id="lan-self-password-confirm" placeholder="再次确认新密码" style="width: 100%; padding: 10px 14px; background: #121318; border: 1px solid #2A2F42; border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none;">
+        <div id="lan-setup-error-tip" style="color: #f87171; font-size: 0.8rem; display: none;"></div>
+      </div>
+      <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #2A2F42; display: flex; justify-content: flex-end; gap: 10px; background: #161820;">
+        <button class="btn btn-secondary" onclick="closeLanPasswordSetupModal()">取消</button>
+        <button class="btn btn-primary" onclick="submitLanSelfPassword()">确认启用</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 信任设备白名单管理弹窗 -->
+  <div class="modal-overlay" id="lan-whitelist-modal" style="display: none; z-index: 1100;">
+    <div class="modal-container" style="max-width: 500px; border-radius: 16px; background: #1A1D26; border: 1px solid #2A2F42;">
+      <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid #2A2F42;">
+        <h3 class="modal-title" style="font-size: 1.05rem; font-weight: 700; color: #f8fafc;">
+          ⭐ 信任设备白名单管理
+        </h3>
+        <button class="modal-close-btn" onclick="closeLanWhitelistModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 16px 20px; max-height: 360px; overflow-y: auto;">
+        <div style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 12px;">
+          白名单中的设备发起连接时将自动允许连接，无需您手动确认。您可以随时将设备移出白名单。
+        </div>
+        <div id="lan-whitelist-items" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+      <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #2A2F42; display: flex; justify-content: flex-end; background: #161820;">
+        <button class="btn btn-primary" onclick="closeLanWhitelistModal()">完成</button>
+      </div>
+    </div>
+  </div>
+
 <script>
   // ========================= C# 桌面原生通信桥 =========================
   let _reqSeq = 0;
   const _pendingReqs = new Map();
 
-  if (window.chrome && window.chrome.webview) {
-    window.chrome.webview.addEventListener('message', (event) => {
-      const msg = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-      if (!msg) return;
+  function ensureWebViewBridge() {
+    if (window.chrome && window.chrome.webview && !window.__wvListenerAttached) {
+      window.__wvListenerAttached = true;
+      window.chrome.webview.addEventListener('message', (event) => {
+        let msg = event.data;
+        if (typeof msg === 'string') {
+          try { msg = JSON.parse(msg); } catch (_) {}
+        }
+        if (!msg) return;
 
-      if (msg.type === 'response' && _pendingReqs.has(msg.reqId)) {
-        const { resolve, reject } = _pendingReqs.get(msg.reqId);
-        _pendingReqs.delete(msg.reqId);
-        if (msg.error) reject(new Error(msg.error));
-        else resolve(msg.data);
-      } else if (msg.type === 'event') {
-        handleNativeEvent(msg.event, msg.data);
-      }
-    });
+        if (msg.type === 'response' && _pendingReqs.has(msg.reqId)) {
+          const entry = _pendingReqs.get(msg.reqId);
+          _pendingReqs.delete(msg.reqId);
+          if (entry.timer) clearTimeout(entry.timer);
+          if (msg.error) entry.reject(new Error(msg.error));
+          else entry.resolve(msg.data);
+        } else if (msg.type === 'event') {
+          handleNativeEvent(msg.event, msg.data);
+        }
+      });
+    }
   }
+  ensureWebViewBridge();
 
-  function callNative(action, payload = {}) {
+  function callNative(action, payload = {}, timeoutMs = 12000) {
+    ensureWebViewBridge();
     return new Promise((resolve, reject) => {
       if (!window.chrome || !window.chrome.webview) {
         reject(new Error('当前不在桌面宿主环境中'));
         return;
       }
       const reqId = ++_reqSeq;
-      _pendingReqs.set(reqId, { resolve, reject });
-      window.chrome.webview.postMessage(JSON.stringify({ reqId, action, payload }));
+      let timer = null;
+      if (timeoutMs > 0) {
+        timer = setTimeout(() => {
+          if (_pendingReqs.has(reqId)) {
+            _pendingReqs.delete(reqId);
+            reject(new Error(`调用原生接口 [${action}] 超时`));
+          }
+        }, timeoutMs);
+      }
+      _pendingReqs.set(reqId, { resolve, reject, timer });
+      try {
+        window.chrome.webview.postMessage(JSON.stringify({ reqId, action, payload }));
+      } catch (err) {
+        if (timer) clearTimeout(timer);
+        _pendingReqs.delete(reqId);
+        reject(err);
+      }
     });
   }
 
-  function getDiskImageUrl(filePath) {
+  function getDiskImageUrl(filePath, bustCache = false) {
     if (!filePath) return '';
-    return `https://comic.local/img?path=${encodeURIComponent(filePath)}`;
+    if (filePath.startsWith('http://') || filePath.startsWith('https://') || filePath.startsWith('data:')) {
+      if (bustCache && !filePath.startsWith('data:')) {
+        return filePath + (filePath.includes('?') ? '&' : '?') + 't=' + Date.now();
+      }
+      return filePath;
+    }
+    let url = `https://comic.local/img?path=${encodeURIComponent(filePath)}`;
+    if (bustCache) {
+      url += `&t=${Date.now()}`;
+    }
+    return url;
   }
 
   // ========================= 分批队列图片加载器 (防止高并发阻塞 WebView2 主线程) =========================
@@ -1928,13 +2744,41 @@
       const img = task.imgEl;
       const targetUrl = task.url;
 
-      const onDone = () => {
+      let finished = false;
+      const onDone = (evt) => {
+        if (finished) return;
+        finished = true;
         img.removeEventListener('load', onDone);
         img.removeEventListener('error', onDone);
         img.dataset.loadedUrl = targetUrl;
-        if (img.parentElement && img.parentElement.classList.contains('stream-page')) {
-          img.parentElement.style.minHeight = '0px';
+
+        const parent = img.parentElement;
+        if (parent && parent.classList.contains('stream-page')) {
+          const loader = parent.querySelector('.page-loader');
+          if (evt && evt.type === 'error') {
+            if (loader) {
+              const pageIdx = parseInt(parent.dataset.index, 10);
+              loader.innerHTML = `
+                <div style="font-size: 1.8rem; margin-bottom: 2px;">⚠️</div>
+                <div style="font-size: 0.85rem; color: #f87171; font-weight: 600;">第 ${pageIdx + 1} 页加载失败</div>
+                <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 12px; margin-top: 6px; cursor: pointer;" onclick="retryLoadPageImage(this)">点击重试</button>
+              `;
+            }
+          } else {
+            img.style.opacity = '1';
+            parent.style.minHeight = '0px';
+            if (loader) loader.remove();
+          }
+        } else if (parent && parent.classList.contains('cover-thumb-card')) {
+          img.style.opacity = '1';
+          const thumbSpinner = parent.querySelector('.thumb-spinner');
+          if (thumbSpinner) thumbSpinner.remove();
+        } else {
+          img.style.opacity = '1';
+          const l = parent ? parent.querySelector('.page-loader') : null;
+          if (l) l.remove();
         }
+
         _activeImgLoads = Math.max(0, _activeImgLoads - 1);
         pumpImageLoadQueue();
       };
@@ -1942,10 +2786,35 @@
       img.addEventListener('load', onDone);
       img.addEventListener('error', onDone);
       img.src = targetUrl;
+      if (img.complete && img.naturalWidth > 0) {
+        onDone({ type: 'load' });
+      }
     }
   }
 
-  // ========================= 全局状态 =========================
+  window.retryLoadPageImage = function(btn) {
+    const parent = btn.closest('.stream-page');
+    if (!parent) return;
+    const img = parent.querySelector('img');
+    if (!img) return;
+    const loader = parent.querySelector('.page-loader');
+    const pageNum = parseInt(parent.dataset.index, 10) + 1;
+    if (loader) {
+      loader.innerHTML = `
+        <div class="page-spinner"></div>
+        <div class="page-loader-text">第 ${pageNum} 页重新加载中...</div>
+      `;
+    }
+    img.dataset.loadedUrl = '';
+    img.dataset.pendingUrl = '';
+    const src = img.dataset.src;
+    if (src) {
+      const retryUrl = src + (src.includes('?') ? '&' : '?') + 'retry=' + Date.now();
+      enqueueImageLoad(img, retryUrl, true);
+    }
+  };
+
+  // ========================= 全局状态 (置顶声明，杜绝 TDZ 引用错误) =========================
   let comicsList = [];
   let currentComicIndex = -1;
   let currentSortMode = 'title_asc';
@@ -1956,6 +2825,47 @@
   let dataFilePath = '';
   let pageObserver = null;
   let progressHideTimer = null;
+  let localDeviceId = '';
+  let localRequirePassword = false;
+  let localHasPassword = false;
+  let localWhitelist = [];
+  let localBlacklist = [];
+  let currentTheme = 'dark';
+  let currentLang = 'zh';
+
+  // (isBatchMode & selectedComicIds declared at top)
+  // (reader scroll vars declared at top)
+  // (cover vars declared at top)
+  // (rename vars declared at top)
+
+  // 在线书架模式状态
+  let isOnlineShelfMode = false;
+  let onlineShelfPeer = null;
+  let onlineShelfComics = [];
+  let radarHideTimer = null;
+
+  // 局域网互传状态
+  let lanPeers = [];
+  let selectedLanPeer = null;
+  let lanRemoteComics = [];
+  let currentLanTab = 'pull';
+  let lanOnlyMissingFilter = false;
+  let selectedLanPullIds = new Set();
+  let selectedLanPushIds = new Set();
+  let isLanTransferring = false;
+  let lanProgressHideTimer = null;
+  let lastAnnouncedPeerKey = '';
+  let lastAnnouncedPeerTime = 0;
+  let pendingConnectTargetPeer = null;
+  let currentIncomingPairRequest = null;
+  let incomingPairTimer = null;
+  let incomingPairSecondsLeft = 30;
+  let connectingTimer = null;
+  let connectingSecondsLeft = 30;
+  let isConnectingCancelled = false;
+  let connectCooldownUntil = 0;
+  // (pwd vars declared at top)
+  // (update vars declared at top)
 
   const naturalCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
 
@@ -1971,21 +2881,42 @@
   const bannerText = document.getElementById('storage-banner-text');
 
   // ========================= 初始化与原生事件处理 =========================
-  window.addEventListener('DOMContentLoaded', async () => {
+  async function onAppReady() {
+    ensureWebViewBridge();
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
 
-    initGlobalDragAndDrop();
-    initReaderEvents();
+    try { initGlobalDragAndDrop(); } catch (e) { console.warn('DragDrop init warning:', e); }
+    try { initReaderEvents(); } catch (e) { console.warn('ReaderEvents init warning:', e); }
+
+    // 绝对保底定时器：无论任何情况，800ms 后解除启动遮罩并渲染书架
+    const safeStartupTimer = setTimeout(() => {
+      const startupLoading = document.getElementById('startup-loading-state');
+      if (startupLoading) startupLoading.style.display = 'none';
+      try { renderShelf(); } catch (_) {}
+    }, 800);
 
     try {
-      const initData = await callNative('init');
+      const initData = await callNative('init', {}, 3000);
+      clearTimeout(safeStartupTimer);
       applyNativeState(initData);
+      const startupLoading = document.getElementById('startup-loading-state');
+      if (startupLoading) startupLoading.style.display = 'none';
     } catch (err) {
-      console.error('初始化失败:', err);
+      console.error('初始化获取状态失败:', err);
+      clearTimeout(safeStartupTimer);
+      const startupLoading = document.getElementById('startup-loading-state');
+      if (startupLoading) startupLoading.style.display = 'none';
+      try { renderShelf(); } catch (_) {}
     }
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', onAppReady);
+  } else {
+    onAppReady();
+  }
 
   function applyNativeState(state) {
     if (!state) return;
@@ -2008,6 +2939,26 @@
       const lanDirEl = document.getElementById('lan-save-dir-text');
       if (lanDirEl) lanDirEl.innerText = state.transferSavePath;
     }
+    if (state.deviceId) localDeviceId = state.deviceId;
+    if (typeof state.requirePassword === 'boolean') {
+      localRequirePassword = state.requirePassword;
+      updateLanPasswordProtectionUi();
+    }
+    if (typeof state.hasPassword === 'boolean') localHasPassword = state.hasPassword;
+    if (Array.isArray(state.whitelist)) {
+      localWhitelist = state.whitelist;
+      updateLanWhitelistUi();
+    }
+    if (Array.isArray(state.blacklist)) {
+      localBlacklist = state.blacklist;
+      updateLanBlacklistUi();
+    }
+    if (state.theme) {
+      setTheme(state.theme);
+    }
+    if (state.language) {
+      setLanguage(state.language);
+    }
 
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) sortSelect.value = currentSortMode;
@@ -2022,8 +2973,23 @@
   function handleNativeEvent(eventName, data) {
     if (eventName === 'scanProgress') {
       updateImportProgress(data.status, data.percent, data.detail);
+      updateRadarProgress(data.percent, data.status || '扫描中');
     } else if (eventName === 'shelfUpdated') {
       applyNativeState(data);
+    } else if (eventName === 'lanPeerDisconnected') {
+      const fromName = (data && data.fromName) || (data && data.ip) || (selectedLanPeer && selectedLanPeer.deviceName) || '对方设备';
+      selectedLanPeer = null;
+      lanRemoteComics = [];
+      selectedLanPullIds.clear();
+      selectedLanPushIds.clear();
+      if (isOnlineShelfMode) {
+        exitOnlineShelfMode();
+      }
+      updateLanConnectionBadges(null);
+      updateWhitelistButtonState();
+      renderLanPeers();
+      renderLanComicList();
+      showToast(`对方设备【${fromName}】已断开连接，已自动返回本地书架`);
     } else if (eventName === 'scanComplete') {
       applyNativeState(data.state);
       const msg = data.newlyCount > 0
@@ -2031,15 +2997,19 @@
         : `扫描完成（共核验 ${data.totalScanned} 部漫画）`;
       updateImportProgress('导入完成', 100, msg);
       hideImportProgress(1500);
+      completeRadarProgress('扫描完成');
+      hideRadarProgress(1500);
       showToast(msg);
     } else if (eventName === 'scanError') {
       hideImportProgress(500);
+      hideRadarProgress(500);
       showToast('扫描出错: ' + (data.message || '未知错误'));
     } else if (eventName === 'mouseBackButton') {
       handleGlobalBackAction();
     } else if (eventName === 'lanTransferProgress') {
       updateLanModalProgress(data.status, data.percent, data.detail);
       updateImportProgress(data.status, data.percent, data.detail);
+      updateRadarProgress(data.percent, data.status || '互传中');
       if (data.status && data.status.startsWith('⏩')) {
         hideImportProgress(2200);
         if (data.status.startsWith('⏩ 已拒绝接收') && data.detail) {
@@ -2055,6 +3025,8 @@
       }
     } else if (eventName === 'lanBatchComplete') {
       if (data.state) applyNativeState(data.state);
+      completeRadarProgress('互传完成');
+      hideRadarProgress(1600);
       const peerName = data.peerName || '对方设备';
       const count = typeof data.transferredCount === 'number' ? data.transferredCount : 0;
       const skipped = typeof data.skippedCount === 'number' ? data.skippedCount : 0;
@@ -2086,6 +3058,12 @@
       }
     } else if (eventName === 'lanPeerConnected') {
       handleIncomingPeerConnected(data);
+    } else if (eventName === 'lanPairRequest') {
+      handleIncomingPairRequest(data);
+    } else if (eventName === 'lanUpdatePushed') {
+      const pName = (data && data.peerName) || '安卓设备';
+      const ver = (data && data.version) ? `v${data.version}` : '最新版本';
+      showToast(`🚀 已向 ${pName} 主动推送安卓端升级通知 (${ver})`);
     }
   }
 
@@ -2119,15 +3097,30 @@
     }, delay);
   }
 
-  function showToast(msg) {
-    if (storageBanner && bannerText) {
-      bannerText.innerText = msg;
-      storageBanner.style.display = 'flex';
-      setTimeout(() => {
-        storageBanner.style.display = 'none';
-      }, 3600);
+  let activeToastTimer = null;
+  function showToast(msg, duration = 2000) {
+    if (!msg) return;
+    let toast = document.getElementById('app-floating-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'app-floating-toast';
+      toast.className = 'app-floating-toast';
+      document.body.appendChild(toast);
     }
+    toast.innerText = msg;
+    toast.classList.remove('active');
+    void toast.offsetWidth; // 触发 reflow 保证 CSS transition 重新执行
+    toast.classList.add('active');
+    if (activeToastTimer) clearTimeout(activeToastTimer);
+    activeToastTimer = setTimeout(() => {
+      toast.classList.remove('active');
+    }, duration);
   }
+
+  // 全局覆盖 window.alert：保证所有弹窗提示统统变为优雅、非阻塞、自动消失的 2s Toast 提示
+  window.alert = function(msg) {
+    showToast(msg, 2000);
+  };
 
   // ========================= 文件夹导入与拖拽 =========================
   async function importComicsFolder() {
@@ -2243,6 +3236,66 @@
     const startupLoading = document.getElementById('startup-loading-state');
     if (startupLoading) startupLoading.style.display = 'none';
 
+    if (isOnlineShelfMode && onlineShelfPeer) {
+      const banner = document.getElementById('online-shelf-banner');
+      if (banner) banner.style.display = 'flex';
+      const peerNameEl = document.getElementById('online-shelf-peer-name');
+      if (peerNameEl) peerNameEl.innerText = `${onlineShelfPeer.deviceName || '远程设备'} (${onlineShelfPeer.ip})`;
+      const countEl = document.getElementById('online-shelf-comic-count');
+      if (countEl) countEl.innerText = `${onlineShelfComics.length} 部漫画`;
+
+      if (!list) {
+        list = onlineShelfComics;
+      }
+      currentSearchQuery = searchKeyword;
+
+      const clearBtn = document.getElementById('search-clear-btn');
+      if (clearBtn) {
+        clearBtn.style.display = searchKeyword ? 'flex' : 'none';
+      }
+
+      if (onlineShelfComics.length === 0) {
+        emptyState.style.display = 'flex';
+        emptyState.innerHTML = `
+          <div class="empty-icon">☁️</div>
+          <h2>对方设备书架暂无漫画</h2>
+          <p>对方设备 (${escapeHtml(onlineShelfPeer.deviceName || onlineShelfPeer.ip)}) 尚未导入漫画或书架为空。</p>
+          <div style="display: flex; gap: 12px; justify-content: center; margin-top: 12px;">
+            <button class="btn btn-primary" onclick="refreshOnlineShelf()">🔄 刷新对方书架</button>
+            <button class="btn btn-secondary" onclick="exitOnlineShelfMode()">返回本地书架</button>
+          </div>
+        `;
+        shelfContent.style.display = 'none';
+        if (shelfPagination) shelfPagination.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      shelfContent.style.display = 'block';
+
+      const statsEl = document.getElementById('shelf-stats-text');
+      if (statsEl) {
+        if (searchKeyword) {
+          statsEl.innerHTML = `☁️ 在线书架搜索到 <b id="total-comics-count">${list.length}</b> 部匹配漫画（对方书架共 ${onlineShelfComics.length} 部）`;
+        } else {
+          statsEl.innerHTML = `☁️ 在线书架（实时串流浏览 · 不占用本机空间）· 对方共收录 <b id="total-comics-count">${onlineShelfComics.length}</b> 部漫画`;
+        }
+      }
+
+      currentShelfFilteredList = sortComicsList(list, currentSortMode);
+
+      const totalPages = Math.max(1, Math.ceil(currentShelfFilteredList.length / shelfPageSize));
+      if (shelfCurrentPage > totalPages) shelfCurrentPage = totalPages;
+      if (shelfCurrentPage < 1) shelfCurrentPage = 1;
+
+      renderShelfCards();
+      renderShelfPagination();
+      return;
+    }
+
+    const banner = document.getElementById('online-shelf-banner');
+    if (banner) banner.style.display = 'none';
+
     const activeComics = comicsList.filter(c => !c.isMissing);
     const missingComics = comicsList.filter(c => c.isMissing);
 
@@ -2312,7 +3365,11 @@
       const isSelected = selectedComicIds.has(comic.id);
       card.className = 'comic-card' + (isBatchMode ? ' batch-mode' : '') + (isSelected ? ' selected' : '');
       card.dataset.comicId = comic.id;
-      card.onclick = () => {
+      card.onclick = (e) => {
+        // 如果点击的是卡片上的操作按钮（设置封面、改名、删除等），绝不触发进入阅读器
+        if (e && e.target && e.target.closest('.btn-cover-comic, .btn-rename-comic, .btn-remove-comic, .card-select-indicator')) {
+          return;
+        }
         if (isBatchMode) {
           toggleComicSelection(comic.id);
         } else {
@@ -2339,21 +3396,21 @@
             </div>
           ` : ''}
           ${progressHtml}
-          <button class="btn-rename-comic" title="修改漫画文件名" onclick="event.stopPropagation(); openRenameComicModal('${comic.id}')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-rename-comic" title="修改漫画文件名" onclick="event.stopPropagation(); event.preventDefault(); openRenameComicModal('${comic.id}')" onmousedown="event.stopPropagation()" onpointerdown="event.stopPropagation()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
           </button>
-          <button class="btn-cover-comic" title="自定义/更换此漫画封面" onclick="event.stopPropagation(); openCustomCoverModal('${comic.id}')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-cover-comic" title="自定义/更换此漫画封面" onclick="event.stopPropagation(); event.preventDefault(); openCustomCoverModal('${comic.id}')" onmousedown="event.stopPropagation()" onpointerdown="event.stopPropagation()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
               <circle cx="8.5" cy="8.5" r="1.5"/>
               <polyline points="21 15 16 10 5 21"/>
             </svg>
           </button>
-          <button class="btn-remove-comic" title="从书架移除并删除本地物理文件" onclick="event.stopPropagation(); removeComic('${comic.id}')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-remove-comic" title="从书架移除并删除本地物理文件" onclick="event.stopPropagation(); event.preventDefault(); removeComic('${comic.id}')" onmousedown="event.stopPropagation()" onpointerdown="event.stopPropagation()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
               <polyline points="3 6 5 6 21 6"/>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
             </svg>
@@ -2409,34 +3466,46 @@
       return `<button class="page-btn ${activeClass}" onclick="goToShelfPage(${p})">${p}</button>`;
     }).join('');
 
+    const d = I18N[currentLang] || I18N.zh;
+    const paginationText = d.paginationDisplay ? d.paginationDisplay(startItem, endItem, totalItems) : `显示第 <b>${startItem}-${endItem}</b> 部 / 共 <b>${totalItems}</b> 部`;
+    const pageSizeSuffix = d.pageSizeSuffix || '条/页';
+    const pageSizeLabel = d.pageSizeLabel || '每页条数:';
+    const firstPageText = d.firstPage || '首页';
+    const prevPageText = d.prevPage || '上一页';
+    const nextPageText = d.nextPage || '下一页';
+    const lastPageText = d.lastPage || '末页';
+    const jumpToText = d.jumpTo || '跳至';
+    const pageUnitText = d.pageUnit || '页';
+    const jumpBtnText = d.jumpBtn || '跳转';
+
     shelfPagination.innerHTML = `
       <div class="shelf-pagination-inner">
         <div class="pagination-info">
-          <span>显示第 <b>${startItem}-${endItem}</b> 部 / 共 <b>${totalItems}</b> 部</span>
+          <span>${paginationText}</span>
           <label style="display: inline-flex; align-items: center; gap: 6px;">
-            <span>每页条数:</span>
+            <span>${pageSizeLabel}</span>
             <select class="page-size-selector" onchange="changeShelfPageSize(this.value)">
-              <option value="10" ${shelfPageSize === 10 ? 'selected' : ''}>10 条/页</option>
-              <option value="20" ${shelfPageSize === 20 ? 'selected' : ''}>20 条/页</option>
-              <option value="50" ${shelfPageSize === 50 ? 'selected' : ''}>50 条/页</option>
-              <option value="100" ${shelfPageSize === 100 ? 'selected' : ''}>100 条/页</option>
+              <option value="10" ${shelfPageSize === 10 ? 'selected' : ''}>10 ${pageSizeSuffix}</option>
+              <option value="20" ${shelfPageSize === 20 ? 'selected' : ''}>20 ${pageSizeSuffix}</option>
+              <option value="50" ${shelfPageSize === 50 ? 'selected' : ''}>50 ${pageSizeSuffix}</option>
+              <option value="100" ${shelfPageSize === 100 ? 'selected' : ''}>100 ${pageSizeSuffix}</option>
             </select>
           </label>
         </div>
 
         <div class="pagination-nav">
-          <button class="page-btn" onclick="goToShelfPage(1)" ${shelfCurrentPage === 1 ? 'disabled' : ''} title="首页">首页</button>
-          <button class="page-btn" onclick="goToShelfPage(${shelfCurrentPage - 1})" ${shelfCurrentPage === 1 ? 'disabled' : ''}>上一页</button>
+          <button class="page-btn" onclick="goToShelfPage(1)" ${shelfCurrentPage === 1 ? 'disabled' : ''} title="${firstPageText}">${firstPageText}</button>
+          <button class="page-btn" onclick="goToShelfPage(${shelfCurrentPage - 1})" ${shelfCurrentPage === 1 ? 'disabled' : ''}>${prevPageText}</button>
           ${pageButtonsHtml}
-          <button class="page-btn" onclick="goToShelfPage(${shelfCurrentPage + 1})" ${shelfCurrentPage === totalPages ? 'disabled' : ''}>下一页</button>
-          <button class="page-btn" onclick="goToShelfPage(${totalPages})" ${shelfCurrentPage === totalPages ? 'disabled' : ''} title="末页">末页</button>
+          <button class="page-btn" onclick="goToShelfPage(${shelfCurrentPage + 1})" ${shelfCurrentPage === totalPages ? 'disabled' : ''}>${nextPageText}</button>
+          <button class="page-btn" onclick="goToShelfPage(${totalPages})" ${shelfCurrentPage === totalPages ? 'disabled' : ''} title="${lastPageText}">${lastPageText}</button>
 
           ${totalPages > 1 ? `
             <div class="page-jump-wrap">
-              <span>跳至</span>
+              <span>${jumpToText}</span>
               <input type="number" id="jump-page-input" class="jump-page-input" min="1" max="${totalPages}" value="${shelfCurrentPage}" onkeydown="if(event.key==='Enter') handleJumpPage()">
-              <span>页</span>
-              <button class="btn btn-secondary btn-jump" onclick="handleJumpPage()">跳转</button>
+              <span>${pageUnitText}</span>
+              <button class="btn btn-secondary btn-jump" onclick="handleJumpPage()">${jumpBtnText}</button>
             </div>
           ` : ''}
         </div>
@@ -2618,6 +3687,39 @@
   }
 
   async function removeComic(comicId) {
+    if (isOnlineShelfMode && onlineShelfPeer) {
+      const comic = onlineShelfComics.find(c => c.id === comicId);
+      if (!comic) return;
+      if (!confirm(`确定要彻底删除对方设备 (${onlineShelfPeer.deviceName || onlineShelfPeer.ip}) 上的《${comic.title}》吗？\n\n⚠️ 警告：此操作将从对方书架移除该漫画并永久物理删除对方硬盘上的文件！`)) {
+        return;
+      }
+      showRadarProgress('正在远程删除漫画...', 45);
+      try {
+        const res = await callNative('remoteDeleteComic', {
+          ip: onlineShelfPeer.ip,
+          port: onlineShelfPeer.port,
+          id: comic.id,
+          title: comic.title
+        });
+        if (res && res.ok) {
+          onlineShelfComics = onlineShelfComics.filter(c => c.id !== comicId);
+          renderShelf();
+          completeRadarProgress('删除完成');
+          hideRadarProgress(800);
+          showToast(`🗑️ 已成功从对方设备删除《${comic.title}》`);
+        } else {
+          completeRadarProgress('删除失败');
+          hideRadarProgress(1000);
+          showToast('⚠️ 远程删除失败: ' + ((res && res.error) || '未知错误'));
+        }
+      } catch (e) {
+        completeRadarProgress('删除异常');
+        hideRadarProgress(1000);
+        showToast('⚠️ 远程删除出错: ' + e.message);
+      }
+      return;
+    }
+
     const comic = comicsList.find(c => c.id === comicId);
     if (!comic) return;
     if (!confirm(`确定要彻底删除《${comic.title}》吗？\n\n⚠️ 警告：此操作将同时：\n1. 从书架移除该漫画\n2. 清除已读进度与阅读次数记录\n3. 永久删除电脑硬盘上的漫画物理文件夹及图片！`)) {
@@ -2656,6 +3758,45 @@
 
   // ========================= 沉浸式阅读器 =========================
   async function openComicById(comicId) {
+    if (isOnlineShelfMode && onlineShelfPeer) {
+      const comic = onlineShelfComics.find(c => c.id === comicId);
+      if (!comic) return;
+      showRadarProgress(`正在加载《${comic.title}》...`, 30);
+      try {
+        const manifest = await callNative('fetchRemoteComicManifest', {
+          ip: onlineShelfPeer.ip,
+          port: onlineShelfPeer.port,
+          id: comicId
+        });
+        if (manifest && Array.isArray(manifest.pages)) {
+          comic.pagePaths = manifest.pages;
+          comic.totalPages = manifest.pages.length;
+          comic.lastReadPage = manifest.lastReadPage || comic.lastReadPage || 1;
+        }
+        completeRadarProgress('加载完成');
+        hideRadarProgress(800);
+
+        // 仅在真正进入阅读器时记录阅读次数与初始进度
+        callNative('recordRemoteComicRead', {
+          ip: onlineShelfPeer.ip,
+          port: onlineShelfPeer.port,
+          id: comic.id,
+          title: comic.title,
+          page: comic.lastReadPage || 1,
+          inc: true
+        });
+        comic.readCount = (comic.readCount || 0) + 1;
+
+        currentComicIndex = currentShelfFilteredList.findIndex(c => c.id === comicId);
+        renderReader(comic);
+      } catch (err) {
+        completeRadarProgress('加载失败');
+        hideRadarProgress(1000);
+        showToast('读取在线漫画失败: ' + (err.message || err));
+      }
+      return;
+    }
+
     const updatedComic = await callNative('openComic', { id: comicId });
     if (!updatedComic) return;
 
@@ -2716,7 +3857,19 @@
           document.getElementById('page-slider').value = currPageNum;
           if (saveProgressDebounceTimer) clearTimeout(saveProgressDebounceTimer);
           saveProgressDebounceTimer = setTimeout(() => {
-            callNative('saveProgress', { id: comic.id, page: currPageNum });
+            if (isOnlineShelfMode && onlineShelfPeer) {
+              callNative('recordRemoteComicRead', {
+                ip: onlineShelfPeer.ip,
+                port: onlineShelfPeer.port,
+                id: comic.id,
+                title: comic.title,
+                page: currPageNum,
+                inc: false
+              });
+              comic.lastReadPage = currPageNum;
+            } else {
+              callNative('saveProgress', { id: comic.id, page: currPageNum });
+            }
           }, 280);
         }
       });
@@ -2753,10 +3906,21 @@
       // 赋予未加载占位高度，防止数百页初始高度为 0 导致瞬间同时触发全部图片请求
       pageDiv.style.minHeight = '760px';
 
+      // 单页独立的白色加载动画
+      const loader = document.createElement('div');
+      loader.className = 'page-loader';
+      loader.id = `page-loader-${idx + 1}`;
+      loader.innerHTML = `
+        <div class="page-spinner"></div>
+        <div class="page-loader-text">第 ${idx + 1} 页加载中...</div>
+      `;
+      pageDiv.appendChild(loader);
+
       const img = document.createElement('img');
       const imgUrl = getDiskImageUrl(filePath);
       img.dataset.src = imgUrl;
       img.alt = `${comic.title} - 第 ${idx + 1} 页`;
+      img.style.opacity = '0';
 
       pageDiv.appendChild(img);
       streamContainer.appendChild(pageDiv);
@@ -2821,12 +3985,21 @@
     if (readerImageObserver) readerImageObserver.disconnect();
     streamContainer.innerHTML = '';
 
-    const activeComics = comicsList.filter(c => !c.isMissing);
-    if (currentSearchQuery) {
-      const filtered = activeComics.filter(c => fuzzyMatch(c.title, currentSearchQuery));
-      renderShelf(filtered, currentSearchQuery);
+    if (isOnlineShelfMode) {
+      if (currentSearchQuery) {
+        const filtered = onlineShelfComics.filter(c => fuzzyMatch(c.title, currentSearchQuery));
+        renderShelf(filtered, currentSearchQuery);
+      } else {
+        renderShelf(onlineShelfComics, '');
+      }
     } else {
-      renderShelf(activeComics, '');
+      const activeComics = comicsList.filter(c => !c.isMissing);
+      if (currentSearchQuery) {
+        const filtered = activeComics.filter(c => fuzzyMatch(c.title, currentSearchQuery));
+        renderShelf(filtered, currentSearchQuery);
+      } else {
+        renderShelf(activeComics, '');
+      }
     }
     window.scrollTo({ top: wasReading ? (lastShelfScrollY || 0) : 0, behavior: 'instant' });
   }
@@ -2836,6 +4009,12 @@
     const now = Date.now();
     if (now - lastBackTriggerTime < 220) return;
     lastBackTriggerTime = now;
+
+    const confirmCoverModal = document.getElementById('confirm-cover-modal');
+    if (confirmCoverModal && confirmCoverModal.style.display === 'flex') {
+      closeConfirmCoverModal();
+      return;
+    }
 
     const coverModal = document.getElementById('custom-cover-modal');
     if (coverModal && coverModal.style.display === 'flex') {
@@ -2902,32 +4081,123 @@
 
   // ========================= 自定义漫画封面功能 =========================
   let currentCoverModalComicId = '';
+  let pendingCoverPageIndex = -1;
+
+  function updateCoverModalPreview(coverPath) {
+    const previewImg = document.getElementById('cover-modal-preview-img');
+    const spinner = document.getElementById('cover-modal-preview-spinner');
+    if (!previewImg) return;
+    if (!coverPath) {
+      previewImg.style.opacity = '0';
+      previewImg.removeAttribute('src');
+      if (spinner) spinner.style.display = 'none';
+      return;
+    }
+    if (spinner) spinner.style.display = 'flex';
+    previewImg.style.opacity = '0';
+    const targetUrl = getDiskImageUrl(coverPath, true);
+    const testImg = new Image();
+    testImg.onload = () => {
+      previewImg.src = targetUrl;
+      previewImg.style.opacity = '1';
+      if (spinner) spinner.style.display = 'none';
+    };
+    testImg.onerror = () => {
+      previewImg.style.opacity = '0';
+      previewImg.removeAttribute('src');
+      if (spinner) spinner.style.display = 'none';
+    };
+    testImg.src = targetUrl;
+  }
+
+  function updateConfirmCoverPreview(pagePath) {
+    const previewImg = document.getElementById('confirm-cover-preview-img');
+    const spinner = document.getElementById('confirm-cover-spinner');
+    if (!previewImg) return;
+    if (!pagePath) {
+      previewImg.style.opacity = '0';
+      previewImg.removeAttribute('src');
+      if (spinner) spinner.style.display = 'none';
+      return;
+    }
+    if (spinner) spinner.style.display = 'flex';
+    previewImg.style.opacity = '0';
+    const targetUrl = getDiskImageUrl(pagePath, true);
+    const testImg = new Image();
+    testImg.onload = () => {
+      previewImg.src = targetUrl;
+      previewImg.style.opacity = '1';
+      if (spinner) spinner.style.display = 'none';
+    };
+    testImg.onerror = () => {
+      previewImg.style.opacity = '0';
+      previewImg.removeAttribute('src');
+      if (spinner) spinner.style.display = 'none';
+    };
+    testImg.src = targetUrl;
+  }
 
   async function openCustomCoverModal(comicId) {
-    const comic = comicsList.find(c => c.id === comicId);
+    const isOnline = isOnlineShelfMode && onlineShelfPeer;
+    const list = isOnline ? onlineShelfComics : comicsList;
+    const comic = list.find(c => c.id === comicId);
     if (!comic) return;
     currentCoverModalComicId = comicId;
 
     const modal = document.getElementById('custom-cover-modal');
     const titleEl = document.getElementById('cover-modal-comic-title');
-    const previewImg = document.getElementById('cover-modal-preview-img');
-    const badgeEl = document.getElementById('cover-modal-status-badge');
     const gridEl = document.getElementById('cover-modal-pages-grid');
 
-    if (titleEl) titleEl.innerText = comic.title;
-    if (previewImg) previewImg.src = getDiskImageUrl(comic.coverPath);
+    if (titleEl) titleEl.innerText = (isOnline ? '☁️ [在线] ' : '') + comic.title;
     if (modal) modal.style.display = 'flex';
+
+    // 优先展示已有封面，杜绝加载空白或破损图标
+    const effectiveCover = comic.customCoverPath || comic.coverPath || (comic.pagePaths && comic.pagePaths[0]) || '';
+    updateCoverModalPreview(effectiveCover);
 
     // 按需拉取该漫画的内页列表
     if (!comic.pagePaths || comic.pagePaths.length === 0) {
       if (gridEl) gridEl.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #94a3b8; padding: 24px;">正在加载内页缩略图...</div>';
       try {
-        const res = await callNative('getComicPages', { id: comicId });
-        if (res && Array.isArray(res.pagePaths)) {
-          comic.pagePaths = res.pagePaths;
+        if (isOnline) {
+          const res = await callNative('fetchRemoteComicManifest', {
+            ip: onlineShelfPeer.ip,
+            port: onlineShelfPeer.port,
+            id: comicId
+          });
+          if (res && Array.isArray(res.pages)) {
+            comic.pagePaths = res.pages;
+            comic.totalPages = res.pages.length;
+            if (!comic.coverPath && res.pages.length > 0) {
+              comic.coverPath = res.pages[0];
+              updateCoverModalPreview(comic.coverPath);
+            }
+          }
+        } else {
+          const res = await callNative('getComicPages', { id: comicId });
+          if (res && Array.isArray(res.pagePaths)) {
+            comic.pagePaths = res.pagePaths;
+            if (!comic.coverPath && res.pagePaths.length > 0) {
+              comic.coverPath = res.pagePaths[0];
+              if (!comic.customCoverPath) {
+                updateCoverModalPreview(comic.coverPath);
+              }
+            }
+          }
         }
       } catch (_) {}
     }
+
+    renderCoverModalGrid(comic);
+  }
+
+  function renderCoverModalGrid(comic) {
+    const badgeEl = document.getElementById('cover-modal-status-badge');
+    const gridEl = document.getElementById('cover-modal-pages-grid');
+    if (!comic) return;
+
+    const effectiveCover = comic.customCoverPath || comic.coverPath || (comic.pagePaths && comic.pagePaths[0]) || '';
+    updateCoverModalPreview(effectiveCover);
 
     const pages = comic.pagePaths || [];
     const isCustom = comic.customCoverPath && comic.customCoverPath.length > 0;
@@ -2947,14 +4217,21 @@
     if (gridEl) {
       gridEl.innerHTML = '';
       pages.forEach((p, idx) => {
-        const isCurrentCover = comic.coverPath === p;
+        const isCurrentCover = comic.coverPath === p || comic.customCoverPath === p;
         const thumbCard = document.createElement('div');
+        thumbCard.className = 'cover-thumb-card';
+        thumbCard.id = `cover-thumb-${idx}`;
         thumbCard.title = `点击将第 ${idx + 1} 页画面设为封面`;
-        thumbCard.style.cssText = `cursor: pointer; border-radius: 8px; overflow: hidden; background: #121318; position: relative; aspect-ratio: 5 / 7; ${isCurrentCover ? 'border: 2px solid #6366f1; box-shadow: 0 0 10px rgba(99,102,241,0.45);' : 'border: 1px solid #2A2F42;'} transition: transform 0.15s;`;
-        thumbCard.onclick = () => setCoverFromModalPage(idx);
+        thumbCard.style.cssText = `cursor: pointer; border-radius: 8px; overflow: hidden; background: #121318; position: relative; aspect-ratio: 5 / 7; ${isCurrentCover ? 'border: 2px solid #6366f1; box-shadow: 0 0 12px rgba(99,102,241,0.5);' : 'border: 1px solid #2A2F42;'} transition: transform 0.15s, border 0.15s;`;
+        thumbCard.onclick = () => confirmSetCoverFromModalPage(idx);
+
+        const thumbSpinner = document.createElement('div');
+        thumbSpinner.className = 'thumb-spinner';
+        thumbSpinner.innerHTML = '<div style="width: 22px; height: 22px; border: 2.5px solid rgba(255,255,255,0.2); border-top-color: #ffffff; border-radius: 50%; animation: page-spin 0.8s linear infinite;"></div>';
+        thumbCard.appendChild(thumbSpinner);
 
         const img = document.createElement('img');
-        img.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
+        img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.2s ease;';
         thumbCard.appendChild(img);
 
         const badge = document.createElement('div');
@@ -2968,61 +4245,353 @@
     }
   }
 
+  function confirmSetCoverFromModalPage(pageIndex) {
+    if (!currentCoverModalComicId) return;
+    const isOnline = isOnlineShelfMode && onlineShelfPeer;
+    const list = isOnline ? onlineShelfComics : comicsList;
+    const comic = list.find(c => c.id === currentCoverModalComicId);
+    if (!comic || !comic.pagePaths || pageIndex < 0 || pageIndex >= comic.pagePaths.length) return;
+
+    pendingCoverPageIndex = pageIndex;
+    const pagePath = comic.pagePaths[pageIndex];
+
+    const confirmModal = document.getElementById('confirm-cover-modal');
+    const titleEl = document.getElementById('confirm-cover-comic-title');
+    const textEl = document.getElementById('confirm-cover-page-text');
+    const confirmBtn = document.getElementById('btn-confirm-set-cover');
+
+    updateConfirmCoverPreview(pagePath);
+    if (titleEl) titleEl.innerText = (isOnline ? '☁️ [在线] ' : '') + comic.title;
+    if (textEl) textEl.innerHTML = `确定将 <b style="color: #818cf8;">第 ${pageIndex + 1} 页</b> 画面设置为该漫画的专属封面吗？`;
+
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.innerText = '确认设为封面';
+      confirmBtn.onclick = () => executeSetCover(currentCoverModalComicId, pageIndex);
+    }
+
+    if (confirmModal) confirmModal.style.display = 'flex';
+  }
+
+  function closeConfirmCoverModal() {
+    const confirmModal = document.getElementById('confirm-cover-modal');
+    if (confirmModal) confirmModal.style.display = 'none';
+    pendingCoverPageIndex = -1;
+  }
+
+  async function executeSetCover(comicId, pageIndex) {
+    const confirmBtn = document.getElementById('btn-confirm-set-cover');
+    if (confirmBtn) {
+      confirmBtn.disabled = true;
+      confirmBtn.innerText = '正在设置...';
+    }
+
+    try {
+      if (isOnlineShelfMode && onlineShelfPeer) {
+        showRadarProgress('正在设置远程封面...', 50);
+        const res = await callNative('remoteSetComicCoverPage', {
+          ip: onlineShelfPeer.ip,
+          port: onlineShelfPeer.port,
+          id: comicId,
+          pageIndex: pageIndex
+        });
+        if (res && res.ok) {
+          closeConfirmCoverModal();
+          const comic = onlineShelfComics.find(c => c.id === comicId);
+          if (comic && comic.pagePaths && comic.pagePaths[pageIndex]) {
+            comic.coverPath = comic.pagePaths[pageIndex];
+            comic.customCoverPath = comic.coverPath;
+            updateCoverModalPreview(comic.coverPath);
+            const badgeEl = document.getElementById('cover-modal-status-badge');
+            if (badgeEl) {
+              badgeEl.innerText = `✨ 当前使用：自定义内页封面 (第 ${pageIndex + 1} 页)`;
+              badgeEl.style.color = '#6ee7b7';
+            }
+            comic.pagePaths.forEach((_, idx) => {
+              const card = document.getElementById(`cover-thumb-${idx}`);
+              if (card) {
+                if (idx === pageIndex) {
+                  card.style.border = '2px solid #6366f1';
+                  card.style.boxShadow = '0 0 12px rgba(99,102,241,0.5)';
+                } else {
+                  card.style.border = '1px solid #2A2F42';
+                  card.style.boxShadow = 'none';
+                }
+              }
+            });
+            renderShelf();
+          }
+          completeRadarProgress('封面已更新');
+          hideRadarProgress(800);
+          showToast(`🖼️ 已成功将第 ${pageIndex + 1} 页设为封面`);
+        } else {
+          completeRadarProgress('设置失败');
+          hideRadarProgress(1000);
+          showToast('⚠️ 设置远程封面失败');
+        }
+        return;
+      }
+
+      const res = await callNative('setComicCoverFromPage', { id: comicId, pageIndex });
+      if (res && res.changed) {
+        closeConfirmCoverModal();
+        const comic = comicsList.find(c => c.id === comicId);
+        if (comic) {
+          comic.coverPath = res.coverPath || (comic.pagePaths ? comic.pagePaths[pageIndex] : comic.coverPath);
+          comic.customCoverPath = res.customCoverPath || comic.coverPath;
+
+          // 保持内页列表不丢失，直接更新弹窗预览与徽标，不需要清空重刷 DOM 网格！
+          updateCoverModalPreview(comic.coverPath);
+
+          const badgeEl = document.getElementById('cover-modal-status-badge');
+          if (badgeEl) {
+            badgeEl.innerText = `✨ 当前使用：自定义内页封面 (第 ${pageIndex + 1} 页)`;
+            badgeEl.style.color = '#6ee7b7';
+          }
+
+          // 动态高亮对应缩略图卡片
+          if (comic.pagePaths) {
+            comic.pagePaths.forEach((_, idx) => {
+              const card = document.getElementById(`cover-thumb-${idx}`);
+              if (card) {
+                if (idx === pageIndex) {
+                  card.style.border = '2px solid #6366f1';
+                  card.style.boxShadow = '0 0 12px rgba(99,102,241,0.5)';
+                } else {
+                  card.style.border = '1px solid #2A2F42';
+                  card.style.boxShadow = 'none';
+                }
+              }
+            });
+          }
+
+          // 同步刷新书架主海报墙
+          renderShelf();
+        }
+
+        showToast(`🖼️ 已成功将第 ${pageIndex + 1} 页设为封面`);
+      } else {
+        showToast('⚠️ 设置封面失败，请重试');
+      }
+    } catch (e) {
+      showToast('⚠️ 设置封面时发生错误');
+    } finally {
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = '确认设为封面';
+      }
+    }
+  }
+
   function closeCustomCoverModal() {
+    closeConfirmCoverModal();
     const modal = document.getElementById('custom-cover-modal');
     if (modal) modal.style.display = 'none';
   }
 
   async function pickExternalCustomCover() {
     if (!currentCoverModalComicId) return;
+    if (isOnlineShelfMode && onlineShelfPeer) {
+      showRadarProgress('选择封面图片...', 20);
+      const res = await callNative('pickCustomCover', { id: currentCoverModalComicId });
+      if (res && res.changed && res.comic && res.comic.customCoverPath) {
+        showRadarProgress('正在上传自定义封面至对方设备...', 60);
+        const uploadRes = await callNative('remoteUploadComicCover', {
+          ip: onlineShelfPeer.ip,
+          port: onlineShelfPeer.port,
+          id: currentCoverModalComicId,
+          filePath: res.comic.customCoverPath
+        });
+        if (uploadRes && uploadRes.ok) {
+          const comic = onlineShelfComics.find(c => c.id === currentCoverModalComicId);
+          if (comic) {
+            comic.coverPath = `http://${onlineShelfPeer.ip}:${onlineShelfPeer.port}/api/comic-cover?id=${encodeURIComponent(currentCoverModalComicId)}&t=${Date.now()}`;
+            comic.customCoverPath = comic.coverPath;
+            updateCoverModalPreview(comic.coverPath);
+            const badgeEl = document.getElementById('cover-modal-status-badge');
+            if (badgeEl) {
+              badgeEl.innerText = '✨ 当前使用：自定义外部图片封面';
+              badgeEl.style.color = '#6ee7b7';
+            }
+            renderShelf();
+          }
+          completeRadarProgress('封面上传成功');
+          hideRadarProgress(800);
+          showToast('✨ 远程漫画封面已成功设置为本地所选图片');
+        } else {
+          completeRadarProgress('上传失败');
+          hideRadarProgress(1000);
+          showToast('⚠️ 远程上传封面失败');
+        }
+      } else {
+        hideRadarProgress(300);
+      }
+      return;
+    }
+
     const res = await callNative('pickCustomCover', { id: currentCoverModalComicId });
-    if (res && res.changed && res.state) {
-      applyNativeState(res.state);
-      openCustomCoverModal(currentCoverModalComicId);
-      showToast('🖼️ 已成功设置自定义图片封面');
-    }
-  }
+    if (res && res.changed && res.comic) {
+      const comic = comicsList.find(c => c.id === currentCoverModalComicId);
+      if (comic) {
+        comic.coverPath = res.comic.coverPath;
+        comic.customCoverPath = res.comic.customCoverPath;
 
-  async function setCoverFromModalPage(pageIndex) {
-    if (!currentCoverModalComicId) return;
-    const res = await callNative('setComicCoverFromPage', { id: currentCoverModalComicId, pageIndex });
-    if (res && res.changed && res.state) {
-      applyNativeState(res.state);
-      openCustomCoverModal(currentCoverModalComicId);
-      showToast(`🖼️ 已将第 ${pageIndex + 1} 页设为漫画封面`);
-    }
-  }
+        updateCoverModalPreview(comic.coverPath);
 
-  async function setCoverByPageInput() {
-    if (!currentCoverModalComicId) return;
-    const comic = comicsList.find(c => c.id === currentCoverModalComicId);
-    if (!comic) return;
-    const pageInput = document.getElementById('cover-modal-page-input');
-    const pageNum = parseInt(pageInput ? pageInput.value : '1', 10) || 1;
-    const total = (comic.pagePaths || []).length || 1;
-    const clamped = Math.max(1, Math.min(total, pageNum));
-    await setCoverFromModalPage(clamped - 1);
+        const badgeEl = document.getElementById('cover-modal-status-badge');
+        if (badgeEl) {
+          badgeEl.innerText = '✨ 当前使用：自定义外部图片封面';
+          badgeEl.style.color = '#6ee7b7';
+        }
+
+        // 外部封面取消内页高亮
+        if (comic.pagePaths) {
+          comic.pagePaths.forEach((_, idx) => {
+            const card = document.getElementById(`cover-thumb-${idx}`);
+            if (card) {
+              card.style.border = '1px solid #2A2F42';
+              card.style.boxShadow = 'none';
+            }
+          });
+        }
+        renderShelf();
+      }
+      showToast('🖼️ 已成功设置自定义外部图片封面');
+    }
   }
 
   async function resetToDefaultCover() {
     if (!currentCoverModalComicId) return;
+    if (isOnlineShelfMode && onlineShelfPeer) {
+      showRadarProgress('正在恢复默认封面...', 50);
+      try {
+        const res = await callNative('remoteResetComicCover', {
+          ip: onlineShelfPeer.ip,
+          port: onlineShelfPeer.port,
+          id: currentCoverModalComicId
+        });
+        if (res && res.ok) {
+          const comic = onlineShelfComics.find(c => c.id === currentCoverModalComicId);
+          if (comic) {
+            comic.customCoverPath = '';
+            comic.coverPath = (comic.pagePaths && comic.pagePaths[0]) || '';
+            updateCoverModalPreview(comic.coverPath);
+            const badgeEl = document.getElementById('cover-modal-status-badge');
+            if (badgeEl) {
+              badgeEl.innerText = '当前使用：默认第 1 页封面';
+              badgeEl.style.color = '#a5b4fc';
+            }
+            if (comic.pagePaths) {
+              comic.pagePaths.forEach((_, idx) => {
+                const card = document.getElementById(`cover-thumb-${idx}`);
+                if (card) {
+                  if (idx === 0) {
+                    card.style.border = '2px solid #6366f1';
+                    card.style.boxShadow = '0 0 12px rgba(99,102,241,0.5)';
+                  } else {
+                    card.style.border = '1px solid #2A2F42';
+                    card.style.boxShadow = 'none';
+                  }
+                }
+              });
+            }
+            renderShelf();
+          }
+          completeRadarProgress('已恢复默认');
+          hideRadarProgress(800);
+          showToast('↺ 已恢复默认封面 (第 1 页)');
+        } else {
+          completeRadarProgress('恢复失败');
+          hideRadarProgress(1000);
+          showToast('恢复默认封面失败');
+        }
+      } catch (e) {
+        completeRadarProgress('恢复失败');
+        hideRadarProgress(1000);
+        showToast('恢复默认封面失败: ' + (e.message || e));
+      }
+      return;
+    }
+
     const res = await callNative('resetComicCover', { id: currentCoverModalComicId });
-    if (res && res.changed && res.state) {
-      applyNativeState(res.state);
-      openCustomCoverModal(currentCoverModalComicId);
+    if (res && res.changed) {
+      const comic = comicsList.find(c => c.id === currentCoverModalComicId);
+      if (comic) {
+        comic.coverPath = res.coverPath;
+        comic.customCoverPath = '';
+
+        updateCoverModalPreview(comic.coverPath);
+
+        const badgeEl = document.getElementById('cover-modal-status-badge');
+        if (badgeEl) {
+          badgeEl.innerText = '当前使用：默认第 1 页封面';
+          badgeEl.style.color = '#a5b4fc';
+        }
+
+        if (comic.pagePaths) {
+          comic.pagePaths.forEach((_, idx) => {
+            const card = document.getElementById(`cover-thumb-${idx}`);
+            if (card) {
+              if (idx === 0) {
+                card.style.border = '2px solid #6366f1';
+                card.style.boxShadow = '0 0 12px rgba(99,102,241,0.5)';
+              } else {
+                card.style.border = '1px solid #2A2F42';
+                card.style.boxShadow = 'none';
+              }
+            }
+          });
+        }
+        renderShelf();
+      }
       showToast('↺ 已恢复默认第 1 页封面');
     }
   }
 
   async function setCurrentReaderPageAsCover() {
-    const activeList = currentShelfFilteredList.length > 0 ? currentShelfFilteredList : comicsList.filter(c => !c.isMissing);
+    const isOnline = isOnlineShelfMode && onlineShelfPeer;
+    const activeList = currentShelfFilteredList.length > 0 ? currentShelfFilteredList : (isOnline ? onlineShelfComics : comicsList.filter(c => !c.isMissing));
     const comic = activeList[currentComicIndex];
     if (!comic) return;
     const currPageEl = document.getElementById('curr-page');
     const currPageNum = parseInt(currPageEl ? currPageEl.innerText : '1', 10) || 1;
-    const res = await callNative('setComicCoverFromPage', { id: comic.id, pageIndex: Math.max(0, currPageNum - 1) });
-    if (res && res.changed && res.state) {
-      applyNativeState(res.state);
+    const pageIndex = Math.max(0, currPageNum - 1);
+
+    if (isOnline) {
+      showRadarProgress('正在将当前页设为封面...', 50);
+      try {
+        const res = await callNative('remoteSetComicCoverPage', {
+          ip: onlineShelfPeer.ip,
+          port: onlineShelfPeer.port,
+          id: comic.id,
+          pageIndex: pageIndex
+        });
+        if (res && res.ok) {
+          if (comic.pagePaths && comic.pagePaths[pageIndex]) {
+            comic.coverPath = comic.pagePaths[pageIndex];
+            comic.customCoverPath = comic.coverPath;
+          }
+          completeRadarProgress('封面已更新');
+          hideRadarProgress(800);
+          showToast(`🖼️ 已将当前第 ${currPageNum} 页设为《${comic.title}》的远程封面`);
+        } else {
+          completeRadarProgress('设置失败');
+          hideRadarProgress(1000);
+          showToast('⚠️ 设置远程封面失败');
+        }
+      } catch (err) {
+        completeRadarProgress('设置异常');
+        hideRadarProgress(1000);
+        showToast('⚠️ 设置封面出错: ' + (err.message || err));
+      }
+      return;
+    }
+
+    const res = await callNative('setComicCoverFromPage', { id: comic.id, pageIndex });
+    if (res && res.changed) {
+      comic.coverPath = res.coverPath || comic.coverPath;
+      comic.customCoverPath = res.customCoverPath || comic.coverPath;
+      renderShelf();
       showToast(`🖼️ 已将当前第 ${currPageNum} 页设为《${comic.title}》的封面`);
     }
   }
@@ -3031,7 +4600,8 @@
   let currentRenameComicId = '';
 
   function openRenameComicModal(comicId) {
-    const comic = comicsList.find(c => c.id === comicId);
+    const list = isOnlineShelfMode ? onlineShelfComics : comicsList;
+    const comic = list.find(c => c.id === comicId);
     if (!comic) return;
     currentRenameComicId = comicId;
 
@@ -3079,6 +4649,34 @@
 
     if (btn) btn.disabled = true;
     try {
+      if (isOnlineShelfMode && onlineShelfPeer) {
+        showRadarProgress('正在重命名远程漫画...', 40);
+        const comic = onlineShelfComics.find(c => c.id === currentRenameComicId);
+        const res = await callNative('remoteRenameComic', {
+          ip: onlineShelfPeer.ip,
+          port: onlineShelfPeer.port,
+          id: currentRenameComicId,
+          title: comic ? comic.title : '',
+          newTitle
+        });
+        if (res && res.ok) {
+          if (comic) comic.title = newTitle;
+          closeRenameComicModal();
+          renderShelf();
+          completeRadarProgress('重命名完成');
+          hideRadarProgress(800);
+          showToast(`✏️ 已将远程漫画重命名为《${newTitle}》`);
+        } else {
+          completeRadarProgress('重命名失败');
+          hideRadarProgress(1000);
+          if (errEl) {
+            errEl.innerText = '⚠️ ' + ((res && res.error) || '重命名失败');
+            errEl.style.display = 'block';
+          }
+        }
+        return;
+      }
+
       const res = await callNative('renameComic', {
         id: currentRenameComicId,
         newTitle
@@ -3319,26 +4917,17 @@
   }
 
   // ========================= Wi-Fi 局域网漫画互传 =========================
-  let lanPeers = [];
-  let selectedLanPeer = null;
-  let lanRemoteComics = [];
-  let currentLanTab = 'pull'; // 'pull' (从对方下载) | 'push' (发送给对方)
-  let lanOnlyMissingFilter = false; // 一键过滤：仅显示本机没有/对方没有的漫画
-  let selectedLanPullIds = new Set();
-  let selectedLanPushIds = new Set();
-  let isLanTransferring = false;
-  let lanProgressHideTimer = null;
-  let lastAnnouncedPeerKey = '';
-  let lastAnnouncedPeerTime = 0;
+// (lan vars declared at top)
 
   function updateLanConnectionBadges(peer) {
     const pill = document.getElementById('lan-modal-conn-pill');
     const headerBtn = document.getElementById('btn-header-lan-transfer');
     const headerText = document.getElementById('header-lan-btn-text');
+    const shelfBtn = document.getElementById('btn-lan-enter-online-shelf');
     if (peer && peer.deviceName) {
       if (pill) {
         pill.style.display = 'inline-block';
-        pill.innerText = `🟢 已连接: ${peer.deviceName} (${peer.ip})`;
+        pill.innerText = `🟢 已连接: ${peer.deviceName}`;
       }
       if (headerBtn) {
         headerBtn.style.borderColor = 'rgba(16, 185, 129, 0.55)';
@@ -3347,6 +4936,7 @@
       if (headerText) {
         headerText.innerText = `互传 · 已连 ${peer.deviceName}`;
       }
+      if (shelfBtn) shelfBtn.style.display = 'inline-block';
     } else {
       if (pill) pill.style.display = 'none';
       if (headerBtn) {
@@ -3356,7 +4946,758 @@
       if (headerText) {
         headerText.innerText = '局域网互传';
       }
+      if (shelfBtn) shelfBtn.style.display = 'none';
     }
+    updateWhitelistButtonState();
+  }
+
+  function isCurrentPeerWhitelisted() {
+    if (!selectedLanPeer || !selectedLanPeer.deviceId) return false;
+    return localWhitelist.some(w => w.deviceId === selectedLanPeer.deviceId);
+  }
+
+  
+  // ========================= 多语言系统 (Item 7: 支持 zh / en / ja) =========================
+  const I18N = {
+    zh: {
+      appName: 'YY漫画阅读器',
+      desktopTag: 'Windows 桌面原生版',
+      searchPlaceholder: '模糊搜索漫画名字...',
+      refreshShelf: '刷新目录',
+      lanTransfer: '局域网互传',
+      settings: '设置',
+      multiSlice: '多选切片导入',
+      importFolder: '导入漫画文件夹',
+      themeSystem: '🖥️ 跟随系统 (System)',
+      themeDark: '🌙 暗色主题 (Dark)',
+      themeLight: '☀️ 浅色主题 (Light)',
+      settingsTitle: '设置与偏好 (Windows 桌面版)',
+      lanCardTitle: '📡 局域网互传与同步',
+      lanCardDesc: '在局域网内搜索并连接安卓手机或其他电脑，实时双向互传漫画、在线阅读、同步阅读进度。',
+      openLanBtn: '📡 进入局域网互传功能页',
+      themeCardTitle: '🎨 界面主题外观',
+      themeCardDesc: '选择应用程序的明暗外观色彩风格：',
+      langCardTitle: '🌐 界面语言 / Language',
+      langCardDesc: '选择系统界面语言（支持简体中文、English、日本語）：',
+      sortCardTitle: '⇅ 书架排序模式',
+      sortLabel: '排序:',
+      sortName: '漫画名称 (A-Z)',
+      sortTime: '🕒 导入时间 (最新在前)',
+      sortReads: '🔥 阅读次数最多',
+      sortRecent: '⏱️ 最近阅读',
+      sortPages: '📄 切片页数最多',
+      shelfStatsFormat: (count) => `共收录 ${count} 部漫画 · 独立保存在本地磁盘`,
+      paginationDisplay: (start, end, total) => `显示第 <b>${start}-${end}</b> 部 / 共 <b>${total}</b> 部`,
+      pageSizeLabel: '每页条数:',
+      pageSizeSuffix: '条/页',
+      firstPage: '首页',
+      prevPage: '上一页',
+      nextPage: '下一页',
+      lastPage: '末页',
+      jumpTo: '跳至',
+      pageUnit: '页',
+      jumpBtn: '跳转',
+      missingComics: '📁 丢失与未显示书籍',
+      dataStorage: '💾 独立本地磁盘存储',
+      clearShelf: '🧹 书架数据管理',
+      disconnect: '🔌 断开连接',
+      blacklist: '🚫 黑名单管理',
+      addBlacklist: '🚫 加入黑名单',
+      whitelist: '⭐ 信任白名单',
+      scanDevices: '🔄 扫描局域网设备',
+      connectIp: '连接 IP',
+      manualIpPlaceholder: '手动输入对方IP (如 192.168.1.5)',
+      downloadFromPeer: '从对方下载',
+      sendToPeer: '发送本机漫画',
+      onlyMissing: '仅显示本机没有',
+      selectAll: '全选',
+      onlineShelf: '☁️ 浏览在线书架 (免下载)'
+    },
+    en: {
+      appName: 'YY Comic Reader',
+      desktopTag: 'Windows Native Edition',
+      searchPlaceholder: 'Search comics by title...',
+      refreshShelf: 'Refresh Shelf',
+      lanTransfer: 'LAN Transfer',
+      settings: 'Settings',
+      multiSlice: 'Import Images',
+      importFolder: 'Import Folder',
+      themeSystem: '🖥️ Follow System',
+      themeDark: '🌙 Dark Theme',
+      themeLight: '☀️ Light Theme',
+      settingsTitle: 'Settings & Preferences',
+      lanCardTitle: '📡 LAN Transfer & Sync',
+      lanCardDesc: 'Discover and connect Android devices or PCs on the same Wi-Fi to sync comics and reading progress.',
+      openLanBtn: '📡 Open LAN Transfer Panel',
+      themeCardTitle: '🎨 Theme Appearance',
+      themeCardDesc: 'Choose light or dark visual theme:',
+      langCardTitle: '🌐 Language / 界面语言',
+      langCardDesc: 'Select application display language:',
+      sortCardTitle: '⇅ Shelf Sort Mode',
+      sortLabel: 'Sort:',
+      sortName: 'Title (A-Z)',
+      sortTime: '🕒 Import Date (Newest)',
+      sortReads: '🔥 Most Read',
+      sortRecent: '⏱️ Recently Read',
+      sortPages: '📄 Most Pages',
+      shelfStatsFormat: (count) => `Total ${count} comics · Saved locally`,
+      paginationDisplay: (start, end, total) => `Showing <b>${start}-${end}</b> of <b>${total}</b> comics`,
+      pageSizeLabel: 'Items/page:',
+      pageSizeSuffix: '/page',
+      firstPage: 'First',
+      prevPage: 'Prev',
+      nextPage: 'Next',
+      lastPage: 'Last',
+      jumpTo: 'Go to',
+      pageUnit: 'page',
+      jumpBtn: 'Go',
+      missingComics: '📁 Missing / Hidden Comics',
+      dataStorage: '💾 Local Disk Storage',
+      clearShelf: '🧹 Clear Shelf Data',
+      disconnect: '🔌 Disconnect',
+      blacklist: '🚫 Blacklist',
+      addBlacklist: '🚫 Block Device',
+      whitelist: '⭐ Whitelist',
+      scanDevices: '🔄 Scan LAN Devices',
+      connectIp: 'Connect IP',
+      manualIpPlaceholder: 'Enter target IP (e.g. 192.168.1.5)',
+      downloadFromPeer: 'Download from Remote',
+      sendToPeer: 'Send to Remote',
+      onlyMissing: 'Missing Only',
+      selectAll: 'Select All',
+      onlineShelf: '☁️ Browse Online Shelf'
+    },
+    ja: {
+      appName: 'YY 漫画リーダー',
+      desktopTag: 'Windows ネイティブ版',
+      searchPlaceholder: '漫画のタイトルを検索...',
+      refreshShelf: '本棚更新',
+      lanTransfer: 'LAN 転送',
+      settings: '設定',
+      multiSlice: '切片画像インポート',
+      importFolder: 'フォルダをインポート',
+      themeSystem: '🖥️ システムに従う',
+      themeDark: '🌙 ダークテーマ (Dark)',
+      themeLight: '☀️ ライトテーマ (Light)',
+      settingsTitle: '設定と環境設定',
+      lanCardTitle: '📡 LAN 双方向転送と同期',
+      lanCardDesc: 'Wi-Fi 経由で Android スマホや PC と接続し、漫画の双方向転送、オンライン閲覧、読書進捗を同期。',
+      openLanBtn: '📡 LAN 転送画面を開く',
+      themeCardTitle: '🎨 テーマの外観',
+      themeCardDesc: 'アプリのダーク/ライトテーマを選択:',
+      langCardTitle: '🌐 言語 / Language',
+      langCardDesc: '表示言語を選択してください:',
+      sortCardTitle: '⇅ 本棚の並び替え',
+      sortLabel: '並び順:',
+      sortName: 'タイトル順 (A-Z)',
+      sortTime: '🕒 追加日時 (新しい順)',
+      sortReads: '🔥 最も読まれた',
+      sortRecent: '⏱️ 最近閲覧',
+      sortPages: '📄 ページ数順',
+      shelfStatsFormat: (count) => `合計 ${count} 冊の漫画 · ローカル独立保存`,
+      paginationDisplay: (start, end, total) => `<b>${start}-${end}</b> 件を表示中 / 全 <b>${total}</b> 件`,
+      pageSizeLabel: '件数/頁:',
+      pageSizeSuffix: '件/頁',
+      firstPage: '最初',
+      prevPage: '前へ',
+      nextPage: '次へ',
+      lastPage: '最後',
+      jumpTo: '移動',
+      pageUnit: 'ページ',
+      jumpBtn: 'ジャンプ',
+      missingComics: '📁 未検出・移動された漫画',
+      dataStorage: '💾 ローカル独立ストレージ',
+      clearShelf: '🧹 本棚データを消去',
+      disconnect: '🔌 切断',
+      blacklist: '🚫 ブラックリスト',
+      addBlacklist: '🚫 拒否リストに追加',
+      whitelist: '⭐ ホワイトリスト',
+      scanDevices: '🔄 デバイスを再検索',
+      connectIp: 'IP 接続',
+      manualIpPlaceholder: 'IP アドレスを入力 (例: 192.168.1.5)',
+      downloadFromPeer: '相手からダウンロード',
+      sendToPeer: '漫画を相手に送信',
+      onlyMissing: '未所持のみ表示',
+      selectAll: 'すべて選択',
+      onlineShelf: '☁️ オンライン本棚を閲覧'
+    }
+  };
+
+  function setLanguage(lang) {
+    if (!I18N[lang]) lang = 'zh';
+    currentLang = lang;
+    applyLanguage(currentLang);
+    const sel = document.getElementById('settings-lang-select');
+    if (sel) sel.value = currentLang;
+    callNative('setLanguage', { language: currentLang }).catch(() => {});
+  }
+
+  function applyLanguage(lang) {
+    const d = I18N[lang] || I18N.zh;
+    const appTitle = document.getElementById('app-main-title');
+    if (appTitle) appTitle.innerText = d.appName;
+    const desktopTag = document.getElementById('app-desktop-tag');
+    if (desktopTag) desktopTag.innerText = d.desktopTag;
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) searchInput.placeholder = d.searchPlaceholder;
+    const refreshBtnText = document.getElementById('btn-refresh-text');
+    if (refreshBtnText) refreshBtnText.innerText = d.refreshShelf;
+    const settingsBtnText = document.getElementById('btn-settings-text');
+    if (settingsBtnText) settingsBtnText.innerText = d.settings;
+    const multiSliceText = document.getElementById('btn-multi-slice-text');
+    if (multiSliceText) multiSliceText.innerText = d.multiSlice;
+    const importFolderText = document.getElementById('btn-import-folder-text');
+    if (importFolderText) importFolderText.innerText = d.importFolder;
+    const settingsTitle = document.getElementById('settings-modal-title');
+    if (settingsTitle) settingsTitle.innerText = d.settingsTitle;
+    const btnThemeSystem = document.getElementById('btn-theme-system');
+    if (btnThemeSystem) btnThemeSystem.innerText = d.themeSystem;
+    const btnThemeDark = document.getElementById('btn-theme-dark');
+    if (btnThemeDark) btnThemeDark.innerText = d.themeDark;
+    const btnThemeLight = document.getElementById('btn-theme-light');
+    if (btnThemeLight) btnThemeLight.innerText = d.themeLight;
+    const lanCardTitle = document.getElementById('settings-lan-card-title');
+    if (lanCardTitle) lanCardTitle.innerText = d.lanCardTitle;
+    const lanCardDesc = document.getElementById('settings-lan-card-desc');
+    if (lanCardDesc) lanCardDesc.innerText = d.lanCardDesc;
+    const openLanBtn = document.getElementById('btn-open-lan-from-settings');
+    if (openLanBtn) openLanBtn.innerText = d.openLanBtn;
+    const themeCardTitle = document.getElementById('settings-theme-card-title');
+    if (themeCardTitle) themeCardTitle.innerText = d.themeCardTitle;
+    const themeCardDesc = document.getElementById('settings-theme-card-desc');
+    if (themeCardDesc) themeCardDesc.innerText = d.themeCardDesc;
+    const langCardTitle = document.getElementById('settings-lang-card-title');
+    if (langCardTitle) langCardTitle.innerText = d.langCardTitle;
+    const langCardDesc = document.getElementById('settings-lang-card-desc');
+    if (langCardDesc) langCardDesc.innerText = d.langCardDesc;
+    const btnDisconnect = document.getElementById('btn-lan-disconnect');
+    if (btnDisconnect) btnDisconnect.innerText = d.disconnect;
+
+    // 更新排序下拉选框文字
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+      const curVal = sortSelect.value;
+      sortSelect.innerHTML = `
+        <option value="title_asc">${d.sortName}</option>
+        <option value="import_time_desc">${d.sortTime}</option>
+        <option value="views_desc">${d.sortReads}</option>
+        <option value="recent_read">${d.sortRecent}</option>
+        <option value="pages_desc">${d.sortPages}</option>
+      `;
+      sortSelect.value = curVal;
+    }
+    const settingsSortSelect = document.getElementById('settings-sort-select');
+    if (settingsSortSelect) {
+      const curVal = settingsSortSelect.value;
+      settingsSortSelect.innerHTML = `
+        <option value="title_asc">${d.sortName}</option>
+        <option value="import_time_desc">${d.sortTime}</option>
+        <option value="views_desc">${d.sortReads}</option>
+        <option value="recent_read">${d.sortRecent}</option>
+        <option value="pages_desc">${d.sortPages}</option>
+      `;
+      settingsSortSelect.value = curVal;
+    }
+
+    // 重新渲染分页与书架统计信息
+    if (typeof renderShelfPagination === 'function') {
+      try { renderShelfPagination(); } catch (_) {}
+    }
+    const shelfStatsEl = document.getElementById('shelf-stats-text');
+    if (shelfStatsEl && d.shelfStatsFormat) {
+      const totalCount = (comicsList && comicsList.length) || 0;
+      shelfStatsEl.innerHTML = d.shelfStatsFormat(totalCount);
+    }
+  }
+
+  // ========================= 主题外观切换系统 (跟随系统 system / 暗色 dark / 浅色 light) =========================
+  let systemThemeMedia = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  let systemThemeListener = null;
+
+  function applyThemeClass(isLight) {
+    document.body.classList.toggle('theme-light', isLight);
+  }
+
+  function setTheme(theme) {
+    currentTheme = (theme === 'light' || theme === 'dark' || theme === 'system') ? theme : 'system';
+
+    // 移除之前的系统主题监听
+    if (systemThemeMedia && systemThemeListener) {
+      try {
+        if (systemThemeMedia.removeEventListener) {
+          systemThemeMedia.removeEventListener('change', systemThemeListener);
+        } else if (systemThemeMedia.removeListener) {
+          systemThemeMedia.removeListener(systemThemeListener);
+        }
+      } catch (_) {}
+      systemThemeListener = null;
+    }
+
+    if (currentTheme === 'system') {
+      const isDark = systemThemeMedia ? systemThemeMedia.matches : true;
+      applyThemeClass(!isDark);
+
+      systemThemeListener = (e) => {
+        if (currentTheme === 'system') {
+          applyThemeClass(!e.matches);
+        }
+      };
+      try {
+        if (systemThemeMedia.addEventListener) {
+          systemThemeMedia.addEventListener('change', systemThemeListener);
+        } else if (systemThemeMedia.addListener) {
+          systemThemeMedia.addListener(systemThemeListener);
+        }
+      } catch (_) {}
+    } else {
+      applyThemeClass(currentTheme === 'light');
+    }
+
+    const btnSystem = document.getElementById('btn-theme-system');
+    const btnDark = document.getElementById('btn-theme-dark');
+    const btnLight = document.getElementById('btn-theme-light');
+    if (btnSystem) btnSystem.classList.toggle('active', currentTheme === 'system');
+    if (btnDark) btnDark.classList.toggle('active', currentTheme === 'dark');
+    if (btnLight) btnLight.classList.toggle('active', currentTheme === 'light');
+
+    callNative('setTheme', { theme: currentTheme }).catch(() => {});
+  }
+// ========================= 主动断开连接 (Item 4) =========================
+  async function disconnectCurrentLanPeer() {
+    if (!selectedLanPeer) return;
+    const peer = selectedLanPeer;
+    const peerName = peer.deviceName || peer.ip;
+    selectedLanPeer = null;
+    lanRemoteComics = [];
+    selectedLanPullIds.clear();
+    selectedLanPushIds.clear();
+    if (isOnlineShelfMode) {
+      exitOnlineShelfMode();
+    }
+    updateLanConnectionBadges(null);
+    updateWhitelistButtonState();
+    renderLanPeers();
+    renderLanComicList();
+    try {
+      await callNative('lanDisconnect', { ip: peer.ip, port: peer.port });
+    } catch (_) {}
+    showToast(`已断开与【${peerName}】的连接，已返回本地书架`);
+  }
+
+  // ========================= 黑名单管理系统 (Item 5: 自动拒绝黑名单设备) =========================
+  function updateLanBlacklistUi() {
+    const countEl = document.getElementById('lan-blacklist-count');
+    if (countEl) countEl.innerText = localBlacklist.length;
+    renderLanBlacklistModalItems();
+  }
+
+  function openLanBlacklistModal() {
+    renderLanBlacklistModalItems();
+    const modal = document.getElementById('lan-blacklist-modal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeLanBlacklistModal() {
+    const modal = document.getElementById('lan-blacklist-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function renderLanBlacklistModalItems() {
+    const listEl = document.getElementById('lan-blacklist-items');
+    if (!listEl) return;
+    if (!localBlacklist || localBlacklist.length === 0) {
+      listEl.innerHTML = '<div style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 24px;">暂无阻止设备黑名单</div>';
+      return;
+    }
+    listEl.innerHTML = localBlacklist.map(b => {
+      const isAndroid = (b.platform || '').toLowerCase().includes('android');
+      const icon = isAndroid ? '📱' : '💻';
+      return `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #121318; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.2rem;">${icon}</span>
+            <div>
+              <div style="font-size: 0.88rem; font-weight: 700; color: #f8fafc;">${escapeHtml(b.deviceName || '未知设备')}</div>
+              <div style="font-size: 0.72rem; color: #f87171;">${escapeHtml(b.platform || '')} · ${escapeHtml(b.ip || '')} · 静默直接拒绝连接</div>
+            </div>
+          </div>
+          <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 10px; color: #6ee7b7; border-color: rgba(16,185,129,0.35);" onclick="removeBlacklistDevice('${escapeHtml(b.deviceId)}')">
+            移出黑名单
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function addDeviceToBlacklist(devId, devName, ip, platform) {
+    if (!devId && !ip) return;
+    if (!confirm(`确定要将设备【${devName || ip}】加入黑名单吗？\n\n⚠️ 加入黑名单后，该设备发起的任何连接请求都将被直接拒绝，且不会对您弹出提示。`)) return;
+    const res = await callNative('lanAddToBlacklist', { deviceId: devId, deviceName: devName, ip: ip, platform: platform });
+    if (res && res.blacklist) localBlacklist = res.blacklist;
+    if (res && res.whitelist) localWhitelist = res.whitelist;
+    updateLanBlacklistUi();
+    updateLanWhitelistUi();
+    if (selectedLanPeer && ((devId && selectedLanPeer.deviceId === devId) || selectedLanPeer.ip === ip)) {
+      disconnectCurrentLanPeer();
+    }
+    renderLanPeers();
+    showToast(`已将【${devName || ip}】加入黑名单`);
+  }
+
+  async function removeBlacklistDevice(devId) {
+    const res = await callNative('lanRemoveFromBlacklist', { deviceId: devId });
+    if (res && res.blacklist) localBlacklist = res.blacklist;
+    updateLanBlacklistUi();
+    renderLanPeers();
+    showToast('已从黑名单中移出');
+  }
+
+  function blacklistCurrentPeer() {
+    if (!selectedLanPeer) return;
+    addDeviceToBlacklist(selectedLanPeer.deviceId, selectedLanPeer.deviceName, selectedLanPeer.ip, selectedLanPeer.platform);
+  }
+
+  // ========================= 正在连接等待弹窗 (Item 2) =========================
+  function showLanConnectingModal(peer) {
+    isConnectingCancelled = false;
+    const modal = document.getElementById('lan-connecting-modal');
+    const nameEl = document.getElementById('lan-connecting-name');
+    const statusEl = document.getElementById('lan-connecting-status');
+    const timerEl = document.getElementById('lan-connecting-timer');
+    if (nameEl) nameEl.innerText = `${peer.deviceName || peer.ip} (${peer.ip})`;
+    if (statusEl) statusEl.innerText = '正在向对方发送配对请求，等待对方确认...';
+    connectingSecondsLeft = 30;
+    if (timerEl) timerEl.innerText = `⏱️ ${connectingSecondsLeft}s`;
+    if (connectingTimer) clearInterval(connectingTimer);
+    connectingTimer = setInterval(() => {
+      connectingSecondsLeft--;
+      if (timerEl) timerEl.innerText = `⏱️ ${connectingSecondsLeft}s`;
+      if (connectingSecondsLeft <= 0) {
+        clearInterval(connectingTimer);
+        connectingTimer = null;
+        closeLanConnectingModal();
+      }
+    }, 1000);
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeLanConnectingModal() {
+    if (connectingTimer) {
+      clearInterval(connectingTimer);
+      connectingTimer = null;
+    }
+    const modal = document.getElementById('lan-connecting-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function cancelConnectingToPeer() {
+    isConnectingCancelled = true;
+    closeLanConnectingModal();
+    showToast('已取消连接');
+  }
+
+  function updateWhitelistButtonState() {
+    const btn = document.getElementById('btn-lan-toggle-whitelist');
+    const btnDisconnect = document.getElementById('btn-lan-disconnect');
+    const btnBlacklist = document.getElementById('btn-lan-blacklist-current');
+    if (selectedLanPeer) {
+      if (btn) {
+        btn.style.display = selectedLanPeer.deviceId ? 'inline-block' : 'none';
+        const whitelisted = isCurrentPeerWhitelisted();
+        btn.innerText = whitelisted ? '⭐ 移出白名单' : '⭐ 加入白名单';
+        btn.style.color = whitelisted ? '#f87171' : '#6ee7b7';
+        btn.style.borderColor = whitelisted ? 'rgba(248,113,113,0.4)' : 'rgba(16,185,129,0.4)';
+      }
+      if (btnDisconnect) btnDisconnect.style.display = 'inline-block';
+      if (btnBlacklist) btnBlacklist.style.display = 'inline-block';
+    } else {
+      if (btn) btn.style.display = 'none';
+      if (btnDisconnect) btnDisconnect.style.display = 'none';
+      if (btnBlacklist) btnBlacklist.style.display = 'none';
+    }
+  }
+
+  async function toggleCurrentPeerWhitelist() {
+    if (!selectedLanPeer || !selectedLanPeer.deviceId) return;
+    const whitelisted = isCurrentPeerWhitelisted();
+    if (whitelisted) {
+      const res = await callNative('lanRemoveFromWhitelist', { deviceId: selectedLanPeer.deviceId });
+      if (res && res.whitelist) localWhitelist = res.whitelist;
+      showToast(`已将【${selectedLanPeer.deviceName}】移出白名单`);
+    } else {
+      const res = await callNative('lanAddToWhitelist', {
+        deviceId: selectedLanPeer.deviceId,
+        deviceName: selectedLanPeer.deviceName,
+        platform: selectedLanPeer.platform
+      });
+      if (res && res.whitelist) localWhitelist = res.whitelist;
+      showToast(`⭐ 已将【${selectedLanPeer.deviceName}】加入白名单，今后可直接免确认连接！`);
+    }
+    updateLanWhitelistUi();
+    updateWhitelistButtonState();
+    renderLanPeers();
+  }
+
+  function updateLanWhitelistUi() {
+    const countEl = document.getElementById('lan-whitelist-count');
+    if (countEl) countEl.innerText = localWhitelist.length;
+    renderLanWhitelistModalItems();
+  }
+
+  function openLanWhitelistModal() {
+    renderLanWhitelistModalItems();
+    const modal = document.getElementById('lan-whitelist-modal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeLanWhitelistModal() {
+    const modal = document.getElementById('lan-whitelist-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function renderLanWhitelistModalItems() {
+    const listEl = document.getElementById('lan-whitelist-items');
+    if (!listEl) return;
+    if (!localWhitelist || localWhitelist.length === 0) {
+      listEl.innerHTML = '<div style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 24px;">暂无信任设备白名单</div>';
+      return;
+    }
+    listEl.innerHTML = localWhitelist.map(w => {
+      const isAndroid = (w.platform || '').toLowerCase().includes('android');
+      const icon = isAndroid ? '📱' : '💻';
+      return `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #121318; border: 1px solid #2A2F42; border-radius: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.2rem;">${icon}</span>
+            <div>
+              <div style="font-size: 0.88rem; font-weight: 700; color: #f8fafc;">${escapeHtml(w.deviceName || '未知设备')}</div>
+              <div style="font-size: 0.72rem; color: #64748b;">${escapeHtml(w.platform || '')} · 免确认连接</div>
+            </div>
+          </div>
+          <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 8px; color: #f87171; border-color: rgba(248,113,113,0.3);" onclick="removeWhitelistDevice('${escapeHtml(w.deviceId)}')">
+            🗑️ 移出
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function removeWhitelistDevice(devId) {
+    const res = await callNative('lanRemoveFromWhitelist', { deviceId: devId });
+    if (res && res.whitelist) localWhitelist = res.whitelist;
+    updateLanWhitelistUi();
+    updateWhitelistButtonState();
+    renderLanPeers();
+    showToast('已从白名单中移出');
+  }
+
+  // 密码保护设置逻辑
+  function updateLanPasswordProtectionUi() {
+    const toggle = document.getElementById('lan-require-pwd-toggle');
+    const statusText = document.getElementById('lan-pwd-status-text');
+    const changeBtn = document.getElementById('btn-lan-change-pwd');
+    if (toggle) toggle.checked = localRequirePassword;
+    if (statusText) {
+      statusText.innerText = localRequirePassword
+        ? '已启用（对方需输入密码直接连接）'
+        : '未启用（对方连接需本机手动点击确认）';
+      statusText.style.color = localRequirePassword ? '#6ee7b7' : '#94a3b8';
+    }
+    if (changeBtn) {
+      changeBtn.style.display = localRequirePassword ? 'inline-block' : 'none';
+    }
+  }
+
+  function toggleLanPasswordProtection(enable) {
+    if (enable) {
+      if (!localHasPassword) {
+        // 未设置密码，强制弹出密码设置弹窗
+        openLanPasswordSetupModal(false);
+        const toggle = document.getElementById('lan-require-pwd-toggle');
+        if (toggle) toggle.checked = false;
+        return;
+      }
+      callNative('lanSetRequirePassword', { enable: true }).then(res => {
+        if (res && res.ok) {
+          localRequirePassword = true;
+          updateLanPasswordProtectionUi();
+          showToast('🔒 已开启连接密码保护');
+        }
+      });
+    } else {
+      callNative('lanSetRequirePassword', { enable: false }).then(res => {
+        if (res && res.ok) {
+          localRequirePassword = false;
+          updateLanPasswordProtectionUi();
+          showToast('🔓 已关闭密码保护，改用手动确认连接');
+        }
+      });
+    }
+  }
+
+  let isModifyingPassword = false;
+  function openLanPasswordSetupModal(isModify = false) {
+    isModifyingPassword = isModify;
+    const modal = document.getElementById('lan-password-setup-modal');
+    const p1 = document.getElementById('lan-self-password-input');
+    const p2 = document.getElementById('lan-self-password-confirm');
+    const err = document.getElementById('lan-setup-error-tip');
+    if (p1) p1.value = '';
+    if (p2) p2.value = '';
+    if (err) err.style.display = 'none';
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeLanPasswordSetupModal() {
+    const modal = document.getElementById('lan-password-setup-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  async function submitLanSelfPassword() {
+    const p1 = document.getElementById('lan-self-password-input')?.value || '';
+    const p2 = document.getElementById('lan-self-password-confirm')?.value || '';
+    const err = document.getElementById('lan-setup-error-tip');
+
+    // 校验规则：至少 8 位，包含数字、字母和特殊符号
+    const regex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+    if (!regex.test(p1)) {
+      if (err) {
+        err.innerText = '密码至少包含8位字符，且必须同时包含数字、字母和特殊符号！';
+        err.style.display = 'block';
+      }
+      return;
+    }
+    if (p1 !== p2) {
+      if (err) {
+        err.innerText = '两次输入的密码不一致，请重新输入！';
+        err.style.display = 'block';
+      }
+      return;
+    }
+
+    try {
+      const res = await callNative('lanSetRequirePassword', { enable: true, password: p1 });
+      if (res && res.ok) {
+        localRequirePassword = true;
+        localHasPassword = true;
+        updateLanPasswordProtectionUi();
+        closeLanPasswordSetupModal();
+        showToast(isModifyingPassword ? '🔑 密码修改成功！' : '🔒 密码设置成功，已启用连接密码保护！');
+      } else {
+        if (err) {
+          err.innerText = (res && res.error) || '设置密码失败';
+          err.style.display = 'block';
+        }
+      }
+    } catch (e) {
+      if (err) {
+        err.innerText = e.message;
+        err.style.display = 'block';
+      }
+    }
+  }
+
+  function openLanInputPasswordModal(peer, errText = '') {
+    const modal = document.getElementById('lan-input-password-modal');
+    const tip = document.getElementById('lan-input-password-tip');
+    const input = document.getElementById('lan-target-password-input');
+    const err = document.getElementById('lan-password-error-tip');
+
+    if (tip && peer) tip.innerText = `【${peer.deviceName}】已开启连接密码保护，请输入该设备的连接密码：`;
+    if (input) {
+      if (!errText) input.value = '';
+      setTimeout(() => {
+        input.focus();
+        if (errText) input.select();
+      }, 100);
+    }
+    if (err) {
+      if (errText) {
+        err.innerText = errText;
+        err.style.display = 'block';
+      } else {
+        err.style.display = 'none';
+      }
+    }
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeLanInputPasswordModal() {
+    const modal = document.getElementById('lan-input-password-modal');
+    if (modal) modal.style.display = 'none';
+    pendingConnectTargetPeer = null;
+  }
+
+  async function submitLanTargetPassword() {
+    const input = document.getElementById('lan-target-password-input');
+    const err = document.getElementById('lan-password-error-tip');
+    const pwd = input ? input.value : '';
+    if (!pwd) {
+      if (err) {
+        err.innerText = '⚠️ 请输入连接密码';
+        err.style.display = 'block';
+      }
+      if (input) input.focus();
+      return;
+    }
+    if (!pendingConnectTargetPeer) return;
+
+    const peer = pendingConnectTargetPeer;
+    await performLanConnect(peer, pwd);
+  }
+
+  // 接收到对端连接申请时的弹窗处理
+  function handleIncomingPairRequest(req) {
+    if (!req) return;
+    currentIncomingPairRequest = req;
+    const modal = document.getElementById('lan-pair-modal');
+    const nameEl = document.getElementById('lan-pair-name');
+    const descEl = document.getElementById('lan-pair-desc');
+    const iconEl = document.getElementById('lan-pair-icon');
+    const countdownEl = document.getElementById('lan-pair-countdown');
+
+    const isAndroid = (req.fromPlatform || '').toLowerCase().includes('android');
+    if (iconEl) iconEl.innerText = isAndroid ? '📱' : '💻';
+    if (nameEl) nameEl.innerText = req.fromName || '未知设备';
+    if (descEl) descEl.innerHTML = `来自 <b>${escapeHtml(req.fromName)}</b>（${escapeHtml(req.fromPlatform || '移动端')}）的连接请求。<br>对方正在申请与您进行漫画互传，是否允许？`;
+
+    incomingPairSecondsLeft = 30;
+    if (countdownEl) countdownEl.innerText = `⏱️ 倒计时: ${incomingPairSecondsLeft} 秒 (超时将自动拒绝并失效)`;
+    if (incomingPairTimer) clearInterval(incomingPairTimer);
+    incomingPairTimer = setInterval(() => {
+      incomingPairSecondsLeft--;
+      if (countdownEl) countdownEl.innerText = `⏱️ 倒计时: ${incomingPairSecondsLeft} 秒 (超时将自动拒绝并失效)`;
+      if (incomingPairSecondsLeft <= 0) {
+        clearInterval(incomingPairTimer);
+        incomingPairTimer = null;
+        respondCurrentPairRequest(false, true);
+      }
+    }, 1000);
+
+    if (modal) modal.style.display = 'flex';
+  }
+
+  async function respondCurrentPairRequest(accept, isTimeout = false) {
+    if (incomingPairTimer) {
+      clearInterval(incomingPairTimer);
+      incomingPairTimer = null;
+    }
+    const modal = document.getElementById('lan-pair-modal');
+    if (modal) modal.style.display = 'none';
+    if (!currentIncomingPairRequest) return;
+    const req = currentIncomingPairRequest;
+    currentIncomingPairRequest = null;
+
+    try {
+      await callNative('lanRespondPair', { reqId: req.reqId, accept });
+      if (isTimeout) {
+        showToast(`⏱️ 连接请求已超时并自动拒绝`);
+      } else if (accept) {
+        showToast(`已允许【${req.fromName}】连接本机`);
+      } else {
+        showToast(`已拒绝连接请求`);
+      }
+    } catch (_) {}
   }
 
   async function handleIncomingPeerConnected(peer) {
@@ -3400,6 +5741,33 @@
     const modal = document.getElementById('lan-transfer-modal');
     if (modal) modal.style.display = 'flex';
 
+    // 严防幽灵连接与瞬间呈现：如果已有连接设备，立即将当前已连接设备装入列表并呈现，绝不让用户等待扫描！
+    if (selectedLanPeer) {
+      if (!lanPeers.some(p => p.ip === selectedLanPeer.ip && p.port === selectedLanPeer.port)) {
+        lanPeers.unshift(selectedLanPeer);
+      }
+      renderLanPeers();
+      renderLanComicList();
+      updateLanConnectionBadges(selectedLanPeer);
+
+      // 后台静默校验连接活性，若对方已离线才清理
+      callNative('lanConnectManual', { host: selectedLanPeer.ip, port: selectedLanPeer.port })
+        .then(pingRes => {
+          if (!pingRes || !pingRes.peer) {
+            selectedLanPeer = null;
+            updateLanConnectionBadges(null);
+            renderLanPeers();
+            renderLanComicList();
+          }
+        })
+        .catch(() => {
+          selectedLanPeer = null;
+          updateLanConnectionBadges(null);
+          renderLanPeers();
+          renderLanComicList();
+        });
+    }
+
     try {
       const info = await callNative('lanGetInfo');
       if (info) {
@@ -3411,8 +5779,17 @@
       }
     } catch (_) {}
 
-    renderLanComicList();
-    await discoverLanPeers();
+    updateLanPasswordProtectionUi();
+    updateLanWhitelistUi();
+    updateWhitelistButtonState();
+    loadLanUpdateInfo();
+
+    // 如果还没有连接设备，自动执行扫描；如果已处于连接状态，直接呈现已连设备，后台静默刷新其他可用设备（零等待）
+    if (!selectedLanPeer) {
+      await discoverLanPeers(false);
+    } else {
+      discoverLanPeers(true);
+    }
   }
 
   function closeLanTransferModal() {
@@ -3436,15 +5813,99 @@
     }
   }
 
-  async function discoverLanPeers() {
+  let currentLanUpdateInfo = null;
+
+  async function loadLanUpdateInfo() {
+    try {
+      const info = await callNative('lanGetUpdateInfo');
+      currentLanUpdateInfo = info;
+      const badge = document.getElementById('lan-apk-badge');
+      const subtext = document.getElementById('lan-apk-subtext');
+      if (!badge || !subtext) return;
+
+      if (info && info.hasApk) {
+        const sizeMb = (info.fileSize / (1024 * 1024)).toFixed(2);
+        badge.innerText = `v${info.versionName} (${sizeMb} MB) · 已就绪`;
+        badge.style.background = 'rgba(16, 185, 129, 0.16)';
+        badge.style.borderColor = 'rgba(16, 185, 129, 0.45)';
+        badge.style.color = '#6ee7b7';
+        subtext.innerHTML = `已就绪安装包: <span class="lan-apk-path-text">${escapeHtml(info.apkPath)}</span> · 对方连接时将自动推送更新`;
+      } else {
+        badge.innerText = '未检测到 APK';
+        badge.style.background = 'rgba(239, 68, 68, 0.16)';
+        badge.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+        badge.style.color = '#f87171';
+        subtext.innerText = '未在程序目录或 updates 目录检测到安卓安装包，请点击右侧“选择安装包”按钮。';
+      }
+    } catch (_) {}
+  }
+
+  async function selectCustomApkForPush() {
+    try {
+      const res = await callNative('lanSelectCustomApk');
+      if (res && res.ok && res.hasApk) {
+        showToast(`已指定推送安装包: v${res.versionName}`);
+        await loadLanUpdateInfo();
+      }
+    } catch (e) {
+      showToast('❌ 选择安装包失败: ' + e.message);
+    }
+  }
+
+  async function manualPushUpdateToConnectedPeer() {
+    if (!selectedLanPeer) {
+      showToast('⚠️ 请先连接同一 Wi-Fi 下的安卓手机设备！');
+      return;
+    }
+    const isAndroid = (selectedLanPeer.platform || '').toLowerCase().includes('android');
+    if (!isAndroid) {
+      if (!confirm(`目标设备平台为 ${selectedLanPeer.platform || '未知'}，确认向其推送安卓 APK 更新吗？`)) {
+        return;
+      }
+    }
+
+    try {
+      const pushBtn = document.getElementById('btn-lan-manual-push-update');
+      if (pushBtn) {
+        pushBtn.disabled = true;
+        pushBtn.innerText = '正在推送...';
+      }
+      const res = await callNative('lanPushUpdateToPeer', {
+        ip: selectedLanPeer.ip,
+        port: selectedLanPeer.port,
+        peerName: selectedLanPeer.deviceName,
+        force: true
+      });
+      if (res && res.ok) {
+        showToast(`🚀 已成功向 ${selectedLanPeer.deviceName} 推送安卓端升级通知！`);
+      } else if (res && res.status === 'already_latest') {
+        showToast(`ℹ️ ${res.message || '对方设备已是最新版本，无需升级。'}`);
+      } else {
+        showToast((res && res.message) ? res.message : '推送升级通知失败，请检查目标设备是否在线或已开启互传服务。', 2500);
+      }
+    } catch (e) {
+      showToast('❌ 推送失败: ' + e.message);
+    } finally {
+      const pushBtn = document.getElementById('btn-lan-manual-push-update');
+      if (pushBtn) {
+        pushBtn.disabled = false;
+        pushBtn.innerText = '🚀 立即推送更新';
+      }
+    }
+  }
+
+  async function discoverLanPeers(silent = false) {
     const listEl = document.getElementById('lan-peers-list');
     const scanBtn = document.getElementById('btn-lan-scan');
-    if (scanBtn) {
+    if (scanBtn && !silent) {
       scanBtn.disabled = true;
       scanBtn.innerText = '⏳ 正在扫描...';
     }
-    if (listEl) {
-      listEl.innerHTML = '<div style="font-size: 0.82rem; color: #94a3b8; padding: 4px 0;">正在扫描同一 Wi-Fi 下的安卓与电脑阅读器...</div>';
+    // 只有在非静默且当前列表中没有任何有效设备时，才显示扫描提示（避免擦除已有已连接设备）
+    if (!silent && (!selectedLanPeer && lanPeers.length === 0)) {
+      if (listEl) {
+        listEl.innerHTML = '<div style="font-size: 0.82rem; color: #94a3b8; padding: 4px 0;">正在扫描同一 Wi-Fi 下正在运行漫画阅读器的设备...</div>';
+      }
     }
 
     try {
@@ -3454,17 +5915,24 @@
         const ipEl = document.getElementById('lan-self-ip');
         if (ipEl) ipEl.innerText = `${ipList} (端口 ${res.self.port || 39528})`;
       }
-      lanPeers = (res && res.peers) || [];
-      renderLanPeers();
-      if (lanPeers.length > 0 && !selectedLanPeer) {
-        await selectLanPeer(lanPeers[0]);
+      const scanned = (res && res.peers) || [];
+      // 保持当前已连接设备在列表中
+      if (selectedLanPeer) {
+        const idx = scanned.findIndex(p => p.ip === selectedLanPeer.ip && p.port === selectedLanPeer.port);
+        if (idx >= 0) {
+          scanned[idx] = { ...selectedLanPeer, ...scanned[idx] };
+        } else {
+          scanned.unshift(selectedLanPeer);
+        }
       }
+      lanPeers = scanned;
+      renderLanPeers();
     } catch (e) {
-      if (listEl) {
+      if (!silent && listEl && lanPeers.length === 0) {
         listEl.innerHTML = `<div style="font-size: 0.82rem; color: #fca5a5;">扫描失败: ${escapeHtml(e.message)}</div>`;
       }
     } finally {
-      if (scanBtn) {
+      if (scanBtn && !silent) {
         scanBtn.disabled = false;
         scanBtn.innerText = '🔄 扫描局域网设备';
       }
@@ -3475,24 +5943,27 @@
     const input = document.getElementById('lan-manual-ip');
     const host = input ? input.value.trim() : '';
     if (!host) {
-      alert('请输入对方手机或电脑的局域网 IP 地址（例如 192.168.1.5）');
+      showToast('⚠️ 请输入对方手机或电脑的局域网 IP 地址（例如 192.168.1.5）');
       return;
     }
 
     try {
       const res = await callNative('lanConnectManual', { host, port: 39528 });
-      if (res && res.peer) {
+      if (res && res.isSelf) {
+        showToast('⚠️ ' + (res.error || '不能连接本机自身设备'));
+        return;
+      }
+      if (res && res.peer && res.peer.app === 'YYComicReader') {
         const exists = lanPeers.findIndex(p => p.ip === res.peer.ip && p.port === res.peer.port);
         if (exists >= 0) lanPeers[exists] = res.peer;
         else lanPeers.unshift(res.peer);
         renderLanPeers();
-        await selectLanPeer(res.peer);
-        showToast(`已成功连接到 ${res.peer.deviceName} (${res.peer.ip})`);
+        await initiateConnectToPeer(lanPeers.findIndex(p => p.ip === res.peer.ip));
       } else {
-        alert(`无法连接到 ${host}，请确认对方设备已打开 YY漫画阅读器 且处于同一 Wi-Fi 局域网。`);
+        showToast(`⚠️ 未在 ${host} 上发现正在运行的 YY漫画阅读器，请确认两端软件均已开启`, 2500);
       }
     } catch (e) {
-      alert('连接失败: ' + e.message);
+      showToast('❌ 连接失败: ' + e.message);
     }
   }
 
@@ -3500,34 +5971,154 @@
     const listEl = document.getElementById('lan-peers-list');
     if (!listEl) return;
 
-    if (lanPeers.length === 0) {
+    // 严格过滤：只有安装并运行 YY漫画阅读器的设备才展示
+    const validPeers = lanPeers.filter(p => p.app === 'YYComicReader');
+
+    if (validPeers.length === 0) {
       listEl.innerHTML = `
-        <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.5;">
-          暂未自动发现设备。请确认手机与电脑连接在<b>同一个 Wi-Fi</b> 且已打开阅读器，或在上方直接输入对方局域网 IP 连接。
+        <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.5; padding: 4px 0;">
+          暂未发现同一 Wi-Fi 下正在运行漫画阅读器的设备。请确保两端<b>软件均已启动</b>且连接在同一 Wi-Fi。
         </div>
       `;
       return;
     }
 
-    listEl.innerHTML = lanPeers.map((p, idx) => {
+    const isLight = document.body.classList.contains('theme-light');
+
+    listEl.innerHTML = validPeers.map((p, idx) => {
       const isSelected = selectedLanPeer && selectedLanPeer.ip === p.ip && selectedLanPeer.port === p.port;
-      const icon = (p.platform || '').toLowerCase().includes('android') ? '📱' : '💻';
+      const isAndroid = (p.platform || '').toLowerCase().includes('android');
+      const icon = isAndroid ? '📱' : '💻';
+      const isWhitelisted = localWhitelist && localWhitelist.some(w => w.deviceId && w.deviceId === p.deviceId);
+
       const borderStyle = isSelected
-        ? 'border: 1px solid #6366f1; background: rgba(99, 102, 241, 0.22); color: #fff;'
-        : 'border: 1px solid #2A2F42; background: #121318; color: #cbd5e1;';
+        ? (isLight ? 'border: 1.5px solid #6366f1; background: #EEF2FF; color: #4338CA;' : 'border: 1.5px solid #6366f1; background: rgba(99, 102, 241, 0.22); color: #fff;')
+        : (isLight ? 'border: 1px solid #E2E8F0; background: #FFFFFF; color: #1E293B;' : 'border: 1px solid #2A2F42; background: #121318; color: #cbd5e1;');
+
+      const titleColor = isSelected
+        ? (isLight ? '#4338CA' : '#fff')
+        : (isLight ? '#0F172A' : '#f8fafc');
+
+      const metaColor = isLight ? '#64748B' : '#94a3b8';
+
+      const whitelistBadge = isWhitelisted
+        ? '<span style="background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.4); color: #059669; font-size: 0.7rem; font-weight: 600; padding: 2px 7px; border-radius: 999px;">⭐ 白名单免确认</span>'
+        : '';
+      const pwdBadge = (!isWhitelisted && p.requirePassword)
+        ? '<span style="background: rgba(234, 179, 8, 0.18); border: 1px solid rgba(234, 179, 8, 0.4); color: #d97706; font-size: 0.7rem; font-weight: 600; padding: 2px 7px; border-radius: 999px;">🔒 需密码</span>'
+        : '';
+
       return `
-        <button class="btn" style="${borderStyle} padding: 8px 14px; border-radius: 10px; font-size: 0.82rem;" onclick="selectLanPeerByIndex(${idx})">
-          <span>${icon} <b>${escapeHtml(p.deviceName || p.ip)}</b></span>
-          <span style="font-size: 0.75rem; opacity: 0.85;">(${escapeHtml(p.ip)} · ${p.comicCount || 0}部)</span>
-          ${isSelected ? '<span style="color:#a5b4fc; font-weight:700;">✓ 已连接</span>' : ''}
-        </button>
+        <div class="lan-peer-card" style="${borderStyle} padding: 10px 14px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; transition: all 0.2s; min-width: 260px;" onclick="initiateConnectToPeer(${idx})">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="font-size: 1.5rem; flex-shrink: 0;">${icon}</div>
+            <div>
+              <div style="font-size: 0.9rem; font-weight: 700; color: ${titleColor}; display: flex; align-items: center; gap: 6px;">
+                ${escapeHtml(p.deviceName || '漫画阅读器设备')}
+                ${isSelected ? '<span style="color:#10b981; font-size:0.75rem; font-weight:700;">● 已连接</span>' : ''}
+              </div>
+              <div style="font-size: 0.75rem; color: ${metaColor}; margin-top: 2px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                <span>${escapeHtml(p.platform || '')}</span>
+                <span>·</span>
+                <span>${p.comicCount || 0} 部漫画</span>
+                ${whitelistBadge}
+                ${pwdBadge}
+              </div>
+            </div>
+          </div>
+          <button class="btn ${isSelected ? 'btn-primary' : 'btn-secondary'}" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 8px; flex-shrink: 0;" onclick="event.stopPropagation(); initiateConnectToPeer(${idx})">
+            ${isSelected ? '刷新漫画' : '点击连接'}
+          </button>
+        </div>
       `;
     }).join('');
   }
 
-  async function selectLanPeerByIndex(idx) {
-    if (idx >= 0 && idx < lanPeers.length) {
-      await selectLanPeer(lanPeers[idx]);
+  async function initiateConnectToPeer(idx) {
+    const validPeers = lanPeers.filter(p => p.app === 'YYComicReader');
+    if (idx < 0 || idx >= validPeers.length) return;
+    const peer = validPeers[idx];
+    if (!peer) return;
+
+    if (selectedLanPeer && selectedLanPeer.ip === peer.ip && selectedLanPeer.port === peer.port && selectedLanPeer.sessionToken) {
+      await selectLanPeer(peer, true);
+      return;
+    }
+
+    // 优先级严格按黑白名单 -> 密码 -> 基础确认执行
+    // 先尝试发起握手请求（不带密码）：
+    // 1. 若被对方加入黑名单，对方立即返回 blacklisted
+    // 2. 若被对方加入白名单，对方立即返回 accepted (免密免确认，直接建立会话)
+    // 3. 若不在白名单且对方开启了密码，对方返回 need_password，performLanConnect 会自动弹出密码输入框
+    // 4. 若不在白名单且未开启密码，对方返回 need_confirm，触发配对确认
+    await performLanConnect(peer, '');
+  }
+
+  async function performLanConnect(peer, password) {
+    if (Date.now() < connectCooldownUntil) {
+      const remainSec = Math.ceil((connectCooldownUntil - Date.now()) / 1000);
+      showToast(`⚠️ 请勿频繁发起连接请求，请等待 ${remainSec} 秒后再试`);
+      return;
+    }
+    connectCooldownUntil = Date.now() + 3000;
+
+    if (!password) {
+      showLanConnectingModal(peer);
+    }
+
+    try {
+      const res = await callNative('lanConnectPeer', {
+        ip: peer.ip,
+        port: peer.port,
+        deviceId: peer.deviceId,
+        deviceName: peer.deviceName,
+        platform: peer.platform,
+        password: password
+      });
+
+      closeLanConnectingModal();
+      if (isConnectingCancelled) return;
+
+      if (res && res.ok && res.status === 'accepted') {
+        showToast(`🎉 对方设备【${peer.deviceName}】已同意连接！`);
+        peer.sessionToken = res.sessionToken || '';
+        closeLanInputPasswordModal();
+        await selectLanPeer(peer, false);
+      } else if (res && res.status === 'need_password') {
+        selectedLanPeer = null;
+        peer.sessionToken = '';
+        pendingConnectTargetPeer = peer;
+        openLanInputPasswordModal(peer, res.message);
+      } else if (res && res.status === 'wrong_password') {
+        selectedLanPeer = null;
+        peer.sessionToken = '';
+        showToast('❌ 连接密码错误，请重新输入');
+        pendingConnectTargetPeer = peer;
+        openLanInputPasswordModal(peer, '连接密码错误，请重新输入');
+      } else if (res && res.status === 'rejected') {
+        selectedLanPeer = null;
+        peer.sessionToken = '';
+        closeLanInputPasswordModal();
+        showToast(`❌ 对方设备【${peer.deviceName}】已拒绝连接请求！`, 2500);
+      } else if (res && res.status === 'blacklisted') {
+        selectedLanPeer = null;
+        peer.sessionToken = '';
+        closeLanInputPasswordModal();
+        showToast(`🚫 对方设备已将本机加入黑名单，拒绝连接！`, 2500);
+      } else if (res && res.status === 'timeout') {
+        selectedLanPeer = null;
+        peer.sessionToken = '';
+        closeLanInputPasswordModal();
+        showToast(`⏱️ 连接超时，对方设备未在 30 秒内确认连接。`);
+      } else {
+        selectedLanPeer = null;
+        peer.sessionToken = '';
+        closeLanInputPasswordModal();
+        showToast(`连接未完成: ${res ? res.message : '未知原因'}`);
+      }
+    } catch (e) {
+      closeLanConnectingModal();
+      showToast('连接失败: ' + e.message);
     }
   }
 
@@ -3541,11 +6132,32 @@
     renderLanPeers();
 
     try {
-      const remote = await callNative('lanFetchPeerComics', {
+      let remote = await callNative('lanFetchPeerComics', {
         ip: peer.ip,
         port: peer.port,
-        notifyConnect
+        notifyConnect,
+        sessionToken: peer.sessionToken || ''
       });
+      if (remote && remote.error === 'session_expired') {
+        // 等待 600ms 后重试一次，避免双向握手初期远端尚未落盘 SessionToken 的偶发时序问题
+        await new Promise(r => setTimeout(r, 600));
+        const retry = await callNative('lanFetchPeerComics', {
+          ip: peer.ip,
+          port: peer.port,
+          notifyConnect,
+          sessionToken: peer.sessionToken || ''
+        });
+        if (retry && retry.error === 'session_expired') {
+          selectedLanPeer = null;
+          lanRemoteComics = [];
+          updateLanConnectionBadges(null);
+          renderLanPeers();
+          renderLanComicList();
+          showToast('⚠️ 对方设备连接已失效或已退出，请重新连接');
+          return;
+        }
+        remote = retry;
+      }
       lanRemoteComics = (remote && remote.comics) ? remote.comics : [];
       if (notifyConnect && isNewPeer) {
         const peerKey = `${peer.ip}:${peer.port}`;
@@ -3778,7 +6390,6 @@
           const msg = `本机已拥有所选漫画 ${sample}，无需重复下载！`;
           updateLanModalProgress('跳过重复下载', 100, msg);
           showToast('⚠️ ' + msg);
-          alert(msg);
         } else if (skipCount > 0) {
           const msg = `已下载 ${dlCount} 部新漫画（已自动跳过本机已拥有的 ${skipCount} 部漫画）`;
           updateLanModalProgress('下载完成', 100, msg);
@@ -3805,7 +6416,6 @@
           const msg = `对方设备 (${selectedLanPeer.deviceName}) 已拥有 ${sample}，无需重复传送！`;
           updateLanModalProgress('对方已拥有', 100, msg);
           showToast('⚠️ ' + msg);
-          alert(msg);
         } else if (skipCount > 0) {
           const msg = `已向 ${selectedLanPeer.deviceName} 发送 ${sentCount} 部新漫画（已自动跳过对方已拥有的 ${skipCount} 部漫画）`;
           updateLanModalProgress('发送完成', 100, msg);
@@ -3819,7 +6429,7 @@
         await selectLanPeer(selectedLanPeer, false);
       }
     } catch (e) {
-      alert('局域网传输失败: ' + e.message);
+      showToast('❌ 局域网传输失败: ' + e.message);
     } finally {
       isLanTransferring = false;
       updateLanFooterSummary();
@@ -3828,6 +6438,175 @@
         const wrap = document.getElementById('lan-modal-progress-wrap');
         if (wrap) wrap.style.display = 'none';
       }, 2800);
+    }
+  }
+
+  // ========================= 顺时针雷达扫描进度组件 (置于一键回到顶部按钮正上方) =========================
+  function showRadarProgress(label = '处理中...', percent = 0) {
+    if (radarHideTimer) {
+      clearTimeout(radarHideTimer);
+      radarHideTimer = null;
+    }
+    const widget = document.getElementById('radar-progress-widget');
+    if (widget) widget.style.display = 'flex';
+    updateRadarProgress(percent, label);
+  }
+
+  function updateRadarProgress(percent, label) {
+    const p = Math.max(0, Math.min(100, Math.round(percent || 0)));
+    const circle = document.getElementById('radar-circle-progress');
+    const percentEl = document.getElementById('radar-percent-text');
+    const labelEl = document.getElementById('radar-label-text');
+    const widget = document.getElementById('radar-progress-widget');
+
+    if (widget && widget.style.display === 'none') {
+      widget.style.display = 'flex';
+    }
+
+    if (circle) {
+      const circumference = 113.1;
+      const offset = circumference * (1 - p / 100);
+      circle.style.strokeDashoffset = offset.toFixed(1);
+    }
+    if (percentEl) {
+      percentEl.innerText = p >= 100 ? '✓' : `${p}%`;
+    }
+    if (labelEl && label) {
+      labelEl.innerText = label;
+      labelEl.title = label;
+    }
+  }
+
+  function completeRadarProgress(label = '完成') {
+    updateRadarProgress(100, label);
+    const needle = document.getElementById('radar-needle');
+    if (needle) needle.style.animationPlayState = 'paused';
+  }
+
+  function hideRadarProgress(delayMs = 1200) {
+    if (radarHideTimer) clearTimeout(radarHideTimer);
+    if (delayMs <= 0) {
+      const widget = document.getElementById('radar-progress-widget');
+      if (widget) widget.style.display = 'none';
+      const needle = document.getElementById('radar-needle');
+      if (needle) needle.style.animationPlayState = 'running';
+      return;
+    }
+    radarHideTimer = setTimeout(() => {
+      const widget = document.getElementById('radar-progress-widget');
+      if (widget) widget.style.display = 'none';
+      const needle = document.getElementById('radar-needle');
+      if (needle) needle.style.animationPlayState = 'running';
+    }, delayMs);
+  }
+
+  // ========================= Windows 在线书架 (实时串流浏览 · 不占用本地空间) =========================
+  async function enterOnlineShelfMode(peer) {
+    if (!peer) {
+      if (selectedLanPeer) peer = selectedLanPeer;
+      else {
+        showToast('⚠️ 未选择设备');
+        return;
+      }
+    }
+    closeLanTransferModal();
+    showRadarProgress(`连接【${peer.deviceName || peer.ip}】在线书架...`, 20);
+    try {
+      const res = await callNative('fetchRemoteComics', { 
+        ip: peer.ip, 
+        port: peer.port,
+        sessionToken: peer.sessionToken || ''
+      });
+      if (res && res.error === 'session_expired') {
+        completeRadarProgress('会话失效');
+        hideRadarProgress(1000);
+        showToast('⚠️ 对方设备连接已失效或已退出，请重新连接');
+        return;
+      }
+      if (res && Array.isArray(res.comics)) {
+        isOnlineShelfMode = true;
+        onlineShelfPeer = peer;
+        onlineShelfComics = res.comics.map(c => ({
+          ...c,
+          coverPath: `http://${peer.ip}:${peer.port}/api/comic-cover?id=${encodeURIComponent(c.id)}`,
+          pagePaths: []
+        }));
+        shelfCurrentPage = 1;
+        renderShelf();
+        completeRadarProgress('在线书架已就绪');
+        hideRadarProgress(800);
+        showToast(`☁️ 已进入【${peer.deviceName || peer.ip}】的在线书架`);
+      } else {
+        completeRadarProgress('获取失败');
+        hideRadarProgress(1000);
+        showToast('⚠️ 获取对方书架失败');
+      }
+    } catch (err) {
+      completeRadarProgress('连接错误');
+      hideRadarProgress(1000);
+      showToast('⚠️ 连接在线书架失败: ' + (err.message || err));
+    }
+  }
+
+  function exitOnlineShelfMode() {
+    isOnlineShelfMode = false;
+    onlineShelfPeer = null;
+    onlineShelfComics = [];
+    const onlineBanner = document.getElementById('online-shelf-banner');
+    if (onlineBanner) onlineBanner.style.display = 'none';
+
+    emptyState.innerHTML = `
+      <div class="empty-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          <line x1="12" y1="11" x2="12" y2="17"/>
+          <line x1="9" y1="14" x2="15" y2="14"/>
+        </svg>
+      </div>
+      <h2>选择或直接拖拽漫画文件夹</h2>
+      <p>Windows 桌面原生版直接从硬盘读取图片切片，无需任何浏览器授权弹窗，所有阅读记录与进度独立存储在应用专属目录中。</p>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <button class="btn btn-primary" onclick="event.stopPropagation(); importComicsFolder()">浏览并导入文件夹</button>
+        <button class="btn btn-secondary" onclick="event.stopPropagation(); pickImageSlices()">多选切片图片导入</button>
+      </div>
+      <div class="empty-tip" style="margin-top: 16px;">💡 提示：支持从 Windows 资源管理器直接将一个或多个漫画文件夹拖拽到本窗口任意位置。</div>
+    `;
+
+    renderShelf();
+    showToast('已退出在线书架，返回本地书架');
+  }
+
+  async function refreshOnlineShelf() {
+    if (!isOnlineShelfMode || !onlineShelfPeer) return;
+    showRadarProgress(`刷新【${onlineShelfPeer.deviceName}】书架...`, 30);
+    try {
+      const res = await callNative('fetchRemoteComics', { 
+        ip: onlineShelfPeer.ip, 
+        port: onlineShelfPeer.port,
+        sessionToken: onlineShelfPeer.sessionToken || ''
+      });
+      if (res && res.error === 'session_expired') {
+        completeRadarProgress('会话失效');
+        hideRadarProgress(1000);
+        showToast('⚠️ 对方连接已失效或已退出，已退出在线书架');
+        exitOnlineShelfMode();
+        return;
+      }
+      if (res && Array.isArray(res.comics)) {
+        onlineShelfComics = res.comics.map(c => ({
+          ...c,
+          coverPath: `http://${onlineShelfPeer.ip}:${onlineShelfPeer.port}/api/comic-cover?id=${encodeURIComponent(c.id)}&t=${Date.now()}`,
+          pagePaths: []
+        }));
+        renderShelf();
+        completeRadarProgress('刷新完成');
+        hideRadarProgress(800);
+        showToast('🔄 在线书架已更新');
+      }
+    } catch (e) {
+      completeRadarProgress('刷新失败');
+      hideRadarProgress(1000);
+      showToast('⚠️ 刷新失败: ' + (e.message || e));
     }
   }
 </script>

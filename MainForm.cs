@@ -93,6 +93,7 @@ namespace ComicReaderDesktop
                 },
                 onPeerConnected: peer =>
                 {
+                    if (lanService != null && lanService.IsSelf(peer)) return;
                     SendEventToUi("lanPeerConnected", peer);
                 },
                 onBatchTransferComplete: (mode, peerName, transferredCount, skippedCount) =>
@@ -124,7 +125,7 @@ namespace ComicReaderDesktop
                                 target.ReadCount++;
                                 target.LastReadTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                             }
-                            if (page > 1)
+                            if (page >= 1)
                             {
                                 target.LastReadPage = page;
                             }
@@ -135,14 +136,86 @@ namespace ComicReaderDesktop
                         }
                     }
                     return null;
+                },
+                onRemoteComicDelete: (id, title) =>
+                {
+                    lock (dbLock)
+                    {
+                        var target = db.Comics.FirstOrDefault(c =>
+                            (!string.IsNullOrEmpty(id) && string.Equals(c.Id, id, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrEmpty(id) && string.Equals(c.Title, id, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrEmpty(title) && string.Equals(c.Title, title, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrEmpty(id) && LanTransferService.NormalizeTitleKey(c.Title) == LanTransferService.NormalizeTitleKey(id)) ||
+                            (!string.IsNullOrEmpty(title) && LanTransferService.NormalizeTitleKey(c.Title) == LanTransferService.NormalizeTitleKey(title)));
+
+                        if (target != null)
+                        {
+                            DeleteComicPhysicalFiles(target);
+                            PurgeComicHistory(target);
+                            db.Comics.Remove(target);
+                            SaveDatabase();
+                            SendEventToUi("shelfUpdated", BuildInitPayload());
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+                onRemoteComicRename: (id, title, newTitle) =>
+                {
+                    var res = RenameComicCore(id, newTitle);
+                    return res.ok;
+                },
+                onRemoteComicSetCoverPage: (id, pageIndex) => SetComicCoverFromPageCore(id, pageIndex),
+                onRemoteComicResetCover: id => ResetComicCoverCore(id),
+                onRemoteComicSetCoverFile: (id, bytes, ext) => SaveCustomCoverFileCore(id, bytes, ext),
+                getDeviceId: () =>
+                {
+                    lock (dbLock) return db.DeviceId ?? "";
+                },
+                getRequirePassword: () =>
+                {
+                    lock (dbLock) return db.RequirePassword;
+                },
+                getConnectionPassword: () =>
+                {
+                    lock (dbLock) return db.ConnectionPassword ?? "";
+                },
+                isDeviceWhitelisted: devId =>
+                {
+                    lock (dbLock) return db.Whitelist != null && db.Whitelist.Any(w => string.Equals(w.DeviceId, devId, StringComparison.OrdinalIgnoreCase));
+                },
+                isDeviceBlacklisted: (devId, ip) =>
+                {
+                    lock (dbLock)
+                    {
+                        if (db.Blacklist == null) return false;
+                        return db.Blacklist.Any(b =>
+                            (!string.IsNullOrEmpty(devId) && string.Equals(b.DeviceId, devId, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrEmpty(ip) && string.Equals(b.Ip, ip, StringComparison.OrdinalIgnoreCase)));
+                    }
+                },
+                onPairRequestReceived: req =>
+                {
+                    SendEventToUi("lanPairRequest", req);
                 }
             );
+
+            lanService.OnPeerDisconnected = (fromId, fromName, ip) =>
+            {
+                SendEventToUi("lanPeerDisconnected", new { fromId, fromName, ip });
+            };
+
+            lanService.OnUpdatePushed = (peerName, version) =>
+            {
+                SendEventToUi("lanUpdatePushed", new { peerName, version });
+            };
 
             // 后台并行读取 U 盘数据库与启动局域网监听，不阻塞窗口首帧创建
             dbLoadTask = Task.Run(() =>
             {
                 LoadDatabase();
                 try { lanService.Start(); } catch { }
+                UpdateFormTheme(db.Theme ?? "system");
             });
 
             webView = new WebView2
@@ -456,6 +529,7 @@ namespace ComicReaderDesktop
                 var core = webView.CoreWebView2;
                 core.Settings.IsStatusBarEnabled = false;
                 core.Settings.AreDefaultContextMenusEnabled = false;
+                core.Settings.AreDevToolsEnabled = true;
                 core.Settings.IsZoomControlEnabled = true;
 
                 webView.AllowExternalDrop = true;
@@ -562,27 +636,49 @@ namespace ComicReaderDesktop
                 {
                     var query = HttpUtility.ParseQueryString(uri.Query);
                     string? filePath = query["path"];
-                    if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+                    if (!string.IsNullOrEmpty(filePath))
                     {
-                        // 使用 FileShare.ReadWrite | FileShare.Delete 读取到内存后立即关闭文件句柄，绝不锁死本地文件
-                        byte[] bytes;
-                        using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+                        // 防御性清理：如果传入的 filePath 包含 ?t= 或多余 query 参数后缀，截断去除
+                        int qIdx = filePath.IndexOf('?');
+                        if (qIdx >= 0)
                         {
-                            bytes = new byte[fs.Length];
-                            int read = 0;
-                            while (read < bytes.Length)
-                            {
-                                int n = fs.Read(bytes, read, bytes.Length - read);
-                                if (n <= 0) break;
-                                read += n;
-                            }
+                            filePath = filePath.Substring(0, qIdx);
                         }
 
-                        var ms = new MemoryStream(bytes);
-                        string mime = GetMimeType(filePath);
-                        e.Response = webView.CoreWebView2.Environment.CreateWebResourceResponse(
-                            ms, 200, "OK", $"Content-Type: {mime}\r\nCache-Control: max-age=3600\r\nAccess-Control-Allow-Origin: *");
-                        return;
+                        if (ArchiveComicHelper.TryParsePagePath(filePath, out string arcPath, out string entryKey))
+                        {
+                            byte[]? arcBytes = ArchiveComicHelper.ExtractEntryBytes(arcPath, entryKey);
+                            if (arcBytes != null && arcBytes.Length > 0)
+                            {
+                                var ms = new MemoryStream(arcBytes);
+                                string mime = GetMimeType(entryKey);
+                                e.Response = webView.CoreWebView2.Environment.CreateWebResourceResponse(
+                                    ms, 200, "OK", $"Content-Type: {mime}\r\nCache-Control: max-age=3600\r\nAccess-Control-Allow-Origin: *");
+                                return;
+                            }
+                        }
+                        else if (File.Exists(filePath))
+                        {
+                            // 使用 FileShare.ReadWrite | FileShare.Delete 读取到内存后立即关闭文件句柄，绝不锁死本地文件
+                            byte[] bytes;
+                            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+                            {
+                                bytes = new byte[fs.Length];
+                                int read = 0;
+                                while (read < bytes.Length)
+                                {
+                                    int n = fs.Read(bytes, read, bytes.Length - read);
+                                    if (n <= 0) break;
+                                    read += n;
+                                }
+                            }
+
+                            var ms = new MemoryStream(bytes);
+                            string mime = GetMimeType(filePath);
+                            e.Response = webView.CoreWebView2.Environment.CreateWebResourceResponse(
+                                ms, 200, "OK", $"Content-Type: {mime}\r\nCache-Control: max-age=3600\r\nAccess-Control-Allow-Origin: *");
+                            return;
+                        }
                     }
 
                     e.Response = webView.CoreWebView2.Environment.CreateWebResourceResponse(
@@ -690,11 +786,22 @@ namespace ComicReaderDesktop
                         var target = db.Comics.FirstOrDefault(c => c.Id == id);
                         if (target != null)
                         {
-                            if ((target.PagePaths == null || target.PagePaths.Count == 0) &&
-                                !string.IsNullOrEmpty(target.FolderPath) && Directory.Exists(target.FolderPath))
+                            if ((target.PagePaths == null || target.PagePaths.Count == 0) && !string.IsNullOrEmpty(target.FolderPath))
                             {
-                                target.PagePaths = GetSortedImagesInDirectory(target.FolderPath);
-                                target.TotalPages = target.PagePaths.Count;
+                                if (target.IsArchive || ArchiveComicHelper.IsArchiveFile(target.FolderPath))
+                                {
+                                    if (File.Exists(target.FolderPath))
+                                    {
+                                        var entries = ArchiveComicHelper.GetArchiveImageEntries(target.FolderPath);
+                                        target.PagePaths = entries.Select(e => ArchiveComicHelper.BuildPagePath(target.FolderPath, e)).ToList();
+                                        target.TotalPages = target.PagePaths.Count;
+                                    }
+                                }
+                                else if (Directory.Exists(target.FolderPath))
+                                {
+                                    target.PagePaths = GetSortedImagesInDirectory(target.FolderPath);
+                                    target.TotalPages = target.PagePaths.Count;
+                                }
                             }
                             return new
                             {
@@ -710,7 +817,7 @@ namespace ComicReaderDesktop
                 {
                     using var dialog = new FolderBrowserDialog
                     {
-                        Description = "选择包含漫画的文件夹（支持总目录或单本漫画文件夹）",
+                        Description = "选择包含漫画的文件夹（支持包含压缩包与图片文件夹）",
                         UseDescriptionForTitle = true,
                         ShowNewFolderButton = false
                     };
@@ -756,13 +863,13 @@ namespace ComicReaderDesktop
                 {
                     using var dialog = new OpenFileDialog
                     {
-                        Title = "多选漫画切片图片导入",
-                        Filter = "漫画图片 (*.webp;*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.avif)|*.webp;*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.avif|所有文件 (*.*)|*.*",
+                        Title = "导入漫画文件（支持未解压压缩包或图片切片）",
+                        Filter = "所有支持的漫画格式 (*.zip;*.cbz;*.rar;*.cbr;*.7z;*.cb7;*.tar;*.cbt;*.webp;*.jpg...)|*.zip;*.cbz;*.rar;*.cbr;*.7z;*.cb7;*.tar;*.cbt;*.webp;*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.avif|压缩包漫画 (*.zip;*.cbz;*.rar;*.7z...)|*.zip;*.cbz;*.rar;*.cbr;*.7z;*.cb7;*.tar;*.cbt|漫画切片图片 (*.webp;*.jpg...)|*.webp;*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.avif|所有文件 (*.*)|*.*",
                         Multiselect = true
                     };
                     if (dialog.ShowDialog(this) == DialogResult.OK && dialog.FileNames.Length > 0)
                     {
-                        await ImportImageFilesAsComicAsync(dialog.FileNames);
+                        await ImportFilesOrArchivesAsync(dialog.FileNames);
                         return BuildInitPayload();
                     }
                     return null;
@@ -777,18 +884,36 @@ namespace ComicReaderDesktop
                         target = db.Comics.FirstOrDefault(c => c.Id == id);
                         if (target != null)
                         {
-                            // 动态检查该文件夹下最新图片列表
-                            if (!string.IsNullOrEmpty(target.FolderPath) && Directory.Exists(target.FolderPath))
+                            if (!string.IsNullOrEmpty(target.FolderPath))
                             {
-                                var latestPages = GetSortedImagesInDirectory(target.FolderPath);
-                                if (latestPages.Count > 0)
+                                if (target.IsArchive || ArchiveComicHelper.IsArchiveFile(target.FolderPath))
                                 {
-                                    target.PagePaths = latestPages;
-                                    target.TotalPages = latestPages.Count;
-                                    string customCover = ResolveCustomCoverPath(target, GetComicHistory(target.Id, target.Title));
-                                    target.CustomCoverPath = customCover;
-                                    target.CoverPath = !string.IsNullOrEmpty(customCover) ? customCover : latestPages[0];
-                                    target.IsMissing = false;
+                                    if (File.Exists(target.FolderPath))
+                                    {
+                                        var latestEntries = ArchiveComicHelper.GetArchiveImageEntries(target.FolderPath);
+                                        if (latestEntries.Count > 0)
+                                        {
+                                            target.PagePaths = latestEntries.Select(e => ArchiveComicHelper.BuildPagePath(target.FolderPath, e)).ToList();
+                                            target.TotalPages = latestEntries.Count;
+                                            string customCover = ResolveCustomCoverPath(target, GetComicHistory(target.Id, target.Title));
+                                            target.CustomCoverPath = customCover;
+                                            target.CoverPath = !string.IsNullOrEmpty(customCover) ? customCover : target.PagePaths[0];
+                                            target.IsMissing = false;
+                                        }
+                                    }
+                                }
+                                else if (Directory.Exists(target.FolderPath))
+                                {
+                                    var latestPages = GetSortedImagesInDirectory(target.FolderPath);
+                                    if (latestPages.Count > 0)
+                                    {
+                                        target.PagePaths = latestPages;
+                                        target.TotalPages = latestPages.Count;
+                                        string customCover = ResolveCustomCoverPath(target, GetComicHistory(target.Id, target.Title));
+                                        target.CustomCoverPath = customCover;
+                                        target.CoverPath = !string.IsNullOrEmpty(customCover) ? customCover : latestPages[0];
+                                        target.IsMissing = false;
+                                    }
                                 }
                             }
 
@@ -923,28 +1048,20 @@ namespace ComicReaderDesktop
                         ? pEl.GetInt32()
                         : 0;
 
+                    var res = SetComicCoverFromPageCore(id, pageIndex);
                     ComicRecord? comic = null;
                     lock (dbLock)
                     {
-                        comic = db.Comics.FirstOrDefault(c => c.Id == id);
-                        if (comic != null && comic.PagePaths != null && pageIndex >= 0 && pageIndex < comic.PagePaths.Count)
-                        {
-                            string pagePath = comic.PagePaths[pageIndex];
-                            if (File.Exists(pagePath))
-                            {
-                                CleanupCustomCoverFilesForId(id);
-                                comic.CustomCoverPath = pagePath;
-                                comic.CoverPath = pagePath;
-                                SyncComicToHistory(comic);
-                                SaveDatabase();
-                            }
-                        }
+                        comic = db.Comics.FirstOrDefault(c => c.Id == id || c.Title == id);
                     }
 
                     return new
                     {
-                        changed = comic != null,
+                        changed = res.ok,
                         comic,
+                        coverPath = res.coverUrl,
+                        customCoverPath = comic?.CustomCoverPath ?? "",
+                        pageIndex,
                         state = BuildInitPayload()
                     };
                 }
@@ -952,27 +1069,18 @@ namespace ComicReaderDesktop
                 case "resetComicCover":
                 {
                     string id = payload.TryGetProperty("id", out var idEl) ? (idEl.GetString() ?? "") : "";
+                    bool changed = ResetComicCoverCore(id);
                     ComicRecord? comic = null;
                     lock (dbLock)
                     {
-                        comic = db.Comics.FirstOrDefault(c => c.Id == id);
-                        if (comic != null)
-                        {
-                            CleanupCustomCoverFilesForId(id);
-                            comic.CustomCoverPath = "";
-                            if (comic.PagePaths != null && comic.PagePaths.Count > 0)
-                            {
-                                comic.CoverPath = comic.PagePaths[0];
-                            }
-                            SyncComicToHistory(comic);
-                            SaveDatabase();
-                        }
+                        comic = db.Comics.FirstOrDefault(c => c.Id == id || c.Title == id);
                     }
 
                     return new
                     {
-                        changed = comic != null,
+                        changed,
                         comic,
+                        coverPath = comic?.CoverPath ?? "",
                         state = BuildInitPayload()
                     };
                 }
@@ -981,135 +1089,18 @@ namespace ComicReaderDesktop
                 {
                     string id = payload.TryGetProperty("id", out var idEl) ? (idEl.GetString() ?? "") : "";
                     string rawNewTitle = payload.TryGetProperty("newTitle", out var tEl) ? (tEl.GetString() ?? "") : "";
-                    string newTitle = rawNewTitle.Trim();
-
-                    if (string.IsNullOrEmpty(newTitle))
+                    var res = RenameComicCore(id, rawNewTitle);
+                    if (!res.ok)
                     {
-                        return new { ok = false, message = "漫画名称不能为空" };
+                        return new { ok = false, message = res.message };
                     }
 
-                    char[] invalidChars = Path.GetInvalidFileNameChars();
-                    if (newTitle.IndexOfAny(invalidChars) >= 0)
+                    return new
                     {
-                        return new { ok = false, message = "漫画名称包含 Windows 文件名不支持的特殊字符（如 \\ / : * ? \" < > |）" };
-                    }
-
-                    lock (dbLock)
-                    {
-                        var comic = db.Comics.FirstOrDefault(c => c.Id == id);
-                        if (comic == null)
-                        {
-                            return new { ok = false, message = "未找到该漫画记录" };
-                        }
-
-                        if (string.Equals(comic.Title, newTitle, StringComparison.Ordinal))
-                        {
-                            return new { ok = true, comic, state = BuildInitPayload() };
-                        }
-
-                        bool duplicateInShelf = db.Comics.Any(c =>
-                            c.Id != id && string.Equals(c.Title, newTitle, StringComparison.OrdinalIgnoreCase));
-                        if (duplicateInShelf)
-                        {
-                            return new { ok = false, message = $"书架上已存在名为《{newTitle}》的漫画，请使用其他名称" };
-                        }
-
-                        string oldFolder = comic.FolderPath ?? "";
-                        string newFolder = oldFolder;
-
-                        if (!string.IsNullOrEmpty(oldFolder) && Directory.Exists(oldFolder))
-                        {
-                            string fullOldFolder = Path.GetFullPath(oldFolder).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                            string? parentDir = Path.GetDirectoryName(fullOldFolder);
-                            string? rootDrive = Path.GetPathRoot(fullOldFolder)?.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                            string fullAppRoot = Path.GetFullPath(appRootDir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                            string fullAppData = Path.GetFullPath(appDataDir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-
-                            bool isProtectedDir =
-                                string.Equals(fullOldFolder, rootDrive, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(fullOldFolder, fullAppRoot, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(fullOldFolder, fullAppData, StringComparison.OrdinalIgnoreCase);
-
-                            if (!isProtectedDir && !string.IsNullOrEmpty(parentDir))
-                            {
-                                string candidateFolder = Path.Combine(parentDir, newTitle);
-                                bool isCaseOnlyChange = string.Equals(fullOldFolder, candidateFolder, StringComparison.OrdinalIgnoreCase);
-
-                                if (!isCaseOnlyChange && Directory.Exists(candidateFolder))
-                                {
-                                    return new { ok = false, message = $"本地磁盘同级目录下已存在《{newTitle}》文件夹" };
-                                }
-
-                                try
-                                {
-                                    if (isCaseOnlyChange && !string.Equals(fullOldFolder, candidateFolder, StringComparison.Ordinal))
-                                    {
-                                        string tempFolder = Path.Combine(parentDir, newTitle + "_renametmp_" + Guid.NewGuid().ToString("N")[..6]);
-                                        Directory.Move(fullOldFolder, tempFolder);
-                                        Directory.Move(tempFolder, candidateFolder);
-                                    }
-                                    else if (!string.Equals(fullOldFolder, candidateFolder, StringComparison.Ordinal))
-                                    {
-                                        Directory.Move(fullOldFolder, candidateFolder);
-                                    }
-                                    newFolder = candidateFolder;
-                                }
-                                catch (Exception ex)
-                                {
-                                    return new { ok = false, message = $"重命名本地物理文件夹失败：{ex.Message}" };
-                                }
-                            }
-                        }
-
-                        string newId = GenerateComicId(newTitle, newTitle);
-
-                        // 如果自定义封面是漫画内部图片切片，跟随文件夹路径同步更新
-                        if (!string.IsNullOrEmpty(comic.CustomCoverPath) && !string.IsNullOrEmpty(oldFolder) && !string.Equals(oldFolder, newFolder, StringComparison.OrdinalIgnoreCase))
-                        {
-                            string normalizedOld = Path.GetFullPath(oldFolder).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
-                            if (comic.CustomCoverPath.StartsWith(normalizedOld, StringComparison.OrdinalIgnoreCase))
-                            {
-                                string rel = comic.CustomCoverPath.Substring(normalizedOld.Length);
-                                comic.CustomCoverPath = Path.Combine(newFolder, rel);
-                            }
-                        }
-
-                        // 更新文件夹与切片路径列表
-                        comic.FolderPath = newFolder;
-                        if (!string.IsNullOrEmpty(newFolder) && Directory.Exists(newFolder))
-                        {
-                            var refreshedPages = GetSortedImagesInDirectory(newFolder);
-                            if (refreshedPages.Count > 0)
-                            {
-                                comic.PagePaths = refreshedPages;
-                                comic.TotalPages = refreshedPages.Count;
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(comic.CustomCoverPath) && File.Exists(comic.CustomCoverPath))
-                        {
-                            comic.CoverPath = comic.CustomCoverPath;
-                        }
-                        else if (comic.PagePaths != null && comic.PagePaths.Count > 0)
-                        {
-                            comic.CoverPath = comic.PagePaths[0];
-                        }
-
-                        // 迁移历史记录字典并写入新标题与新 ID
-                        PurgeComicHistory(comic);
-                        comic.Id = newId;
-                        comic.Title = newTitle;
-                        comic.SubDirName = newTitle;
-                        SyncComicToHistory(comic);
-                        SaveDatabase();
-
-                        return new
-                        {
-                            ok = true,
-                            comic,
-                            state = BuildInitPayload()
-                        };
-                    }
+                        ok = true,
+                        comic = res.comic,
+                        state = BuildInitPayload()
+                    };
                 }
 
                 case "clearShelf":
@@ -1269,11 +1260,225 @@ namespace ComicReaderDesktop
                 case "lanConnectManual":
                 {
                     string host = payload.TryGetProperty("host", out var hEl) ? (hEl.GetString() ?? "") : "";
+                    if (lanService.IsSelfIp(host))
+                    {
+                        return new { peer = (LanPeerInfo?)null, isSelf = true, error = "该地址为本机自身设备，无需连接" };
+                    }
                     int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number
                         ? pEl.GetInt32()
                         : LanTransferService.DEFAULT_HTTP_PORT;
                     var peer = await lanService.PingPeerAsync(host, port, false);
+                    if (peer != null && (lanService.IsSelf(peer) || lanService.IsSelfIp(peer.Ip)))
+                    {
+                        return new { peer = (LanPeerInfo?)null, isSelf = true, error = "该地址为本机自身设备，无需连接" };
+                    }
                     return new { peer };
+                }
+
+                case "lanConnectPeer":
+                {
+                    string ip = payload.GetProperty("ip").GetString() ?? "";
+                    if (lanService.IsSelfIp(ip))
+                    {
+                        return new { ok = false, status = "rejected", message = "无法连接本机自身设备" };
+                    }
+                    int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number ? pEl.GetInt32() : LanTransferService.DEFAULT_HTTP_PORT;
+                    string deviceId = payload.TryGetProperty("deviceId", out var didEl) ? (didEl.GetString() ?? "") : "";
+                    string deviceName = payload.TryGetProperty("deviceName", out var dnEl) ? (dnEl.GetString() ?? "") : "";
+                    string platform = payload.TryGetProperty("platform", out var plEl) ? (plEl.GetString() ?? "") : "";
+                    string password = payload.TryGetProperty("password", out var pwEl) ? (pwEl.GetString() ?? "") : "";
+
+                    var targetPeer = new LanPeerInfo
+                    {
+                        App = "YYComicReader",
+                        DeviceId = deviceId,
+                        DeviceName = deviceName,
+                        Platform = platform,
+                        Ip = ip,
+                        Port = port
+                    };
+                    var connRes = await lanService.ConnectToRemotePeerAsync(targetPeer, password);
+                    return connRes;
+                }
+
+                case "lanRespondPair":
+                {
+                    string reqId = payload.GetProperty("reqId").GetString() ?? "";
+                    bool accept = payload.TryGetProperty("accept", out var aEl) && aEl.GetBoolean();
+                    bool ok = lanService.RespondPairRequest(reqId, accept);
+                    return new { ok };
+                }
+
+                case "lanAddToWhitelist":
+                {
+                    string deviceId = payload.GetProperty("deviceId").GetString() ?? "";
+                    string deviceName = payload.TryGetProperty("deviceName", out var dnEl) ? (dnEl.GetString() ?? "未知设备") : "未知设备";
+                    string platform = payload.TryGetProperty("platform", out var plEl) ? (plEl.GetString() ?? "") : "";
+                    lock (dbLock)
+                    {
+                        db.Whitelist ??= new List<LanWhitelistEntry>();
+                        if (!string.IsNullOrEmpty(deviceId) && !db.Whitelist.Any(w => string.Equals(w.DeviceId, deviceId, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            db.Whitelist.Add(new LanWhitelistEntry
+                            {
+                                DeviceId = deviceId,
+                                DeviceName = deviceName,
+                                Platform = platform,
+                                AddedTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                            });
+                            SaveDatabase();
+                            SendEventToUi("shelfUpdated", BuildInitPayload());
+                        }
+                    }
+                    return new { ok = true, whitelist = db.Whitelist };
+                }
+
+                case "lanRemoveFromWhitelist":
+                {
+                    string deviceId = payload.GetProperty("deviceId").GetString() ?? "";
+                    lock (dbLock)
+                    {
+                        db.Whitelist ??= new List<LanWhitelistEntry>();
+                        int removed = db.Whitelist.RemoveAll(w => string.Equals(w.DeviceId, deviceId, StringComparison.OrdinalIgnoreCase));
+                        if (removed > 0)
+                        {
+                            SaveDatabase();
+                            SendEventToUi("shelfUpdated", BuildInitPayload());
+                        }
+                    }
+                    return new { ok = true, whitelist = db.Whitelist };
+                }
+
+                case "lanAddToBlacklist":
+                {
+                    string deviceId = payload.TryGetProperty("deviceId", out var dEl) ? (dEl.GetString() ?? "") : "";
+                    string deviceName = payload.TryGetProperty("deviceName", out var dnEl) ? (dnEl.GetString() ?? "未知设备") : "未知设备";
+                    string platform = payload.TryGetProperty("platform", out var plEl) ? (plEl.GetString() ?? "") : "";
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    lock (dbLock)
+                    {
+                        db.Blacklist ??= new List<LanBlacklistEntry>();
+                        db.Whitelist ??= new List<LanWhitelistEntry>();
+                        if (!string.IsNullOrEmpty(deviceId))
+                        {
+                            db.Whitelist.RemoveAll(w => string.Equals(w.DeviceId, deviceId, StringComparison.OrdinalIgnoreCase));
+                        }
+                        if (!db.Blacklist.Any(b => (!string.IsNullOrEmpty(deviceId) && string.Equals(b.DeviceId, deviceId, StringComparison.OrdinalIgnoreCase)) || (!string.IsNullOrEmpty(ip) && string.Equals(b.Ip, ip, StringComparison.OrdinalIgnoreCase))))
+                        {
+                            db.Blacklist.Add(new LanBlacklistEntry
+                            {
+                                DeviceId = deviceId,
+                                DeviceName = deviceName,
+                                Platform = platform,
+                                Ip = ip,
+                                AddedTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                            });
+                        }
+                        SaveDatabase();
+                        SendEventToUi("shelfUpdated", BuildInitPayload());
+                    }
+                    return new { ok = true, blacklist = db.Blacklist, whitelist = db.Whitelist };
+                }
+
+                case "lanRemoveFromBlacklist":
+                {
+                    string deviceId = payload.TryGetProperty("deviceId", out var dEl) ? (dEl.GetString() ?? "") : "";
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    lock (dbLock)
+                    {
+                        db.Blacklist ??= new List<LanBlacklistEntry>();
+                        db.Blacklist.RemoveAll(b => (!string.IsNullOrEmpty(deviceId) && string.Equals(b.DeviceId, deviceId, StringComparison.OrdinalIgnoreCase)) || (!string.IsNullOrEmpty(ip) && string.Equals(b.Ip, ip, StringComparison.OrdinalIgnoreCase)));
+                        SaveDatabase();
+                        SendEventToUi("shelfUpdated", BuildInitPayload());
+                    }
+                    return new { ok = true, blacklist = db.Blacklist };
+                }
+
+                case "lanGetBlacklist":
+                {
+                    lock (dbLock)
+                    {
+                        return new { blacklist = db.Blacklist ?? new List<LanBlacklistEntry>() };
+                    }
+                }
+
+                case "lanDisconnect":
+                {
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    int port = payload.TryGetProperty("port", out var pEl) ? pEl.GetInt32() : 39528;
+                    if (!string.IsNullOrEmpty(ip))
+                    {
+                        _ = Task.Run(async () =>
+                        {
+                            try
+                            {
+                                using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
+                                await client.GetAsync($"http://{ip}:{port}/api/disconnect?fromId={Uri.EscapeDataString(db.DeviceId)}&fromName={Uri.EscapeDataString(Environment.MachineName)}");
+                            }
+                            catch { }
+                        });
+                    }
+                    return new { ok = true };
+                }
+
+                case "setTheme":
+                {
+                    string theme = payload.TryGetProperty("theme", out var tEl) ? (tEl.GetString() ?? "system") : "system";
+                    lock (dbLock)
+                    {
+                        db.Theme = theme;
+                        SaveDatabase();
+                    }
+                    UpdateFormTheme(theme);
+                    return new { ok = true, theme };
+                }
+
+                case "setLanguage":
+                {
+                    string lang = payload.TryGetProperty("language", out var lEl) ? (lEl.GetString() ?? "zh") : "zh";
+                    lock (dbLock)
+                    {
+                        db.Language = lang;
+                        SaveDatabase();
+                    }
+                    return new { ok = true, language = lang };
+                }
+
+                case "lanSetRequirePassword":
+                {
+                    bool enable = payload.GetProperty("enable").GetBoolean();
+                    string password = payload.TryGetProperty("password", out var pwEl) ? (pwEl.GetString() ?? "") : "";
+
+                    lock (dbLock)
+                    {
+                        if (enable)
+                        {
+                            if (!string.IsNullOrEmpty(password))
+                            {
+                                // 校验密码规则：至少8位，包含数字、字母和特殊符号
+                                bool hasDigit = password.Any(char.IsDigit);
+                                bool hasLetter = password.Any(char.IsLetter);
+                                bool hasSymbol = password.Any(ch => !char.IsLetterOrDigit(ch));
+                                if (password.Length < 8 || !hasDigit || !hasLetter || !hasSymbol)
+                                {
+                                    return new { ok = false, error = "密码至少包含8位字符，且必须同时包含数字、字母和特殊符号" };
+                                }
+                                db.ConnectionPassword = password;
+                            }
+                            else if (string.IsNullOrEmpty(db.ConnectionPassword))
+                            {
+                                return new { ok = false, error = "尚未设置密码，请先设置符合规则的连接密码" };
+                            }
+                            db.RequirePassword = true;
+                        }
+                        else
+                        {
+                            db.RequirePassword = false;
+                        }
+                        SaveDatabase();
+                        SendEventToUi("shelfUpdated", BuildInitPayload());
+                        return new { ok = true, requirePassword = db.RequirePassword, hasPassword = !string.IsNullOrEmpty(db.ConnectionPassword) };
+                    }
                 }
 
                 case "lanFetchPeerComics":
@@ -1283,8 +1488,18 @@ namespace ComicReaderDesktop
                         ? pEl.GetInt32()
                         : LanTransferService.DEFAULT_HTTP_PORT;
                     bool notifyConnect = !payload.TryGetProperty("notifyConnect", out var ncEl) || ncEl.GetBoolean();
-                    var remote = await lanService.FetchRemoteComicsAsync(ip, port, notifyConnect);
-                    return remote;
+                    string? sessionToken = payload.TryGetProperty("sessionToken", out var stEl) && stEl.ValueKind == JsonValueKind.String
+                        ? stEl.GetString()
+                        : null;
+                    try
+                    {
+                        var remote = await lanService.FetchRemoteComicsAsync(ip, port, notifyConnect, sessionToken);
+                        return remote;
+                    }
+                    catch (Exception ex) when (ex.Message.Contains("session_expired") || (ex is HttpRequestException hre && hre.StatusCode == System.Net.HttpStatusCode.Unauthorized))
+                    {
+                        return new { ok = false, error = "session_expired", message = "对方连接已失效或已退出，请重新连接" };
+                    }
                 }
 
                 case "lanPullComics":
@@ -1344,6 +1559,141 @@ namespace ComicReaderDesktop
                     };
                 }
 
+                case "lanGetUpdateInfo":
+                {
+                    var info = lanService.GetAndroidUpdateInfo();
+                    return new
+                    {
+                        hasApk = !string.IsNullOrEmpty(info.ApkPath) && File.Exists(info.ApkPath),
+                        versionCode = info.VersionCode,
+                        versionName = info.VersionName,
+                        fileSize = info.FileSize,
+                        changelog = info.Changelog,
+                        apkPath = info.ApkPath
+                    };
+                }
+
+                case "lanSelectCustomApk":
+                {
+                    string? selected = null;
+                    Invoke(new Action(() =>
+                    {
+                        using var ofd = new OpenFileDialog
+                        {
+                            Title = "选择用于向安卓端推送更新的 APK 安装包",
+                            Filter = "安卓安装包 (*.apk)|*.apk|所有文件 (*.*)|*.*"
+                        };
+                        if (ofd.ShowDialog(this) == DialogResult.OK && File.Exists(ofd.FileName))
+                        {
+                            selected = ofd.FileName;
+                        }
+                    }));
+                    if (!string.IsNullOrEmpty(selected))
+                    {
+                        lanService.SetCustomApkPath(selected);
+                        var info = lanService.GetAndroidUpdateInfo();
+                        return new
+                        {
+                            ok = true,
+                            hasApk = true,
+                            versionCode = info.VersionCode,
+                            versionName = info.VersionName,
+                            fileSize = info.FileSize,
+                            changelog = info.Changelog,
+                            apkPath = info.ApkPath
+                        };
+                    }
+                    return new { ok = false };
+                }
+
+                case "lanPushUpdateToPeer":
+                {
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number ? pEl.GetInt32() : LanTransferService.DEFAULT_HTTP_PORT;
+                    string peerName = payload.TryGetProperty("peerName", out var pnEl) ? (pnEl.GetString() ?? "安卓设备") : "安卓设备";
+                    bool force = payload.TryGetProperty("force", out var fEl) && fEl.GetBoolean();
+                    var result = await lanService.PushUpdateToAndroidAsync(ip, port, peerName, force);
+                    return result;
+                }
+
+                case "fetchRemoteComics":
+                {
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number ? pEl.GetInt32() : LanTransferService.DEFAULT_HTTP_PORT;
+                    bool notifyConnect = !payload.TryGetProperty("notifyConnect", out var nEl) || nEl.GetBoolean();
+                    string? sessionToken = payload.TryGetProperty("sessionToken", out var stEl) && stEl.ValueKind == JsonValueKind.String ? stEl.GetString() : null;
+                    try
+                    {
+                        var list = await lanService.FetchRemoteComicsAsync(ip, port, notifyConnect, sessionToken);
+                        return list;
+                    }
+                    catch (Exception ex) when (ex.Message.Contains("session_expired") || (ex is HttpRequestException hre && hre.StatusCode == System.Net.HttpStatusCode.Unauthorized))
+                    {
+                        return new { ok = false, error = "session_expired", message = "对方连接已失效或已退出，请重新连接" };
+                    }
+                }
+
+                case "fetchRemoteComicManifest":
+                {
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number ? pEl.GetInt32() : LanTransferService.DEFAULT_HTTP_PORT;
+                    string id = payload.TryGetProperty("id", out var idEl) ? (idEl.GetString() ?? "") : "";
+                    var manifest = await lanService.FetchRemoteComicManifestAsync(ip, port, id);
+                    return manifest;
+                }
+
+                case "remoteRenameComic":
+                {
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number ? pEl.GetInt32() : LanTransferService.DEFAULT_HTTP_PORT;
+                    string id = payload.TryGetProperty("id", out var idEl) ? (idEl.GetString() ?? "") : "";
+                    string title = payload.TryGetProperty("title", out var tEl) ? (tEl.GetString() ?? "") : "";
+                    string newTitle = payload.TryGetProperty("newTitle", out var ntEl) ? (ntEl.GetString() ?? "") : "";
+                    bool ok = await lanService.RemoteRenameComicAsync(ip, port, id, title, newTitle);
+                    return new { ok };
+                }
+
+                case "remoteSetComicCoverPage":
+                {
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number ? pEl.GetInt32() : LanTransferService.DEFAULT_HTTP_PORT;
+                    string id = payload.TryGetProperty("id", out var idEl) ? (idEl.GetString() ?? "") : "";
+                    int pageIndex = payload.TryGetProperty("pageIndex", out var idxEl) && idxEl.ValueKind == JsonValueKind.Number ? idxEl.GetInt32() : 0;
+                    var res = await lanService.RemoteSetComicCoverPageAsync(ip, port, id, pageIndex);
+                    return new { ok = res.ok, coverUrl = res.coverUrl };
+                }
+
+                case "remoteResetComicCover":
+                {
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number ? pEl.GetInt32() : LanTransferService.DEFAULT_HTTP_PORT;
+                    string id = payload.TryGetProperty("id", out var idEl) ? (idEl.GetString() ?? "") : "";
+                    bool ok = await lanService.RemoteResetComicCoverAsync(ip, port, id);
+                    return new { ok };
+                }
+
+                case "remoteDeleteComic":
+                {
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number ? pEl.GetInt32() : LanTransferService.DEFAULT_HTTP_PORT;
+                    string id = payload.TryGetProperty("id", out var idEl) ? (idEl.GetString() ?? "") : "";
+                    string title = payload.TryGetProperty("title", out var tEl) ? (tEl.GetString() ?? "") : "";
+                    bool ok = await lanService.RemoteDeleteComicAsync(ip, port, id, title);
+                    return new { ok };
+                }
+
+                case "recordRemoteComicRead":
+                {
+                    string ip = payload.TryGetProperty("ip", out var ipEl) ? (ipEl.GetString() ?? "") : "";
+                    int port = payload.TryGetProperty("port", out var pEl) && pEl.ValueKind == JsonValueKind.Number ? pEl.GetInt32() : LanTransferService.DEFAULT_HTTP_PORT;
+                    string id = payload.TryGetProperty("id", out var idEl) ? (idEl.GetString() ?? "") : "";
+                    string title = payload.TryGetProperty("title", out var tEl) ? (tEl.GetString() ?? "") : "";
+                    int page = payload.TryGetProperty("page", out var pgEl) && pgEl.ValueKind == JsonValueKind.Number ? pgEl.GetInt32() : 1;
+                    bool inc = !payload.TryGetProperty("inc", out var incEl) || incEl.GetBoolean();
+                    bool ok = await lanService.RecordRemoteComicReadAsync(ip, port, id, title, page, inc);
+                    return new { ok };
+                }
+
                 default:
                     return null;
             }
@@ -1367,7 +1717,8 @@ namespace ComicReaderDesktop
                     readCount = c.ReadCount,
                     lastReadTime = c.LastReadTime,
                     lastReadPage = c.LastReadPage,
-                    isMissing = c.IsMissing
+                    isMissing = c.IsMissing,
+                    isArchive = c.IsArchive
                 }).ToList();
 
                 return new
@@ -1379,8 +1730,350 @@ namespace ComicReaderDesktop
                     lastRootFolder = db.LastRootFolder,
                     dataFilePath = dbFilePath,
                     transferSavePath = GetCurrentTransferSaveDir(),
-                    defaultTransferSavePath = defaultTransferDir
+                    defaultTransferSavePath = defaultTransferDir,
+                    deviceId = db.DeviceId,
+                    requirePassword = db.RequirePassword,
+                    hasPassword = !string.IsNullOrEmpty(db.ConnectionPassword),
+                    whitelist = db.Whitelist ?? new List<LanWhitelistEntry>(),
+                    blacklist = db.Blacklist ?? new List<LanBlacklistEntry>(),
+                    theme = db.Theme ?? "system",
+                    language = db.Language ?? "zh"
                 };
+            }
+        }
+
+        private (bool ok, string coverUrl) SetComicCoverFromPageCore(string id, int pageIndex)
+        {
+            ComicRecord? comic = null;
+            bool successfullySet = false;
+            string newCoverPath = "";
+
+            lock (dbLock)
+            {
+                comic = db.Comics.FirstOrDefault(c =>
+                    string.Equals(c.Id, id, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(c.Title, id, StringComparison.OrdinalIgnoreCase));
+
+                if (comic != null)
+                {
+                    if ((comic.PagePaths == null || comic.PagePaths.Count == 0) && !string.IsNullOrEmpty(comic.FolderPath))
+                    {
+                        if (comic.IsArchive || ArchiveComicHelper.IsArchiveFile(comic.FolderPath))
+                        {
+                            if (File.Exists(comic.FolderPath))
+                            {
+                                var entries = ArchiveComicHelper.GetArchiveImageEntries(comic.FolderPath);
+                                comic.PagePaths = entries.Select(e => ArchiveComicHelper.BuildPagePath(comic.FolderPath, e)).ToList();
+                                comic.TotalPages = entries.Count;
+                            }
+                        }
+                        else if (Directory.Exists(comic.FolderPath))
+                        {
+                            comic.PagePaths = GetSortedImagesInDirectory(comic.FolderPath);
+                            comic.TotalPages = comic.PagePaths.Count;
+                        }
+                    }
+
+                    if (comic.PagePaths != null && pageIndex >= 0 && pageIndex < comic.PagePaths.Count)
+                    {
+                        string pagePath = comic.PagePaths[pageIndex];
+                        Directory.CreateDirectory(customCoversDir);
+                        CleanupCustomCoverFilesForId(comic.Id);
+
+                        if (ArchiveComicHelper.TryParsePagePath(pagePath, out string arcPath, out string entryKey))
+                        {
+                            byte[]? imgBytes = ArchiveComicHelper.ExtractEntryBytes(arcPath, entryKey);
+                            if (imgBytes != null && imgBytes.Length > 0)
+                            {
+                                string ext = Path.GetExtension(entryKey);
+                                if (string.IsNullOrEmpty(ext)) ext = ".jpg";
+                                string destPath = Path.Combine(customCoversDir, $"{comic.Id}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}{ext}");
+                                File.WriteAllBytes(destPath, imgBytes);
+
+                                comic.CustomCoverPath = destPath;
+                                comic.CoverPath = destPath;
+                                newCoverPath = destPath;
+                                successfullySet = true;
+                            }
+                            else
+                            {
+                                comic.CustomCoverPath = pagePath;
+                                comic.CoverPath = pagePath;
+                                newCoverPath = pagePath;
+                                successfullySet = true;
+                            }
+                        }
+                        else if (File.Exists(pagePath))
+                        {
+                            try
+                            {
+                                string ext = Path.GetExtension(pagePath);
+                                if (string.IsNullOrEmpty(ext)) ext = ".jpg";
+                                string destPath = Path.Combine(customCoversDir, $"{comic.Id}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}{ext}");
+                                File.Copy(pagePath, destPath, true);
+
+                                comic.CustomCoverPath = destPath;
+                                comic.CoverPath = destPath;
+                                newCoverPath = destPath;
+                                successfullySet = true;
+                            }
+                            catch
+                            {
+                                comic.CustomCoverPath = pagePath;
+                                comic.CoverPath = pagePath;
+                                newCoverPath = pagePath;
+                                successfullySet = true;
+                            }
+                        }
+
+                        if (successfullySet)
+                        {
+                            SyncComicToHistory(comic);
+                            SaveDatabase();
+                            SendEventToUi("shelfUpdated", BuildInitPayload());
+                        }
+                    }
+                }
+            }
+            return (successfullySet, newCoverPath);
+        }
+
+        private bool ResetComicCoverCore(string id)
+        {
+            lock (dbLock)
+            {
+                var comic = db.Comics.FirstOrDefault(c =>
+                    string.Equals(c.Id, id, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(c.Title, id, StringComparison.OrdinalIgnoreCase));
+
+                if (comic != null)
+                {
+                    CleanupCustomCoverFilesForId(comic.Id);
+                    comic.CustomCoverPath = "";
+
+                    if ((comic.PagePaths == null || comic.PagePaths.Count == 0) && !string.IsNullOrEmpty(comic.FolderPath))
+                    {
+                        if (comic.IsArchive || ArchiveComicHelper.IsArchiveFile(comic.FolderPath))
+                        {
+                            if (File.Exists(comic.FolderPath))
+                            {
+                                var entries = ArchiveComicHelper.GetArchiveImageEntries(comic.FolderPath);
+                                comic.PagePaths = entries.Select(e => ArchiveComicHelper.BuildPagePath(comic.FolderPath, e)).ToList();
+                                comic.TotalPages = entries.Count;
+                            }
+                        }
+                        else if (Directory.Exists(comic.FolderPath))
+                        {
+                            comic.PagePaths = GetSortedImagesInDirectory(comic.FolderPath);
+                            comic.TotalPages = comic.PagePaths.Count;
+                        }
+                    }
+
+                    if (comic.PagePaths != null && comic.PagePaths.Count > 0)
+                    {
+                        comic.CoverPath = comic.PagePaths[0];
+                    }
+                    SyncComicToHistory(comic);
+                    SaveDatabase();
+                    SendEventToUi("shelfUpdated", BuildInitPayload());
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool SaveCustomCoverFileCore(string id, byte[] bytes, string ext)
+        {
+            if (bytes == null || bytes.Length == 0) return false;
+            lock (dbLock)
+            {
+                var comic = db.Comics.FirstOrDefault(c =>
+                    string.Equals(c.Id, id, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(c.Title, id, StringComparison.OrdinalIgnoreCase));
+
+                if (comic != null)
+                {
+                    Directory.CreateDirectory(customCoversDir);
+                    CleanupCustomCoverFilesForId(comic.Id);
+                    if (string.IsNullOrEmpty(ext)) ext = ".jpg";
+                    string destPath = Path.Combine(customCoversDir, $"{comic.Id}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}{ext}");
+                    File.WriteAllBytes(destPath, bytes);
+
+                    comic.CustomCoverPath = destPath;
+                    comic.CoverPath = destPath;
+                    SyncComicToHistory(comic);
+                    SaveDatabase();
+                    SendEventToUi("shelfUpdated", BuildInitPayload());
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private (bool ok, string message, ComicRecord? comic) RenameComicCore(string id, string rawNewTitle)
+        {
+            string newTitle = (rawNewTitle ?? "").Trim();
+            if (string.IsNullOrEmpty(newTitle))
+                return (false, "漫画名称不能为空", null);
+
+            char[] invalidChars = Path.GetInvalidFileNameChars();
+            if (newTitle.IndexOfAny(invalidChars) >= 0)
+                return (false, "漫画名称包含 Windows 文件名不支持的特殊字符（如 \\ / : * ? \" < > |）", null);
+
+            lock (dbLock)
+            {
+                var comic = db.Comics.FirstOrDefault(c =>
+                    string.Equals(c.Id, id, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(c.Title, id, StringComparison.OrdinalIgnoreCase));
+
+                if (comic == null)
+                    return (false, "未找到该漫画记录", null);
+
+                if (string.Equals(comic.Title, newTitle, StringComparison.Ordinal))
+                    return (true, "", comic);
+
+                bool duplicateInShelf = db.Comics.Any(c =>
+                    c.Id != comic.Id && string.Equals(c.Title, newTitle, StringComparison.OrdinalIgnoreCase));
+                if (duplicateInShelf)
+                    return (false, $"书架上已存在名为《{newTitle}》的漫画，请使用其他名称", null);
+
+                string oldFolder = comic.FolderPath ?? "";
+                string newFolder = oldFolder;
+
+                if (comic.IsArchive || ArchiveComicHelper.IsArchiveFile(oldFolder))
+                {
+                    if (File.Exists(oldFolder))
+                    {
+                        string? parentDir = Path.GetDirectoryName(oldFolder);
+                        string ext = Path.GetExtension(oldFolder);
+                        if (!string.IsNullOrEmpty(parentDir))
+                        {
+                            string candidateFile = Path.Combine(parentDir, newTitle + ext);
+                            bool isCaseOnlyChange = string.Equals(oldFolder, candidateFile, StringComparison.OrdinalIgnoreCase);
+
+                            if (!isCaseOnlyChange && File.Exists(candidateFile))
+                            {
+                                return (false, $"本地磁盘同级目录下已存在《{newTitle}{ext}》压缩包文件", null);
+                            }
+
+                            try
+                            {
+                                if (isCaseOnlyChange && !string.Equals(oldFolder, candidateFile, StringComparison.Ordinal))
+                                {
+                                    string tempFile = Path.Combine(parentDir, newTitle + "_renametmp_" + Guid.NewGuid().ToString("N")[..6] + ext);
+                                    File.Move(oldFolder, tempFile);
+                                    File.Move(tempFile, candidateFile);
+                                }
+                                else if (!string.Equals(oldFolder, candidateFile, StringComparison.Ordinal))
+                                {
+                                    File.Move(oldFolder, candidateFile);
+                                }
+                                newFolder = candidateFile;
+                            }
+                            catch (Exception ex)
+                            {
+                                return (false, $"重命名压缩包文件失败：{ex.Message}", null);
+                            }
+                        }
+                    }
+                }
+                else if (!string.IsNullOrEmpty(oldFolder) && Directory.Exists(oldFolder))
+                {
+                    string fullOldFolder = Path.GetFullPath(oldFolder).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    string? parentDir = Path.GetDirectoryName(fullOldFolder);
+                    string? rootDrive = Path.GetPathRoot(fullOldFolder)?.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    string fullAppRoot = Path.GetFullPath(appRootDir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    string fullAppData = Path.GetFullPath(appDataDir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+                    bool isProtectedDir =
+                        string.Equals(fullOldFolder, rootDrive, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(fullOldFolder, fullAppRoot, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(fullOldFolder, fullAppData, StringComparison.OrdinalIgnoreCase);
+
+                    if (!isProtectedDir && !string.IsNullOrEmpty(parentDir))
+                    {
+                        string candidateFolder = Path.Combine(parentDir, newTitle);
+                        bool isCaseOnlyChange = string.Equals(fullOldFolder, candidateFolder, StringComparison.OrdinalIgnoreCase);
+
+                        if (!isCaseOnlyChange && Directory.Exists(candidateFolder))
+                        {
+                            return (false, $"本地磁盘同级目录下已存在《{newTitle}》文件夹", null);
+                        }
+
+                        try
+                        {
+                            if (isCaseOnlyChange && !string.Equals(fullOldFolder, candidateFolder, StringComparison.Ordinal))
+                            {
+                                string tempFolder = Path.Combine(parentDir, newTitle + "_renametmp_" + Guid.NewGuid().ToString("N")[..6]);
+                                Directory.Move(fullOldFolder, tempFolder);
+                                Directory.Move(tempFolder, candidateFolder);
+                            }
+                            else if (!string.Equals(fullOldFolder, candidateFolder, StringComparison.Ordinal))
+                            {
+                                Directory.Move(fullOldFolder, candidateFolder);
+                            }
+                            newFolder = candidateFolder;
+                        }
+                        catch (Exception ex)
+                        {
+                            return (false, $"重命名本地物理文件夹失败：{ex.Message}", null);
+                        }
+                    }
+                }
+
+                string newId = GenerateComicId(newTitle, newTitle);
+
+                if (!string.IsNullOrEmpty(comic.CustomCoverPath) && !string.IsNullOrEmpty(oldFolder) && !string.Equals(oldFolder, newFolder, StringComparison.OrdinalIgnoreCase))
+                {
+                    string normalizedOld = Path.GetFullPath(oldFolder).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+                    if (comic.CustomCoverPath.StartsWith(normalizedOld, StringComparison.OrdinalIgnoreCase))
+                    {
+                        string rel = comic.CustomCoverPath.Substring(normalizedOld.Length);
+                        comic.CustomCoverPath = Path.Combine(newFolder, rel);
+                    }
+                }
+
+                comic.FolderPath = newFolder;
+                if (comic.IsArchive || ArchiveComicHelper.IsArchiveFile(newFolder))
+                {
+                    if (File.Exists(newFolder))
+                    {
+                        var entries = ArchiveComicHelper.GetArchiveImageEntries(newFolder);
+                        if (entries.Count > 0)
+                        {
+                            comic.PagePaths = entries.Select(e => ArchiveComicHelper.BuildPagePath(newFolder, e)).ToList();
+                            comic.TotalPages = entries.Count;
+                        }
+                    }
+                }
+                else if (!string.IsNullOrEmpty(newFolder) && Directory.Exists(newFolder))
+                {
+                    var refreshedPages = GetSortedImagesInDirectory(newFolder);
+                    if (refreshedPages.Count > 0)
+                    {
+                        comic.PagePaths = refreshedPages;
+                        comic.TotalPages = refreshedPages.Count;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(comic.CustomCoverPath) && File.Exists(comic.CustomCoverPath))
+                {
+                    comic.CoverPath = comic.CustomCoverPath;
+                }
+                else if (comic.PagePaths != null && comic.PagePaths.Count > 0)
+                {
+                    comic.CoverPath = comic.PagePaths[0];
+                }
+
+                PurgeComicHistory(comic);
+                comic.Id = newId;
+                comic.Title = newTitle;
+                comic.SubDirName = newTitle;
+                SyncComicToHistory(comic);
+                SaveDatabase();
+                SendEventToUi("shelfUpdated", BuildInitPayload());
+
+                return (true, "", comic);
             }
         }
 
@@ -1393,7 +2086,7 @@ namespace ComicReaderDesktop
             {
                 if (Directory.Exists(p))
                     dirs.Add(p);
-                else if (File.Exists(p) && IsImageFile(p))
+                else if (File.Exists(p))
                     files.Add(p);
             }
 
@@ -1410,8 +2103,112 @@ namespace ComicReaderDesktop
 
             if (files.Count > 0)
             {
-                await ImportImageFilesAsComicAsync(files);
+                await ImportFilesOrArchivesAsync(files);
                 SendEventToUi("shelfUpdated", BuildInitPayload());
+            }
+        }
+
+        private async Task ImportFilesOrArchivesAsync(IEnumerable<string> filePaths)
+        {
+            await Task.Run(async () =>
+            {
+                var archives = new List<string>();
+                var images = new List<string>();
+
+                foreach (var f in filePaths)
+                {
+                    if (!File.Exists(f)) continue;
+                    if (ArchiveComicHelper.IsArchiveFile(f))
+                        archives.Add(f);
+                    else if (IsImageFile(f))
+                        images.Add(f);
+                }
+
+                foreach (var arc in archives)
+                {
+                    ImportArchiveFileAsComic(arc);
+                }
+
+                if (images.Count > 0)
+                {
+                    await ImportImageFilesAsComicAsync(images);
+                }
+            });
+        }
+
+        private ComicRecord? ImportArchiveFileAsComic(string archiveFilePath)
+        {
+            if (!File.Exists(archiveFilePath) || !ArchiveComicHelper.IsArchiveFile(archiveFilePath)) return null;
+
+            var entries = ArchiveComicHelper.GetArchiveImageEntries(archiveFilePath);
+            if (entries.Count == 0) return null;
+
+            string fileNameWithoutExt = Path.GetFileNameWithoutExtension(archiveFilePath);
+            string id = GenerateComicId(fileNameWithoutExt, fileNameWithoutExt);
+            var pagePaths = entries.Select(e => ArchiveComicHelper.BuildPagePath(archiveFilePath, e)).ToList();
+
+            long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long fileModTime = now;
+            try
+            {
+                fileModTime = new DateTimeOffset(File.GetLastWriteTimeUtc(archiveFilePath)).ToUnixTimeMilliseconds();
+            }
+            catch { }
+
+            lock (dbLock)
+            {
+                var existing = db.Comics.FirstOrDefault(c =>
+                    c.Id == id ||
+                    string.Equals(c.FolderPath, archiveFilePath, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(c.Title, fileNameWithoutExt, StringComparison.OrdinalIgnoreCase));
+
+                var hist = GetComicHistory(id, fileNameWithoutExt);
+
+                if (existing != null)
+                {
+                    string customCover = ResolveCustomCoverPath(existing, hist);
+                    existing.FolderPath = archiveFilePath;
+                    existing.IsArchive = true;
+                    existing.CustomCoverPath = customCover;
+                    existing.CoverPath = !string.IsNullOrEmpty(customCover) ? customCover : pagePaths[0];
+                    existing.PagePaths = pagePaths;
+                    existing.TotalPages = pagePaths.Count;
+                    existing.IsMissing = false;
+                    if (hist != null)
+                    {
+                        existing.ReadCount = Math.Max(existing.ReadCount, hist.ReadCount);
+                        existing.LastReadTime = Math.Max(existing.LastReadTime, hist.LastReadTime);
+                        existing.LastReadPage = Math.Max(existing.LastReadPage, hist.LastReadPage);
+                    }
+                    SyncComicToHistory(existing);
+                    SaveDatabase();
+                    return existing;
+                }
+                else
+                {
+                    string customCover = ResolveCustomCoverPath(null, hist);
+                    var record = new ComicRecord
+                    {
+                        Id = id,
+                        Title = fileNameWithoutExt,
+                        SubDirName = fileNameWithoutExt,
+                        FolderPath = archiveFilePath,
+                        IsArchive = true,
+                        CustomCoverPath = customCover,
+                        CoverPath = !string.IsNullOrEmpty(customCover) ? customCover : pagePaths[0],
+                        PagePaths = pagePaths,
+                        TotalPages = pagePaths.Count,
+                        ImportTime = hist?.ImportTime > 0 ? hist.ImportTime : (fileModTime > 0 ? fileModTime : now),
+                        ReadCount = hist?.ReadCount ?? 0,
+                        LastReadTime = hist?.LastReadTime ?? 0,
+                        LastReadPage = hist?.LastReadPage ?? 1,
+                        IsMissing = false
+                    };
+                    db.Comics.Add(record);
+                    SyncComicToHistory(record);
+                    SaveDatabase();
+                    return record;
+                }
             }
         }
 
@@ -1500,25 +2297,27 @@ namespace ComicReaderDesktop
                 {
                     status = "正在扫描磁盘目录结构...",
                     percent = 2,
-                    detail = "正在检索包含漫画切片的文件夹..."
+                    detail = "正在检索包含漫画切片的文件夹与压缩包文件..."
                 });
 
-                // 收集所有含图片的漫画文件夹
+                // 收集所有含图片的漫画文件夹以及压缩包漫画
                 var comicDirs = new List<string>();
+                var archiveFiles = new List<string>();
                 var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
                 foreach (string root in rootFolders)
                 {
                     if (Directory.Exists(root))
                     {
-                        CollectComicDirectoriesRecursive(root, comicDirs, visited);
+                        CollectComicSourcesRecursive(root, comicDirs, archiveFiles, visited);
                     }
                 }
 
                 // 同时核验书架上已有漫画是否被移走或恢复
                 VerifyAllComicsExistence(out _);
 
-                if (comicDirs.Count == 0)
+                int totalSources = comicDirs.Count + archiveFiles.Count;
+                if (totalSources == 0)
                 {
                     SaveDatabase();
                     SendEventToUi("scanComplete", new
@@ -1531,21 +2330,24 @@ namespace ComicReaderDesktop
                 }
 
                 comicDirs.Sort((a, b) => NaturalStringComparer.Instance.Compare(Path.GetFileName(a), Path.GetFileName(b)));
+                archiveFiles.Sort((a, b) => NaturalStringComparer.Instance.Compare(Path.GetFileName(a), Path.GetFileName(b)));
 
-                int total = comicDirs.Count;
+                int processed = 0;
                 int newlyAdded = 0;
 
-                for (int i = 0; i < total; i++)
+                // 1. 解析普通文件夹漫画
+                for (int i = 0; i < comicDirs.Count; i++)
                 {
+                    processed++;
                     string dirPath = comicDirs[i];
                     string dirName = new DirectoryInfo(dirPath).Name;
-                    int pct = Math.Min(99, (int)Math.Round(((i + 1) * 100.0) / total));
+                    int pct = Math.Min(99, (int)Math.Round((processed * 100.0) / totalSources));
 
                     SendEventToUi("scanProgress", new
                     {
-                        status = $"正在导入漫画 ({i + 1}/{total})...",
+                        status = $"正在导入漫画 ({processed}/{totalSources})...",
                         percent = pct,
-                        detail = $"当前解析: {dirName}"
+                        detail = $"当前解析目录: {dirName}"
                     });
 
                     var images = GetSortedImagesInDirectory(dirPath);
@@ -1572,6 +2374,7 @@ namespace ComicReaderDesktop
                         {
                             string customCover = ResolveCustomCoverPath(existing, hist);
                             existing.FolderPath = dirPath;
+                            existing.IsArchive = false;
                             existing.CustomCoverPath = customCover;
                             existing.CoverPath = !string.IsNullOrEmpty(customCover) ? customCover : images[0];
                             existing.PagePaths = images;
@@ -1594,6 +2397,7 @@ namespace ComicReaderDesktop
                                 Title = dirName,
                                 SubDirName = dirName,
                                 FolderPath = dirPath,
+                                IsArchive = false,
                                 CustomCoverPath = customCover,
                                 CoverPath = !string.IsNullOrEmpty(customCover) ? customCover : images[0],
                                 PagePaths = images,
@@ -1610,8 +2414,95 @@ namespace ComicReaderDesktop
                         }
                     }
 
-                    // 每导入 5 部或最后一部时实时刷新一次书架界面并落盘
-                    if ((i + 1) % 5 == 0 || i == total - 1)
+                    if (processed % 5 == 0 || processed == totalSources)
+                    {
+                        SaveDatabase();
+                        SendEventToUi("shelfUpdated", BuildInitPayload());
+                    }
+                }
+
+                // 2. 解析压缩包单文件漫画 (.zip, .cbz, .rar, .cbr, .7z, .cb7, .tar, .cbt)
+                for (int i = 0; i < archiveFiles.Count; i++)
+                {
+                    processed++;
+                    string arcPath = archiveFiles[i];
+                    string arcName = Path.GetFileNameWithoutExtension(arcPath);
+                    int pct = Math.Min(99, (int)Math.Round((processed * 100.0) / totalSources));
+
+                    SendEventToUi("scanProgress", new
+                    {
+                        status = $"正在导入漫画 ({processed}/{totalSources})...",
+                        percent = pct,
+                        detail = $"当前解析压缩包: {Path.GetFileName(arcPath)}"
+                    });
+
+                    var entries = ArchiveComicHelper.GetArchiveImageEntries(arcPath);
+                    if (entries.Count == 0) continue;
+
+                    string id = GenerateComicId(arcName, arcName);
+                    var pagePaths = entries.Select(e => ArchiveComicHelper.BuildPagePath(arcPath, e)).ToList();
+
+                    long fileModTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    try
+                    {
+                        fileModTime = new DateTimeOffset(File.GetLastWriteTimeUtc(arcPath)).ToUnixTimeMilliseconds();
+                    }
+                    catch { }
+
+                    lock (dbLock)
+                    {
+                        var existing = db.Comics.FirstOrDefault(c =>
+                            c.Id == id ||
+                            string.Equals(c.FolderPath, arcPath, StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(c.Title, arcName, StringComparison.OrdinalIgnoreCase));
+
+                        var hist = GetComicHistory(id, arcName);
+
+                        if (existing != null)
+                        {
+                            string customCover = ResolveCustomCoverPath(existing, hist);
+                            existing.FolderPath = arcPath;
+                            existing.IsArchive = true;
+                            existing.CustomCoverPath = customCover;
+                            existing.CoverPath = !string.IsNullOrEmpty(customCover) ? customCover : pagePaths[0];
+                            existing.PagePaths = pagePaths;
+                            existing.TotalPages = pagePaths.Count;
+                            existing.IsMissing = false;
+                            if (hist != null)
+                            {
+                                existing.ReadCount = Math.Max(existing.ReadCount, hist.ReadCount);
+                                existing.LastReadTime = Math.Max(existing.LastReadTime, hist.LastReadTime);
+                                existing.LastReadPage = Math.Max(existing.LastReadPage, hist.LastReadPage);
+                            }
+                            SyncComicToHistory(existing);
+                        }
+                        else
+                        {
+                            string customCover = ResolveCustomCoverPath(null, hist);
+                            var record = new ComicRecord
+                            {
+                                Id = id,
+                                Title = arcName,
+                                SubDirName = arcName,
+                                FolderPath = arcPath,
+                                IsArchive = true,
+                                CustomCoverPath = customCover,
+                                CoverPath = !string.IsNullOrEmpty(customCover) ? customCover : pagePaths[0],
+                                PagePaths = pagePaths,
+                                TotalPages = pagePaths.Count,
+                                ImportTime = hist?.ImportTime > 0 ? hist.ImportTime : fileModTime,
+                                ReadCount = hist?.ReadCount ?? 0,
+                                LastReadTime = hist?.LastReadTime ?? 0,
+                                LastReadPage = hist?.LastReadPage ?? 1,
+                                IsMissing = false
+                            };
+                            db.Comics.Add(record);
+                            SyncComicToHistory(record);
+                            newlyAdded++;
+                        }
+                    }
+
+                    if (processed % 5 == 0 || processed == totalSources)
                     {
                         SaveDatabase();
                         SendEventToUi("shelfUpdated", BuildInitPayload());
@@ -1622,7 +2513,7 @@ namespace ComicReaderDesktop
                 SendEventToUi("scanComplete", new
                 {
                     newlyCount = newlyAdded,
-                    totalScanned = total,
+                    totalScanned = totalSources,
                     state = BuildInitPayload()
                 });
             }
@@ -1636,25 +2527,35 @@ namespace ComicReaderDesktop
             }
         }
 
-        private static void CollectComicDirectoriesRecursive(string currentDir, List<string> result, HashSet<string> visited)
+        private static void CollectComicSourcesRecursive(string currentDir, List<string> comicDirs, List<string> archiveFiles, HashSet<string> visited)
         {
             if (!visited.Add(currentDir)) return;
 
             try
             {
-                bool hasDirectImages = Directory.EnumerateFiles(currentDir)
-                    .Any(IsImageFile);
+                bool hasDirectImages = false;
+                foreach (string f in Directory.EnumerateFiles(currentDir))
+                {
+                    if (ArchiveComicHelper.IsArchiveFile(f))
+                    {
+                        archiveFiles.Add(f);
+                    }
+                    else if (!hasDirectImages && IsImageFile(f))
+                    {
+                        hasDirectImages = true;
+                    }
+                }
 
                 if (hasDirectImages)
                 {
-                    result.Add(currentDir);
+                    comicDirs.Add(currentDir);
                 }
 
                 foreach (string subDir in Directory.EnumerateDirectories(currentDir))
                 {
                     string name = Path.GetFileName(subDir);
                     if (name.StartsWith(".")) continue;
-                    CollectComicDirectoriesRecursive(subDir, result, visited);
+                    CollectComicSourcesRecursive(subDir, comicDirs, archiveFiles, visited);
                 }
             }
             catch
@@ -1687,7 +2588,7 @@ namespace ComicReaderDesktop
         }
 
         /// <summary>
-        /// 核验所有漫画源文件夹是否仍在原位置。如果被移走或删除，标记 IsMissing = true，但绝不删除其阅读记录。
+        /// 核验所有漫画源文件夹或压缩包是否仍在原位置。如果被移走或删除，标记 IsMissing = true，但绝不删除其阅读记录。
         /// </summary>
         private bool VerifyAllComicsExistence(out int recoveredCount)
         {
@@ -1698,10 +2599,20 @@ namespace ComicReaderDesktop
             {
                 foreach (var comic in db.Comics)
                 {
-                    bool folderOk = !string.IsNullOrEmpty(comic.FolderPath) && Directory.Exists(comic.FolderPath);
-                    bool coverOk = !string.IsNullOrEmpty(comic.CoverPath) && File.Exists(comic.CoverPath);
+                    bool physicalOk = comic.IsArchive || ArchiveComicHelper.IsArchiveFile(comic.FolderPath)
+                        ? (!string.IsNullOrEmpty(comic.FolderPath) && File.Exists(comic.FolderPath))
+                        : (!string.IsNullOrEmpty(comic.FolderPath) && Directory.Exists(comic.FolderPath));
 
-                    bool nowMissing = !(folderOk || coverOk);
+                    bool coverOk = false;
+                    if (!string.IsNullOrEmpty(comic.CoverPath))
+                    {
+                        if (ArchiveComicHelper.TryParsePagePath(comic.CoverPath, out string arcP, out _))
+                            coverOk = File.Exists(arcP);
+                        else
+                            coverOk = File.Exists(comic.CoverPath);
+                    }
+
+                    bool nowMissing = !(physicalOk || coverOk);
                     if (comic.IsMissing && !nowMissing)
                     {
                         recoveredCount++;
@@ -1776,6 +2687,22 @@ namespace ComicReaderDesktop
             try
             {
                 CleanupCustomCoverFilesForId(c.Id);
+
+                // 如果是压缩包单文件漫画，直接物理删除该压缩包
+                if (c.IsArchive || (!string.IsNullOrEmpty(c.FolderPath) && ArchiveComicHelper.IsArchiveFile(c.FolderPath)))
+                {
+                    if (!string.IsNullOrEmpty(c.FolderPath) && File.Exists(c.FolderPath))
+                    {
+                        try
+                        {
+                            File.SetAttributes(c.FolderPath, FileAttributes.Normal);
+                            File.Delete(c.FolderPath);
+                            anyDeleted = true;
+                        }
+                        catch { }
+                    }
+                    return anyDeleted;
+                }
 
                 // 1. 删除该漫画记录的所有页面切片文件
                 if (c.PagePaths != null)
@@ -1887,6 +2814,14 @@ namespace ComicReaderDesktop
                 {
                     db = new ShelfDatabase();
                 }
+
+                if (string.IsNullOrEmpty(db.DeviceId))
+                {
+                    db.DeviceId = Guid.NewGuid().ToString("N");
+                    isDatabaseDirty = true;
+                }
+                db.Whitelist ??= new List<LanWhitelistEntry>();
+                db.Blacklist ??= new List<LanBlacklistEntry>();
             }
         }
 
@@ -1970,6 +2905,50 @@ namespace ComicReaderDesktop
             {
                 string json = JsonSerializer.Serialize(payload, JsonOptions);
                 webView.CoreWebView2?.PostWebMessageAsJson(json);
+            }
+            catch { }
+        }
+
+        private static bool IsWindowsAppsDark()
+        {
+            try
+            {
+                using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
+                var val = key?.GetValue("AppsUseLightTheme");
+                if (val is int i) return i == 0;
+            }
+            catch { }
+            return true;
+        }
+
+        private void UpdateFormTheme(string theme)
+        {
+            try
+            {
+                bool isLight = false;
+                if (string.Equals(theme, "light", StringComparison.OrdinalIgnoreCase))
+                {
+                    isLight = true;
+                }
+                else if (string.Equals(theme, "system", StringComparison.OrdinalIgnoreCase))
+                {
+                    isLight = !IsWindowsAppsDark();
+                }
+
+                Color bg = isLight ? Color.FromArgb(248, 250, 252) : Color.FromArgb(18, 19, 24);
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new Action(() =>
+                    {
+                        BackColor = bg;
+                        if (webView != null) webView.DefaultBackgroundColor = bg;
+                    }));
+                }
+                else
+                {
+                    BackColor = bg;
+                    if (webView != null) webView.DefaultBackgroundColor = bg;
+                }
             }
             catch { }
         }

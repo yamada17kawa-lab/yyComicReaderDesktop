@@ -26,3 +26,10 @@ TransferredComics/
 *.log
 *.tmp
 *.cache
+
+*.apk
+*.deps.json
+*.runtimeconfig.json
+dist_single/
+startup_log.txt
+Microsoft.Web.WebView2.*.xml

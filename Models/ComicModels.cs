@@ -26,12 +26,123 @@ namespace ComicReaderDesktop.Models
 
         [JsonPropertyName("transferSavePath")]
         public string TransferSavePath { get; set; } = "";
+
+        [JsonPropertyName("deviceId")]
+        public string DeviceId { get; set; } = "";
+
+        [JsonPropertyName("requirePassword")]
+        public bool RequirePassword { get; set; } = false;
+
+        [JsonPropertyName("connectionPassword")]
+        public string ConnectionPassword { get; set; } = "";
+
+        [JsonPropertyName("whitelist")]
+        public List<LanWhitelistEntry> Whitelist { get; set; } = new();
+
+        [JsonPropertyName("blacklist")]
+        public List<LanBlacklistEntry> Blacklist { get; set; } = new();
+
+        [JsonPropertyName("language")]
+        public string Language { get; set; } = "zh";
+
+        [JsonPropertyName("theme")]
+        public string Theme { get; set; } = "system";
+    }
+
+    public class LanBlacklistEntry
+    {
+        [JsonPropertyName("deviceId")]
+        public string DeviceId { get; set; } = "";
+
+        [JsonPropertyName("deviceName")]
+        public string DeviceName { get; set; } = "";
+
+        [JsonPropertyName("platform")]
+        public string Platform { get; set; } = "";
+
+        [JsonPropertyName("ip")]
+        public string Ip { get; set; } = "";
+
+        [JsonPropertyName("addedTime")]
+        public long AddedTime { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+    }
+
+    public class LanWhitelistEntry
+    {
+        [JsonPropertyName("deviceId")]
+        public string DeviceId { get; set; } = "";
+
+        [JsonPropertyName("deviceName")]
+        public string DeviceName { get; set; } = "";
+
+        [JsonPropertyName("platform")]
+        public string Platform { get; set; } = "";
+
+        [JsonPropertyName("addedTime")]
+        public long AddedTime { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+    }
+
+    public class LanPairRequestState
+    {
+        [JsonPropertyName("reqId")]
+        public string ReqId { get; set; } = "";
+
+        [JsonPropertyName("fromId")]
+        public string FromId { get; set; } = "";
+
+        [JsonPropertyName("fromName")]
+        public string FromName { get; set; } = "";
+
+        [JsonPropertyName("fromPlatform")]
+        public string FromPlatform { get; set; } = "";
+
+        [JsonPropertyName("fromIp")]
+        public string FromIp { get; set; } = "";
+
+        [JsonPropertyName("fromPort")]
+        public int FromPort { get; set; } = 39528;
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; } = "pending";
+
+        [JsonPropertyName("sessionToken")]
+        public string SessionToken { get; set; } = "";
+
+        [JsonPropertyName("createdTime")]
+        public long CreatedTime { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+        [JsonPropertyName("timeoutSeconds")]
+        public int TimeoutSeconds { get; set; } = 30;
+
+        [JsonIgnore]
+        public bool IsExpired => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - CreatedTime > (TimeoutSeconds * 1000);
+    }
+
+    public class LanConnectResult
+    {
+        [JsonPropertyName("ok")]
+        public bool Ok { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; } = "";
+
+        [JsonPropertyName("message")]
+        public string Message { get; set; } = "";
+
+        [JsonPropertyName("sessionToken")]
+        public string SessionToken { get; set; } = "";
+
+        [JsonPropertyName("peer")]
+        public LanPeerInfo? Peer { get; set; }
     }
 
     public class LanPeerInfo
     {
         [JsonPropertyName("app")]
         public string App { get; set; } = "YYComicReader";
+
+        [JsonPropertyName("deviceId")]
+        public string DeviceId { get; set; } = "";
 
         [JsonPropertyName("deviceName")]
         public string DeviceName { get; set; } = "";
@@ -47,6 +158,18 @@ namespace ComicReaderDesktop.Models
 
         [JsonPropertyName("comicCount")]
         public int ComicCount { get; set; }
+
+        [JsonPropertyName("requirePassword")]
+        public bool RequirePassword { get; set; } = false;
+
+        [JsonPropertyName("versionCode")]
+        public int VersionCode { get; set; } = 0;
+
+        [JsonPropertyName("versionName")]
+        public string VersionName { get; set; } = "";
+
+        [JsonPropertyName("sessionToken")]
+        public string SessionToken { get; set; } = "";
     }
 
     public class LanRemoteComicInfo
@@ -152,6 +275,9 @@ namespace ComicReaderDesktop.Models
 
         [JsonPropertyName("isMissing")]
         public bool IsMissing { get; set; }
+
+        [JsonPropertyName("isArchive")]
+        public bool IsArchive { get; set; }
     }
 
     public class ComicHistoryRecord
